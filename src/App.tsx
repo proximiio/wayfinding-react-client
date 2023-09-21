@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
 import MapView from './components/MapView';
-import { Map } from 'proximiio-js-library/lib/components/map/main';
+import { Map, State } from 'proximiio-js-library/lib/components/map/main';
+import FloorPicker from './components/FloorPicker';
+import { FloorModel } from 'proximiio-js-library/lib/models/floor';
 
 function App() {
 	const [map, setMap] = useState({} as Map);
 	const [kioskMode, setKioskMode] = useState(false);
 	const [currentLang, setCurrentLang] = useState('en');
+	const [floors, setFloors] = useState<FloorModel[]>([]);
+	const [currentFloor, setCurrentFloor] = useState<FloorModel>(
+		{} as FloorModel
+	);
 
 	// This effect hook handles URL query parameters related to language and kiosk mode
 	useEffect(() => {
@@ -23,6 +29,22 @@ function App() {
 		// Update language state with 'language' parameter from URL
 		setCurrentLang(urlLanguage);
 	}, [setKioskMode, setCurrentLang]);
+
+	// This effect hook handles map state changes
+	useEffect(() => {
+		if (Object.keys(map).length > 0) {
+			const mapState: State = map.getMapState();
+			setFloors(mapState.floors);
+			setCurrentFloor(mapState.floor);
+		}
+	}, [map]);
+
+	// This effect hook handles current floor state changes
+	useEffect(() => {
+		if (Object.keys(map).length > 0 && currentFloor?.id) {
+			map.setFloorById(currentFloor.id);
+		}
+	}, [currentFloor, map]);
 
 	// idleTime function handle timeouts to reset to default view
 	const idleTime = () => {
@@ -59,6 +81,12 @@ function App() {
 	return (
 		<>
 			<main>
+				<FloorPicker
+					currentLang={currentLang}
+					floors={floors}
+					currentFloor={currentFloor}
+					onSetCurrentFloor={setCurrentFloor}
+				/>
 				<MapView
 					kioskMode={kioskMode}
 					currentLang={currentLang}

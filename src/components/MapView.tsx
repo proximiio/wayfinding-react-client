@@ -64,7 +64,10 @@ function MapView({ kioskMode, currentLang, onSetMap }: MapProps) {
 					animatedRoute: true,
 				});
 
-				onSetMap(map);
+				map.getMapReadyListener().subscribe((ready) => {
+					console.log('map ready', ready);
+					onSetMap(map);
+				});
 			}
 		);
 	});
