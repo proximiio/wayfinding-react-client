@@ -3,8 +3,11 @@ import MapView from './components/MapView';
 import FloorPicker from './components/FloorPicker';
 import PoiDetails from './components/PoiDetails';
 import useMapStore from './store/mapStore';
+import { useTranslation } from 'react-i18next';
 
 function App() {
+	const { t, i18n } = useTranslation();
+
 	const [appInitiated, setAppInitiated] = useMapStore((state) => [
 		state.appInitiated,
 		state.setAppInitiated,
@@ -79,6 +82,7 @@ function App() {
 
 		// Update language state with 'language' parameter from URL
 		setCurrentLang(urlLanguage);
+		i18n.changeLanguage(urlLanguage);
 
 		// If 'kiosk' parameter exists in URL, set kiosk mode
 		if (urlParams.get('kiosk')) {
@@ -158,6 +162,14 @@ function App() {
 		<>
 			{appInitiated === true && (
 				<main>
+					{Object.keys(map).length === 0 && (
+						<div className='fixed flex w-screen h-screen'>
+							<div className='mx-auto mt-[20%]'>
+								<div className='w-40 h-40 mx-auto border border-gray-300 rounded-full animate-spin border-t-blue-600' />
+								<h3 className='mt-8 text-3xl font-semibold'>{t('welcomeMessage')}</h3>
+							</div>
+						</div>
+					)}
 					<FloorPicker />
 					{routeFinish?.id && <PoiDetails />}
 					<MapView />
