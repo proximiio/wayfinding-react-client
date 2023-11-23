@@ -1,14 +1,9 @@
 import Proximiio from 'proximiio-js-library';
-import { Map } from 'proximiio-js-library/lib/components/map/main';
+import { State } from 'proximiio-js-library/lib/components/map/main';
 import { useEffect, useRef } from 'react';
+import useMapStore from '@/store/mapStore';
 
-interface MapProps {
-	kioskMode: boolean;
-	currentLang: string;
-	onSetMap: React.Dispatch<React.SetStateAction<Map>>;
-}
-
-function MapView({ kioskMode, currentLang, onSetMap }: MapProps) {
+function MapView() {
 	const mapInitiated = useRef(false);
 	const zoom = 19;
 	const pitch = 40;
@@ -27,6 +22,26 @@ function MapView({ kioskMode, currentLang, onSetMap }: MapProps) {
 		left: 500,
 		right: 250,
 	};
+
+	// store state
+	const map = useMapStore((state) => state.map);
+	const kioskMode = useMapStore((state) => state.kioskMode);
+	const currentFloor = useMapStore((state) => state.currentFloor);
+	const currentLang = useMapStore((state) => state.currentLang);
+
+	// store actions
+	const setMap = useMapStore((state) => state.setMap);
+	const setFloors = useMapStore((state) => state.setFloors);
+	const setFeatures = useMapStore((state) => state.setFeatures);
+	const setCurrentFloor = useMapStore((state) => state.setCurrentFloor);
+	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
+
+	// This effect hook handles current floor state changes
+	useEffect(() => {
+		if (Object.keys(map).length > 0 && currentFloor?.id) {
+			map.setFloorById(currentFloor.id);
+		}
+	}, [currentFloor, map]);
 
 	useEffect(() => {
 		// Initialize map only once
@@ -62,11 +77,25 @@ function MapView({ kioskMode, currentLang, onSetMap }: MapProps) {
 					showLevelDirectionIcon: true, // if enabled arrow icon will be shown at the levelchanger indicating direction of level change along the found route
 					initPolygons: true,
 					animatedRoute: true,
+					blockFeatureClickWhileRouting: true,
 				});
 
 				map.getMapReadyListener().subscribe((ready) => {
 					console.log('map ready', ready);
-					onSetMap(map);
+					const mapState: State = map.getMapState();
+
+					setMap(map);
+					setFloors(mapState.floors);
+					setFeatures(mapState.allFeatures.features);
+					setCurrentFloor(mapState.floor);
+				});
+
+				// set destination point for routing based on click event and cancel previous route if generated
+				map.getPolygonClickListener().subscribe((feature) => {
+					/*if (this.map.state.textNavigation) {
+						this.map.cancelRoute();
+					}*/
+					setRouteFinish(feature);
 				});
 			}
 		);

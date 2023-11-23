@@ -5,6 +5,8 @@ interface ImportMetaEnv {
 	readonly VITE_PROXIMIIO_API: string;
 	readonly VITE_PROXIMIIO_GEO_VERSION: string;
 	readonly VITE_WAYFINDING_DEFAULT_PLACE_ID: string;
+	readonly VITE_WAYFINDING_ENTRANCE_FEATURE_ID: string;
+	readonly VITE_WAYFINDING_PARKING_AMENITY_ID: string;
 }
 
 interface ImportMeta {

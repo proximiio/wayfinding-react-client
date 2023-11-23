@@ -1,18 +1,16 @@
 import { FloorModel } from 'proximiio-js-library/lib/models/floor';
+import { Button } from '@/components/ui/button';
+import useMapStore from '@/store/mapStore';
 
-interface FloorPickerProps {
-	floors: FloorModel[];
-	currentLang: string;
-	currentFloor: FloorModel;
-	onSetCurrentFloor: React.Dispatch<React.SetStateAction<FloorModel>>;
-}
+function FloorPicker() {
+	//store state
+	const floors = useMapStore((state) => state.floors);
+	const currentFloor = useMapStore((state) => state.currentFloor);
+	const currentLang = useMapStore((state) => state.currentLang);
 
-function FloorPicker({
-	floors,
-	currentLang,
-	currentFloor,
-	onSetCurrentFloor,
-}: FloorPickerProps) {
+	//store actions
+	const setCurrentFloor = useMapStore((state) => state.setCurrentFloor);
+
 	const getFloorName = ({ floor }: { floor: FloorModel }) => {
 		if (floor.name.length === 1 && Number(parseInt(floor.name))) {
 			return `L${floor.name}`;
@@ -24,27 +22,23 @@ function FloorPicker({
 	};
 
 	const handleFloorClick = (floor: FloorModel) => {
-		currentFloor = floor;
-		onSetCurrentFloor(floor);
+		setCurrentFloor(floor);
 	};
 
 	const floorsList = floors.map((floor) => {
 		return (
-			<button
+			<Button
 				key={floor.id}
-				className={`rounded-md bg-white px-3.5 py-2.5 text-sm gap-1 font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 ${
-					currentFloor?.id === floor.id &&
-					'bg-gray-950 text-white hover:bg-gray-950'
-				}`}
+				variant={currentFloor?.id === floor.id ? 'default' : 'secondary'}
 				onClick={() => handleFloorClick(floor)}
 			>
 				{getFloorName({ floor })}
-			</button>
+			</Button>
 		);
 	});
 
 	return (
-		<div className='absolute top-5 inset-x-0 flex items-center justify-center gap-1 z-10'>
+		<div className='absolute inset-x-0 z-10 flex items-center justify-center gap-1 top-5'>
 			{floorsList}
 		</div>
 	);
