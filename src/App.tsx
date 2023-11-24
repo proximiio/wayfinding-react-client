@@ -1,12 +1,16 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import MapView from './components/MapView';
 import FloorPicker from './components/FloorPicker';
 import PoiDetails from './components/PoiDetails';
 import useMapStore from './store/mapStore';
 import { useTranslation } from 'react-i18next';
+import useRouting from '@/hooks/useRouting';
+import useKiosk from '@/hooks/useKiosk';
 
 function App() {
 	const { t, i18n } = useTranslation();
+	const [findRoute] = useRouting();
+	const [idleTime] = useKiosk();
 
 	const [appInitiated, setAppInitiated] = useMapStore((state) => [
 		state.appInitiated,
@@ -20,55 +24,8 @@ function App() {
 	const map = useMapStore((state) => state.map);
 	const routeFinish = useMapStore((state) => state.routeFinish);
 	const routeStart = useMapStore((state) => state.routeStart);
-	const accessibleRoute = useMapStore((state) => state.accessibleRoute);
 
 	const setCurrentLang = useMapStore((state) => state.setCurrentLang);
-
-	const findRoute = useCallback(
-		({
-			start,
-			finish,
-			type,
-		}: {
-			start?: string;
-			finish: string;
-			type?: string;
-		}) => {
-			const defaultWayfindingConfig = {
-				avoidElevators: true,
-				avoidEscalators: false,
-				avoidStaircases: false,
-				avoidRamps: false,
-				avoidNarrowPaths: false,
-				avoidRevolvingDoors: false,
-				avoidTicketGates: false,
-				avoidBarriers: false,
-				avoidHills: false,
-			};
-			const wayfindingConfig = {
-				...defaultWayfindingConfig,
-				avoidElevators: accessibleRoute ? false : true,
-				avoidRamps: accessibleRoute ? false : true,
-				avoidEscalators: accessibleRoute ? true : false,
-				avoidStaircases: accessibleRoute ? true : false,
-				avoidBarriers: accessibleRoute ? true : false,
-				avoidNarrowPaths: accessibleRoute ? true : false,
-				avoidRevolvingDoors: accessibleRoute ? true : false,
-				avoidTicketGates: accessibleRoute ? true : false,
-			};
-			if (type === 'amenity') {
-				map.findRouteToNearestFeature(
-					finish,
-					start,
-					accessibleRoute,
-					wayfindingConfig
-				);
-				return;
-			}
-			map.findRouteByIds(finish, start, accessibleRoute, wayfindingConfig);
-		},
-		[accessibleRoute, map]
-	);
 
 	// This effect hook handles URL query parameters related to language and kiosk mode
 	useEffect(() => {
@@ -89,48 +46,15 @@ function App() {
 			setKioskMode(true);
 		}
 
-		// idleTime function handle timeouts to reset to default view
-		const idleTime = () => {
-			let t: ReturnType<typeof setTimeout>;
+		setAppInitiated(true);
+	}, [appInitiated, i18n, setKioskMode, setCurrentLang, setAppInitiated]);
 
-			// set timer and call reset view method on timeout
-			const resetTimer = () => {
-				clearTimeout(t);
-				t = setTimeout(resetView, 1 * 60000); // 1 minute
-			};
-
-			window.onload = resetTimer;
-			window.onmousemove = resetTimer;
-			window.onmousedown = resetTimer; // catches touchscreen presses as well
-			window.ontouchstart = resetTimer; // catches touchscreen swipes as well
-			window.ontouchmove = resetTimer; // required by some devices
-			window.onclick = resetTimer; // catches touchpad clicks as well
-			window.onkeydown = resetTimer;
-			window.addEventListener('scroll', resetTimer, true); // improved; see comments*/
-		};
-
-		// handle reset to default view
-		const resetView = () => {
-			if (Object.keys(map).length > 0) {
-				map.refetch();
-			}
-		};
-
-		// if app is initiated in kioskMode run idleTime function
+	// This effect hook handles map and kioskMode changes
+	useEffect(() => {
 		if (kioskMode) {
-			console.log('kioskMode initiated');
 			idleTime();
 		}
-
-		setAppInitiated(true);
-	}, [
-		setKioskMode,
-		setCurrentLang,
-		appInitiated,
-		kioskMode,
-		map,
-		setAppInitiated,
-	]);
+	}, [map, kioskMode, idleTime]);
 
 	// This effect hook handles route start state changes
 	useEffect(() => {
@@ -160,13 +84,15 @@ function App() {
 
 	return (
 		<>
-			{appInitiated === true && (
+			{appInitiated && (
 				<main>
 					{Object.keys(map).length === 0 && (
 						<div className='fixed flex w-screen h-screen'>
 							<div className='mx-auto mt-[20%]'>
 								<div className='w-40 h-40 mx-auto border border-gray-300 rounded-full animate-spin border-t-blue-600' />
-								<h3 className='mt-8 text-3xl font-semibold'>{t('welcomeMessage')}</h3>
+								<h3 className='mt-8 text-3xl font-semibold'>
+									{t('welcomeMessage')}
+								</h3>
 							</div>
 						</div>
 					)}
