@@ -58,6 +58,7 @@ function App() {
 
 	// This effect hook handles route start state changes
 	useEffect(() => {
+		console.log('start efffect');
 		if (routeStart?.id) {
 			console.log('routeStart', routeStart);
 			// if we also have route finish generate route
@@ -66,21 +67,28 @@ function App() {
 			}
 		} else {
 			console.log('routeStart cancelled', routeStart);
+			if (Object.keys(map).length > 0) {
+				// cancel route if it's rendered
+				map.cancelRoute();
+			}
 		}
-	}, [routeStart, routeFinish, findRoute]);
+	}, [map, routeStart, routeFinish, findRoute]);
 
 	// This effect hook handles route finish state changes
 	useEffect(() => {
+		console.log('finish efffect');
 		if (routeFinish?.id) {
 			console.log('routeFinish', routeFinish);
 		} else {
 			console.log('routeFinish cancelled', routeFinish);
 			if (Object.keys(map).length > 0) {
+				// cancel route if it's rendered
+				map.cancelRoute();
 				// remove polygon selection after route finish is cancelled
 				map.handlePolygonSelection();
 			}
 		}
-	}, [routeFinish, map]);
+	}, [map, routeFinish]);
 
 	return (
 		<>

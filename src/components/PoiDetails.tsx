@@ -1,6 +1,7 @@
 import Feature from 'proximiio-js-library/lib/models/feature';
 import { Button } from '@/components/ui/button';
 import useMapStore from '@/store/mapStore';
+import { t } from 'i18next';
 
 function PoiDetails() {
 	//store state
@@ -15,6 +16,7 @@ function PoiDetails() {
 
 	const handleCloseClick = () => {
 		setRouteFinish({} as Feature);
+		setRouteStart({} as Feature);
 	};
 
 	const handleGetRouteClick = (from: string) => {
@@ -46,12 +48,12 @@ function PoiDetails() {
 			</Button>
 			<h1 className='text-xl font-bold'>{poi.properties.title}</h1>
 			<Button onClick={() => handleGetRouteClick('parking')}>
-				Route from parking
+				{t('route-from-parking')}
 			</Button>
 			<Button onClick={() => handleGetRouteClick('entrance')}>
-				Route from entrance
+			{t('route-from-entrance')}
 			</Button>
-			<Button onClick={() => handleGetRouteClick('other')}>Other Route</Button>
+			<Button onClick={() => handleGetRouteClick('other')}>{t('other-route')}</Button>
 		</div>
 	);
 }

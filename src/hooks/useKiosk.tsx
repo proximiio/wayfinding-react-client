@@ -1,17 +1,18 @@
 import useMapStore from '@/store/mapStore';
+import { useCallback } from 'react';
 
 export default function useKiosk() {
 	const map = useMapStore((state) => state.map);
 
 	// handle reset to default view
-	const resetView = () => {
+	const resetView = useCallback(() => {
 		if (Object.keys(map).length > 0) {
 			map.refetch();
 		}
-	};
+	}, [map]);
 
 	// idleTime function handle timeouts to reset to default view
-	const idleTime = () => {
+	const idleTime = useCallback(() => {
 		let t: ReturnType<typeof setTimeout>;
 
 		// set timer and call reset view method on timeout
@@ -28,7 +29,7 @@ export default function useKiosk() {
 		window.onclick = resetTimer; // catches touchpad clicks as well
 		window.onkeydown = resetTimer;
 		window.addEventListener('scroll', resetTimer, true); // improved; see comments*/
-	};
+	}, [resetView]);
 
 	return [idleTime];
 }

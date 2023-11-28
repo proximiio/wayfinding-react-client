@@ -2,6 +2,8 @@ import Proximiio from 'proximiio-js-library';
 import { State } from 'proximiio-js-library/lib/components/map/main';
 import { useEffect, useRef } from 'react';
 import useMapStore from '@/store/mapStore';
+import maplibregl from 'maplibre-gl';
+import { Subscription } from 'rxjs';
 
 function MapView() {
 	const mapInitiated = useRef(false);
@@ -37,11 +39,43 @@ function MapView() {
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 
 	// This effect hook handles current floor state changes
-	useEffect(() => {
+	/*useEffect(() => {
+		const subscriptions: Subscription[] = [];
+
+		if (Object.keys(map).length > 0) {
+			// set destination point for routing based on click event and cancel previous route if generated
+			const polygonClickSub = map
+				.getPolygonClickListener()
+				.subscribe((feature) => {
+					setRouteFinish(feature);
+				});
+
+			// subscribe to map floor selection listener, this always run once at map initiation and upon map.setFloor method call
+			const floorSelectSub = map.getFloorSelectListener().subscribe((floor) => {
+				console.log(`floor listener`, floor, currentFloor);
+				if (currentFloor && currentFloor.id !== floor.id) {
+					console.log('should set floor', floor);
+					setCurrentFloor(floor);
+				}
+			});
+
+			if (currentFloor?.id) {
+				map.setFloorById(currentFloor.id);
+				console.log('current floor changed', currentFloor);
+			}
+
+			subscriptions.push(polygonClickSub, floorSelectSub);
+		}
+		return () => {
+			subscriptions.forEach((sub) => sub.unsubscribe());
+		};
+	}, [currentFloor, map, setRouteFinish, setCurrentFloor]);*/
+
+	/*useEffect(() => {
 		if (Object.keys(map).length > 0 && currentFloor?.id) {
 			map.setFloorById(currentFloor.id);
 		}
-	}, [currentFloor, map]);
+	}, [currentFloor, map]);*/
 
 	useEffect(() => {
 		// Initialize map only once
@@ -84,18 +118,27 @@ function MapView() {
 					console.log('map ready', ready);
 					const mapState: State = map.getMapState();
 
+					// setting mapbox navigationControl buttons
+					map.getMapboxInstance().addControl(
+						new maplibregl.NavigationControl({
+							showZoom: false,
+						})
+					);
+
 					setMap(map);
 					setFloors(mapState.floors);
-					setFeatures(mapState.allFeatures.features);
 					setCurrentFloor(mapState.floor);
+					setFeatures(mapState.allFeatures.features);
 				});
 
 				// set destination point for routing based on click event and cancel previous route if generated
 				map.getPolygonClickListener().subscribe((feature) => {
-					/*if (this.map.state.textNavigation) {
-						this.map.cancelRoute();
-					}*/
 					setRouteFinish(feature);
+				});
+
+				// subscribe to map floor selection listener, this always run once at map initiation and upon map.setFloor method call
+				map.getFloorSelectListener().subscribe((floor) => {
+					setCurrentFloor(floor);
 				});
 			}
 		);

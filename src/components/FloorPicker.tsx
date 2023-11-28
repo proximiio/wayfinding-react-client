@@ -4,12 +4,13 @@ import useMapStore from '@/store/mapStore';
 
 function FloorPicker() {
 	//store state
+	const map = useMapStore((state) => state.map);
 	const floors = useMapStore((state) => state.floors);
 	const currentFloor = useMapStore((state) => state.currentFloor);
 	const currentLang = useMapStore((state) => state.currentLang);
 
 	//store actions
-	const setCurrentFloor = useMapStore((state) => state.setCurrentFloor);
+	// const setCurrentFloor = useMapStore((state) => state.setCurrentFloor);
 
 	const getFloorName = ({ floor }: { floor: FloorModel }) => {
 		if (floor.name.length === 1 && Number(parseInt(floor.name))) {
@@ -22,7 +23,9 @@ function FloorPicker() {
 	};
 
 	const handleFloorClick = (floor: FloorModel) => {
-		setCurrentFloor(floor);
+		if (Object.keys(map).length > 0) {
+			map.setFloorById(floor.id);
+		}
 	};
 
 	const floorsList = floors.map((floor) => {
