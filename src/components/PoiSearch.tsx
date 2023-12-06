@@ -16,12 +16,21 @@ import * as removeAccents from 'remove-accents';
 import useMapStore, { SortedPoiItem } from '@/store/mapStore';
 
 function PoiSearch() {
+	// store state
 	const pois = useMapStore((state) => state.getSortedPOIs());
 	const currentLang = useMapStore((state) => state.currentLang);
+	const features = useMapStore((state) => state.features);
+
+	// store actions
+	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState('');
 	const [filteredPois, setFilteredPois] = useState<SortedPoiItem[]>(pois);
+	const [foundInTitle, setFoundInTitle] = useState<SortedPoiItem[]>([]);
+	const [foundInDescription, setFoundInDescription] = useState<SortedPoiItem[]>(
+		[]
+	);
 
 	useEffect(() => {
 		const down = (e: KeyboardEvent) => {
@@ -80,8 +89,16 @@ function PoiSearch() {
 
 		if (filtered.length !== filteredPois.length) {
 			setFilteredPois(filtered);
+			setFoundInTitle(filtered.filter((item) => !item.foundInDescription));
+			setFoundInDescription(filtered.filter((item) => item.foundInDescription));
 		}
 	}, [search, currentLang, pois, filteredPois]);
+
+	const onSelectHandle = (featureId: string) => {
+		const feature = features.find((item) => item.id === featureId)!;
+		setOpen(false);
+		setRouteFinish(feature);
+	};
 
 	return (
 		<>
@@ -107,29 +124,41 @@ function PoiSearch() {
 				/>
 				<CommandList>
 					<CommandEmpty>{t('no-results')}</CommandEmpty>
-					<CommandGroup heading='Suggestions'>
-						{filteredPois
-							.filter((poi) => !poi.foundInDescription)
-							.map((poi) => (
-								<CommandItem key={poi.id} value={poi.properties?.title}>
+					{foundInTitle.length > 0 && (
+						<CommandGroup heading='Suggestions'>
+							{foundInTitle.map((poi) => (
+								<CommandItem
+									key={poi.id}
+									value={poi.id}
+									onSelect={onSelectHandle}
+									className='cursor-pointer'
+								>
 									<GoDot className='w-4 h-4 mr-2' />
 									<span>{poi.properties?.title}</span>
 									<CommandShortcut>{poi.floorName}</CommandShortcut>
 								</CommandItem>
 							))}
-					</CommandGroup>
-					<CommandSeparator />
-					<CommandGroup heading='Found in description'>
-						{filteredPois
-							.filter((poi) => poi.foundInDescription)
-							.map((poi) => (
-								<CommandItem key={poi.id} value={poi.properties?.title}>
-									<GoDot className='w-4 h-4 mr-2' />
-									<span>{poi.properties?.title}</span>
-									<CommandShortcut>{poi.floorName}</CommandShortcut>
-								</CommandItem>
-							))}
-					</CommandGroup>
+						</CommandGroup>
+					)}
+					{foundInDescription.length > 0 && (
+						<>
+							<CommandSeparator />
+							<CommandGroup heading='Found in description'>
+								{foundInDescription.map((poi) => (
+									<CommandItem
+										key={poi.id}
+										value={poi.id}
+										onSelect={onSelectHandle}
+										className='cursor-pointer'
+									>
+										<GoDot className='w-4 h-4 mr-2' />
+										<span>{poi.properties?.title}</span>
+										<CommandShortcut>{poi.floorName}</CommandShortcut>
+									</CommandItem>
+								))}
+							</CommandGroup>
+						</>
+					)}
 				</CommandList>
 			</CommandDialog>
 		</>

@@ -77,9 +77,19 @@ function App() {
 
 	// This effect hook handles route finish state changes
 	useEffect(() => {
-		console.log('finish efffect');
+		console.log('finish effect');
 		if (routeFinish?.id) {
 			console.log('routeFinish', routeFinish);
+			// center the map, set the floor level to poi
+			map
+				.getMapboxInstance()
+				.flyTo({
+					center: routeFinish.geometry.coordinates as [number, number],
+					zoom: 19,
+				});
+			map.setFloorByLevel(routeFinish.properties.level);
+			// handle polygon selection, only required when polygons are enabled
+			map.handlePolygonSelection(routeFinish);
 		} else {
 			console.log('routeFinish cancelled', routeFinish);
 			if (Object.keys(map).length > 0) {
