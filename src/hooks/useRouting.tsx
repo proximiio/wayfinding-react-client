@@ -1,7 +1,7 @@
 import useMapStore from '@/store/mapStore';
 import { useCallback } from 'react';
 
-export default function useRouting() {
+export default function UseRouting() {
 	const map = useMapStore((state) => state.map);
 	const accessibleRoute = useMapStore((state) => state.accessibleRoute);
 

@@ -6,6 +6,7 @@ import useMapStore from './store/mapStore';
 import { useTranslation } from 'react-i18next';
 import useRouting from '@/hooks/useRouting';
 import useKiosk from '@/hooks/useKiosk';
+import PoiSearch from './components/PoiSearch';
 
 function App() {
 	const { t, i18n } = useTranslation();
@@ -104,6 +105,7 @@ function App() {
 							</div>
 						</div>
 					)}
+					<PoiSearch />
 					<FloorPicker />
 					{routeFinish?.id && <PoiDetails />}
 					<MapView />

@@ -67,5 +67,8 @@
   "other-route": "Other Route",
   "fast-route": "Fast route",
   "and": "and",
-  "RAMP": "ramp"
+  "RAMP": "ramp",
+	"click-here-or-press": "Click here or press",
+	"to-search": "to search",
+	"no-results": "No results found."
 }

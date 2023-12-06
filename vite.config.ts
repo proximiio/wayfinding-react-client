@@ -11,9 +11,15 @@ export default defineConfig(({ mode }) => {
 		// vite config
 		plugins: [react()],
 		base: env.BASE_URL,
+		preview: {
+			port: parseInt(env.PORT),
+			strictPort: true,
+		},
 		server: {
 			port: parseInt(env.PORT),
 			strictPort: true,
+			host: true,
+			origin: `http://0.0.0.0:${parseInt(env.port)}`,
 		},
 		resolve: {
 			alias: {

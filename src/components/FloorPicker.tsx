@@ -9,9 +9,6 @@ function FloorPicker() {
 	const currentFloor = useMapStore((state) => state.currentFloor);
 	const currentLang = useMapStore((state) => state.currentLang);
 
-	//store actions
-	// const setCurrentFloor = useMapStore((state) => state.setCurrentFloor);
-
 	const getFloorName = ({ floor }: { floor: FloorModel }) => {
 		if (floor.name.length === 1 && Number(parseInt(floor.name))) {
 			return `L${floor.name}`;
@@ -41,7 +38,7 @@ function FloorPicker() {
 	});
 
 	return (
-		<div className='absolute inset-x-0 z-10 flex items-center justify-center gap-1 top-5'>
+		<div className='absolute z-10 flex items-center justify-center gap-1 left-[calc(50%-140px)] top-20 w-[280px] lg:top-5'>
 			{floorsList}
 		</div>
 	);

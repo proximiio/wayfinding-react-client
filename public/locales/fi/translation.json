@@ -80,5 +80,8 @@
   "next": "Jatka",
   "arrived": "Perillä",
   "and": "ja",
-  "RAMP": "luiska"
+  "RAMP": "luiska",
+	"click-here-or-press": "Click here or press",
+	"to-search": "to search",
+	"no-results": "No results found."
 }

@@ -1,15 +1,31 @@
 import useMapStore from '@/store/mapStore';
+import Feature from 'proximiio-js-library/lib/models/feature';
 import { useCallback } from 'react';
 
-export default function useKiosk() {
+export default function UseKiosk() {
 	const map = useMapStore((state) => state.map);
+
+	const setRouteStart = useMapStore((state) => state.setRouteStart);
+	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 
 	// handle reset to default view
 	const resetView = useCallback(() => {
 		if (Object.keys(map).length > 0) {
+			/*this.sidebarService.onSetEndPoi(null);
+      if (this.sidebarService.filteredAmenity) {
+        this.sidebarService.onAmenityToggle(
+          "amenities",
+          this.sidebarService.filteredAmenity
+        );
+        this.sidebarService.showClosestAmenityPicker = false;
+        this.sidebarService.activeListItem = null;
+      }*/
+
+			setRouteStart({} as Feature);
+			setRouteFinish({} as Feature);
 			map.refetch();
 		}
-	}, [map]);
+	}, [map, setRouteStart, setRouteFinish]);
 
 	// idleTime function handle timeouts to reset to default view
 	const idleTime = useCallback(() => {

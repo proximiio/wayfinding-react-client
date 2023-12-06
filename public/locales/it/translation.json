@@ -80,5 +80,8 @@
   "next": "Prossimo",
   "arrived": "Arrivato",
   "and": "e",
-  "RAMP": "rampa"
+  "RAMP": "rampa",
+	"click-here-or-press": "Click here or press",
+	"to-search": "to search",
+	"no-results": "No results found."
 }

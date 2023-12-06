@@ -3,7 +3,7 @@ import { State } from 'proximiio-js-library/lib/components/map/main';
 import { useEffect, useRef } from 'react';
 import useMapStore from '@/store/mapStore';
 import maplibregl from 'maplibre-gl';
-import { Subscription } from 'rxjs';
+// import { Subscription } from 'rxjs';
 
 function MapView() {
 	const mapInitiated = useRef(false);
@@ -26,16 +26,19 @@ function MapView() {
 	};
 
 	// store state
-	const map = useMapStore((state) => state.map);
+	// const map = useMapStore((state) => state.map);
 	const kioskMode = useMapStore((state) => state.kioskMode);
-	const currentFloor = useMapStore((state) => state.currentFloor);
+	// const currentFloor = useMapStore((state) => state.currentFloor);
 	const currentLang = useMapStore((state) => state.currentLang);
 
 	// store actions
 	const setMap = useMapStore((state) => state.setMap);
+	const setPlaces = useMapStore((state) => state.setPlaces);
+	const setCurrentPlace = useMapStore((state) => state.setCurrentPlace);
 	const setFloors = useMapStore((state) => state.setFloors);
-	const setFeatures = useMapStore((state) => state.setFeatures);
 	const setCurrentFloor = useMapStore((state) => state.setCurrentFloor);
+	const setFeatures = useMapStore((state) => state.setFeatures);
+	const setAmenities = useMapStore((state) => state.setAmenities);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 
 	// This effect hook handles current floor state changes
@@ -110,7 +113,10 @@ function MapView() {
 					// },
 					showLevelDirectionIcon: true, // if enabled arrow icon will be shown at the levelchanger indicating direction of level change along the found route
 					initPolygons: true,
-					animatedRoute: true,
+					routeAnimation: {
+						enabled: true,
+						type: 'point',
+					},
 					blockFeatureClickWhileRouting: true,
 				});
 
@@ -126,14 +132,22 @@ function MapView() {
 					);
 
 					setMap(map);
+					setPlaces(mapState.places);
+					setCurrentPlace(mapState.place);
 					setFloors(mapState.floors);
 					setCurrentFloor(mapState.floor);
 					setFeatures(mapState.allFeatures.features);
+					setAmenities(mapState.amenities);
 				});
 
 				// set destination point for routing based on click event and cancel previous route if generated
 				map.getPolygonClickListener().subscribe((feature) => {
 					setRouteFinish(feature);
+				});
+
+				// subscribe to map place selection listener, this always run once at map initiation and upon map.setPlace method call
+				map.getPlaceSelectListener().subscribe((place) => {
+					setCurrentPlace(place);
 				});
 
 				// subscribe to map floor selection listener, this always run once at map initiation and upon map.setFloor method call

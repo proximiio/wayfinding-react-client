@@ -1,7 +1,28 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { Map } from 'proximiio-js-library/lib/components/map/main';
-import Feature from 'proximiio-js-library/lib/models/feature';
+import { AmenityModel } from 'proximiio-js-library/lib/models/amenity';
+import Feature, { Geometry } from 'proximiio-js-library/lib/models/feature';
 import { FloorModel } from 'proximiio-js-library/lib/models/floor';
+import { PlaceModel } from 'proximiio-js-library/lib/models/place';
 import { create } from 'zustand';
+import { isPointWithinRadius } from 'geolib';
+
+export interface SortedPoiItem {
+	type: 'Feature';
+	id: string;
+	geometry: Geometry;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	properties: Record<string, any>;
+	icon: string;
+	category: string;
+	search_query: string;
+	coordinates: number[];
+	isInside: boolean;
+	score: number;
+	foundInDescription: boolean;
+	floor: FloorModel | undefined;
+	floorName: string;
+}
 
 // import { devtools } from 'zustand/middleware';
 // define types for state values and actions separately
@@ -10,11 +31,14 @@ type State = {
 	map: Map;
 	kioskMode: boolean;
 	currentLang: string;
+	places: PlaceModel[];
+	currentPlace: PlaceModel;
 	floors: FloorModel[];
 	currentFloor: FloorModel;
 	routeStart: Feature;
 	routeFinish: Feature;
 	features: Feature[];
+	amenities: AmenityModel[];
 	accessibleRoute: boolean;
 };
 
@@ -23,12 +47,16 @@ type Actions = {
 	setMap: (map: Map) => void;
 	setKioskMode: (isKiosk: boolean) => void;
 	setCurrentLang: (language: string) => void;
+	setPlaces: (places: PlaceModel[]) => void;
+	setCurrentPlace: (place: PlaceModel) => void;
 	setFloors: (floors: FloorModel[]) => void;
 	setCurrentFloor: (floor: FloorModel) => void;
 	setRouteStart: (feature: Feature) => void;
 	setRouteFinish: (feature: Feature) => void;
 	setFeatures: (features: Feature[]) => void;
+	setAmenities: (amenities: AmenityModel[]) => void;
 	setAccessibleRoute: (accessibleRoute: boolean) => void;
+	getSortedPOIs: () => SortedPoiItem[];
 	reset: () => void;
 };
 
@@ -38,17 +66,22 @@ const initialState: State = {
 	map: {} as Map,
 	kioskMode: false,
 	currentLang: 'en',
+	places: [],
+	currentPlace: {} as PlaceModel,
 	floors: [],
 	currentFloor: {} as FloorModel,
 	routeStart: {} as Feature,
 	routeFinish: {} as Feature,
 	features: [],
+	amenities: [],
 	accessibleRoute: false,
 };
 
+const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
+
 const useMapStore = create<State & Actions>()(
 	//devtools(
-	(set) => ({
+	(set, get) => ({
 		...initialState,
 		setAppInitiated: (initiated) => {
 			set(() => ({ appInitiated: initiated }));
@@ -61,6 +94,12 @@ const useMapStore = create<State & Actions>()(
 		},
 		setCurrentLang: (language) => {
 			set(() => ({ currentLang: language }));
+		},
+		setPlaces: (places) => {
+			set(() => ({ places }));
+		},
+		setCurrentPlace: (place) => {
+			set(() => ({ currentPlace: place }));
 		},
 		setFloors: (floors) => {
 			set(() => ({ floors }));
@@ -77,8 +116,80 @@ const useMapStore = create<State & Actions>()(
 		setFeatures: (features) => {
 			set(() => ({ features }));
 		},
+		setAmenities: (amenities) => {
+			set(() => ({ amenities }));
+		},
 		setAccessibleRoute: (accessibleRoute) => {
 			set(() => ({ accessibleRoute }));
+		},
+		getSortedPOIs: () => {
+			const getFloorName = ({ floor }: { floor: FloorModel }) => {
+				if (floor.name.length === 1 && Number(parseInt(floor.name))) {
+					return `L${floor.name}`;
+				}
+				if (
+					floor.metadata &&
+					(floor.metadata['title_' + get().currentLang] as string)
+				) {
+					return floor.metadata['title_' + get().currentLang] as string;
+				}
+				return floor.name;
+			};
+
+			const pois: SortedPoiItem[] = get()
+				.features.filter(
+					(feature) =>
+						(feature.properties.usecase === 'poi' ||
+							feature.properties.type === 'poi') &&
+						feature.properties.type !== 'escalator' &&
+						feature.properties.type !== 'elevator' &&
+						feature.properties.type !== 'staircase' &&
+						feature.properties.place_id === defaultPlaceId
+				)
+				.sort((a, b) => (a.properties.title > b.properties.title ? -1 : 1))
+				.sort((a, b) => (a.properties.level > b.properties.level ? 1 : -1))
+				.map((item) => {
+					const isInside = isPointWithinRadius(
+						{
+							lat: item.geometry.coordinates[1],
+							lng: item.geometry.coordinates[0],
+						},
+						{
+							lat: get().currentPlace.location.lat,
+							lng: get().currentPlace.location.lng,
+						},
+						10000
+					);
+					const floor = get().floors.find(
+						(floor) => floor.id === item.properties.floor_id
+					);
+					return {
+						...item,
+						icon: get().amenities.filter(
+							(amenity) => amenity.id === item.properties.amenity
+						)[0]
+							? get().amenities.filter(
+									(amenity) => amenity.id === item.properties.amenity
+							  )[0].icon
+							: '',
+						category: get().amenities.filter(
+							(amenity) => amenity.id === item.properties.amenity
+						)[0]
+							? get().amenities.filter(
+									(amenity) => amenity.id === item.properties.amenity
+							  )[0].title
+							: '',
+						search_query: item.properties.title + ' ' + item.properties.level,
+						coordinates: item.geometry.coordinates,
+						isInside,
+						score: 0,
+						foundInDescription: false,
+						floor,
+						floorName: floor ? getFloorName({ floor }) : '',
+					};
+				})
+				.filter((item) => item.isInside);
+			return pois;
 		},
 		reset: () => {
 			set(initialState);
