@@ -70,5 +70,7 @@
   "RAMP": "ramp",
 	"click-here-or-press": "Click here or press",
 	"to-search": "to search",
-	"no-results": "No results found."
+	"no-results": "No results found.",
+	"found-in-description": "Found in description",
+	"suggestions": "Suggestions"
 }

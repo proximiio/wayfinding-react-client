@@ -13,7 +13,8 @@ import { HiMagnifyingGlass } from 'react-icons/hi2';
 import { GoDot } from 'react-icons/go';
 import { t } from 'i18next';
 import * as removeAccents from 'remove-accents';
-import useMapStore, { SortedPoiItem } from '@/store/mapStore';
+import useMapStore from '@/store/mapStore';
+import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
 
 function PoiSearch() {
 	// store state
@@ -26,9 +27,9 @@ function PoiSearch() {
 
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState('');
-	const [filteredPois, setFilteredPois] = useState<SortedPoiItem[]>(pois);
-	const [foundInTitle, setFoundInTitle] = useState<SortedPoiItem[]>([]);
-	const [foundInDescription, setFoundInDescription] = useState<SortedPoiItem[]>(
+	const [filteredPois, setFilteredPois] = useState<SortedPoiItemModel[]>(pois);
+	const [foundInTitle, setFoundInTitle] = useState<SortedPoiItemModel[]>([]);
+	const [foundInDescription, setFoundInDescription] = useState<SortedPoiItemModel[]>(
 		[]
 	);
 
@@ -85,7 +86,7 @@ function PoiSearch() {
 					);
 				}
 				return 0;
-			}) as SortedPoiItem[];
+			}) as SortedPoiItemModel[];
 
 		if (filtered.length !== filteredPois.length) {
 			setFilteredPois(filtered);
@@ -125,7 +126,7 @@ function PoiSearch() {
 				<CommandList>
 					<CommandEmpty>{t('no-results')}</CommandEmpty>
 					{foundInTitle.length > 0 && (
-						<CommandGroup heading='Suggestions'>
+						<CommandGroup heading={t('suggestions')}>
 							{foundInTitle.map((poi) => (
 								<CommandItem
 									key={poi.id}
@@ -143,7 +144,7 @@ function PoiSearch() {
 					{foundInDescription.length > 0 && (
 						<>
 							<CommandSeparator />
-							<CommandGroup heading='Found in description'>
+							<CommandGroup heading={t('found-in-description')}>
 								{foundInDescription.map((poi) => (
 									<CommandItem
 										key={poi.id}

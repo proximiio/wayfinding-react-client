@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import useRouting from '@/hooks/useRouting';
 import useKiosk from '@/hooks/useKiosk';
 import PoiSearch from './components/PoiSearch';
+import FilterMenu from './components/FilterMenu';
 
 function App() {
 	const { t, i18n } = useTranslation();
@@ -81,12 +82,10 @@ function App() {
 		if (routeFinish?.id) {
 			console.log('routeFinish', routeFinish);
 			// center the map, set the floor level to poi
-			map
-				.getMapboxInstance()
-				.flyTo({
-					center: routeFinish.geometry.coordinates as [number, number],
-					zoom: 19,
-				});
+			map.getMapboxInstance().flyTo({
+				center: routeFinish.geometry.coordinates as [number, number],
+				zoom: 19,
+			});
 			map.setFloorByLevel(routeFinish.properties.level);
 			// handle polygon selection, only required when polygons are enabled
 			map.handlePolygonSelection(routeFinish);
@@ -108,7 +107,7 @@ function App() {
 					{Object.keys(map).length === 0 && (
 						<div className='fixed flex w-screen h-screen'>
 							<div className='mx-auto mt-[20%]'>
-								<div className='w-40 h-40 mx-auto border border-gray-300 rounded-full animate-spin border-t-blue-600' />
+								<div className='w-40 h-40 mx-auto border border-gray-300 rounded-full animate-spin border-t-primary' />
 								<h3 className='mt-8 text-3xl font-semibold'>
 									{t('welcomeMessage')}
 								</h3>
@@ -117,6 +116,7 @@ function App() {
 					)}
 					<PoiSearch />
 					<FloorPicker />
+					<FilterMenu />
 					{routeFinish?.id && <PoiDetails />}
 					<MapView />
 				</main>

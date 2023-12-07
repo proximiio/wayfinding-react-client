@@ -11,12 +11,9 @@ function MapView() {
 	const pitch = 40;
 	const bearing = 12;
 	const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
-	const defaultLocation: {
-		coordinates: [number, number];
-		level: number;
-	} = {
-		coordinates: [51.48091652702158, 25.336680584406395],
-		level: 0,
+	const defaultLocation = {
+		coordinates: import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_COORDINATES,
+		level: import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LEVEL,
 	};
 	const mapPadding = {
 		top: 250,

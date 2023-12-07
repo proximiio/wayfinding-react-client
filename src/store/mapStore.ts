@@ -1,28 +1,15 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { Map } from 'proximiio-js-library/lib/components/map/main';
 import { AmenityModel } from 'proximiio-js-library/lib/models/amenity';
-import Feature, { Geometry } from 'proximiio-js-library/lib/models/feature';
+import Feature from 'proximiio-js-library/lib/models/feature';
 import { FloorModel } from 'proximiio-js-library/lib/models/floor';
 import { PlaceModel } from 'proximiio-js-library/lib/models/place';
 import { create } from 'zustand';
 import { isPointWithinRadius } from 'geolib';
-
-export interface SortedPoiItem {
-	type: 'Feature';
-	id: string;
-	geometry: Geometry;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	properties: Record<string, any>;
-	icon: string;
-	category: string;
-	search_query: string;
-	coordinates: number[];
-	isInside: boolean;
-	score: number;
-	foundInDescription: boolean;
-	floor: FloorModel | undefined;
-	floorName: string;
-}
+import { getFloorName } from '@/lib/utils';
+import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
+import { FilterItemModel } from '@/models/filterItem.model';
+import { filterItems, filterItems2 } from './data';
 
 // import { devtools } from 'zustand/middleware';
 // define types for state values and actions separately
@@ -40,6 +27,8 @@ type State = {
 	features: Feature[];
 	amenities: AmenityModel[];
 	accessibleRoute: boolean;
+	filterItems: FilterItemModel[];
+	filterItems2: FilterItemModel[];
 };
 
 type Actions = {
@@ -56,7 +45,7 @@ type Actions = {
 	setFeatures: (features: Feature[]) => void;
 	setAmenities: (amenities: AmenityModel[]) => void;
 	setAccessibleRoute: (accessibleRoute: boolean) => void;
-	getSortedPOIs: () => SortedPoiItem[];
+	getSortedPOIs: () => SortedPoiItemModel[];
 	reset: () => void;
 };
 
@@ -75,6 +64,8 @@ const initialState: State = {
 	features: [],
 	amenities: [],
 	accessibleRoute: false,
+	filterItems,
+	filterItems2,
 };
 
 const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
@@ -123,20 +114,7 @@ const useMapStore = create<State & Actions>()(
 			set(() => ({ accessibleRoute }));
 		},
 		getSortedPOIs: () => {
-			const getFloorName = ({ floor }: { floor: FloorModel }) => {
-				if (floor.name.length === 1 && Number(parseInt(floor.name))) {
-					return `L${floor.name}`;
-				}
-				if (
-					floor.metadata &&
-					(floor.metadata['title_' + get().currentLang] as string)
-				) {
-					return floor.metadata['title_' + get().currentLang] as string;
-				}
-				return floor.name;
-			};
-
-			const pois: SortedPoiItem[] = get()
+			const pois: SortedPoiItemModel[] = get()
 				.features.filter(
 					(feature) =>
 						(feature.properties.usecase === 'poi' ||
@@ -185,7 +163,9 @@ const useMapStore = create<State & Actions>()(
 						score: 0,
 						foundInDescription: false,
 						floor,
-						floorName: floor ? getFloorName({ floor }) : '',
+						floorName: floor
+							? getFloorName({ floor, language: get().currentLang })
+							: '',
 					};
 				})
 				.filter((item) => item.isInside);
