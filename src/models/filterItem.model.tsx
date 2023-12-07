@@ -3,5 +3,5 @@ export interface FilterItemModel {
 	icon?: string;
 	iconImage?: string;
 	id: string | string[];
-	active: boolean;
+	type: 'list' | 'closest'
 }

@@ -9,7 +9,7 @@ import { isPointWithinRadius } from 'geolib';
 import { getFloorName } from '@/lib/utils';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
 import { FilterItemModel } from '@/models/filterItem.model';
-import { filterItems, filterItems2 } from './data';
+import { filterItems } from './data';
 
 // import { devtools } from 'zustand/middleware';
 // define types for state values and actions separately
@@ -28,7 +28,7 @@ type State = {
 	amenities: AmenityModel[];
 	accessibleRoute: boolean;
 	filterItems: FilterItemModel[];
-	filterItems2: FilterItemModel[];
+	activeFilter: FilterItemModel;
 };
 
 type Actions = {
@@ -45,6 +45,7 @@ type Actions = {
 	setFeatures: (features: Feature[]) => void;
 	setAmenities: (amenities: AmenityModel[]) => void;
 	setAccessibleRoute: (accessibleRoute: boolean) => void;
+	setActiveFilter: (activeFilter: FilterItemModel) => void;
 	getSortedPOIs: () => SortedPoiItemModel[];
 	reset: () => void;
 };
@@ -65,7 +66,7 @@ const initialState: State = {
 	amenities: [],
 	accessibleRoute: false,
 	filterItems,
-	filterItems2,
+	activeFilter: {} as FilterItemModel,
 };
 
 const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
@@ -113,6 +114,9 @@ const useMapStore = create<State & Actions>()(
 		setAccessibleRoute: (accessibleRoute) => {
 			set(() => ({ accessibleRoute }));
 		},
+		setActiveFilter: (activeFilter) => {
+			set(() => ({ activeFilter }));
+		},
 		getSortedPOIs: () => {
 			const pois: SortedPoiItemModel[] = get()
 				.features.filter(
@@ -141,6 +145,14 @@ const useMapStore = create<State & Actions>()(
 					const floor = get().floors.find(
 						(floor) => floor.id === item.properties.floor_id
 					);
+
+					// rewrite feature title based on current language
+					item.properties.title = item.properties?.title_i18n
+						? item.properties.title_i18n[get().currentLang]
+							? item.properties.title_i18n[get().currentLang]
+							: item.properties.title_i18n?.en
+						: item.properties.title;
+
 					return {
 						...item,
 						icon: get().amenities.filter(

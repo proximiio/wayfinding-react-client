@@ -48,12 +48,6 @@ function PoiSearch() {
 	useEffect(() => {
 		const filtered = [...pois]
 			.map((item) => {
-				item.properties.title = item.properties?.title_i18n
-					? item.properties.title_i18n[currentLang]
-						? item.properties.title_i18n[currentLang]
-						: item.properties.title_i18n?.en
-					: item.properties.title;
-
 				const details =
 					item.properties?.description_i18n &&
 					item.properties?.description_i18n[currentLang]

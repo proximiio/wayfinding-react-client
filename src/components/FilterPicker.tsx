@@ -4,6 +4,7 @@ import React from 'react';
 import { Button } from './ui/button';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import useMapStore from '@/store/mapStore';
 
 interface FilterPickerProps {
 	heading: string;
@@ -12,6 +13,12 @@ interface FilterPickerProps {
 }
 
 function FilterPicker({ heading, color, items }: FilterPickerProps) {
+	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
+
+	const filterClickHandler = (item: FilterItemModel) => {
+		setActiveFilter(item);
+	};
+
 	return (
 		<>
 			<AnimatePresence>
@@ -46,13 +53,16 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 								size='icon'
 								variant={color === 'primary' ? 'default' : 'secondary'}
 								className='w-12 h-12 text-lg sm:w-16 sm:h-16 sm:text-2xl'
+								onClick={() => filterClickHandler(item)}
 							>
 								{item.icon && React.createElement(item.icon)}
 								{item.iconImage && (
 									<img src={item.iconImage} alt={t(item.title)} />
 								)}
 							</Button>
-							<p className='mt-1 overflow-hidden text-xs text-ellipsis whitespace-nowrap sm:overflow-auto sm:whitespace-normal'>{t(item.title)}</p>
+							<p className='mt-1 overflow-hidden text-xs text-ellipsis whitespace-nowrap sm:overflow-auto sm:whitespace-normal'>
+								{t(item.title)}
+							</p>
 						</motion.li>
 					))}
 				</ul>

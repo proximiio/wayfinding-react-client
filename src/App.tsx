@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
 import MapView from './components/MapView';
 import FloorPicker from './components/FloorPicker';
-import PoiDetails from './components/PoiDetails';
 import useMapStore from './store/mapStore';
 import { useTranslation } from 'react-i18next';
 import useRouting from '@/hooks/useRouting';
 import useKiosk from '@/hooks/useKiosk';
 import PoiSearch from './components/PoiSearch';
-import FilterMenu from './components/FilterMenu';
+import Sidebar from './components/Sidebar';
 
 function App() {
 	const { t, i18n } = useTranslation();
@@ -116,8 +115,7 @@ function App() {
 					)}
 					<PoiSearch />
 					<FloorPicker />
-					<FilterMenu />
-					{routeFinish?.id && <PoiDetails />}
+					<Sidebar />
 					<MapView />
 				</main>
 			)}
