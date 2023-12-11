@@ -13,7 +13,7 @@ export default function UseRouting() {
 		}: {
 			start?: string;
 			finish: string;
-			type?: string;
+			type?: 'closest';
 		}) => {
 			const defaultWayfindingConfig = {
 				avoidElevators: true,
@@ -38,7 +38,7 @@ export default function UseRouting() {
 				avoidRevolvingDoors: accessibleRoute ? true : false,
 				avoidTicketGates: accessibleRoute ? true : false,
 			};
-			if (type === 'amenity') {
+			if (type === 'closest') {
 				map.findRouteToNearestFeature(
 					finish,
 					start,

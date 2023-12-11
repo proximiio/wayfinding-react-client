@@ -3,10 +3,12 @@ import { State } from 'proximiio-js-library/lib/components/map/main';
 import { useEffect, useRef } from 'react';
 import useMapStore from '@/store/mapStore';
 import maplibregl from 'maplibre-gl';
+import useRouting from '@/hooks/useRouting';
 // import { Subscription } from 'rxjs';
 
 function MapView() {
 	const mapInitiated = useRef(false);
+	const [findRoute] = useRouting();
 	const zoom = 19;
 	const pitch = 40;
 	const bearing = 12;
@@ -27,6 +29,11 @@ function MapView() {
 	const kioskMode = useMapStore((state) => state.kioskMode);
 	// const currentFloor = useMapStore((state) => state.currentFloor);
 	const currentLang = useMapStore((state) => state.currentLang);
+	const filterItems = useMapStore((state) => state.filterItems);
+	const map = useMapStore((state) => state.map);
+	const routeFinish = useMapStore((state) => state.routeFinish);
+	const routeStart = useMapStore((state) => state.routeStart);
+	const activeFilter = useMapStore((state) => state.activeFilter);
 
 	// store actions
 	const setMap = useMapStore((state) => state.setMap);
@@ -76,6 +83,63 @@ function MapView() {
 			map.setFloorById(currentFloor.id);
 		}
 	}, [currentFloor, map]);*/
+
+	// This effect hook handles route start state changes
+	useEffect(() => {
+		console.log('start efffect');
+		if (routeStart?.id) {
+			console.log('routeStart', routeStart);
+			// if we also have route finish generate route
+			if (routeFinish?.id) {
+				findRoute({ finish: routeFinish.id, start: routeStart.id });
+				return;
+			}
+		} else {
+			console.log('routeStart cancelled', routeStart);
+			if (Object.keys(map).length > 0) {
+				// cancel route if it's rendered
+				map.cancelRoute();
+			}
+		}
+	}, [map, routeStart, routeFinish, findRoute]);
+
+	// This effect hook handles route finish state changes
+	useEffect(() => {
+		console.log('finish effect');
+		if (routeFinish?.id) {
+			console.log('routeFinish', routeFinish);
+			// center the map, set the floor level to poi
+			map.getMapboxInstance().flyTo({
+				center: routeFinish.geometry.coordinates as [number, number],
+				zoom: 19,
+			});
+			map.setFloorByLevel(routeFinish.properties.level);
+			// handle polygon selection, only required when polygons are enabled
+			map.handlePolygonSelection(routeFinish);
+		} else {
+			console.log('routeFinish cancelled', routeFinish);
+			if (Object.keys(map).length > 0) {
+				// cancel route if it's rendered
+				map.cancelRoute();
+				// remove polygon selection after route finish is cancelled
+				map.handlePolygonSelection();
+			}
+		}
+	}, [map, routeFinish]);
+
+	// This effect hook handles active filter state changes
+	useEffect(() => {
+		console.log('active filter effect');
+		if (activeFilter?.id) {
+			console.log('active filter', activeFilter);
+			map.setAmenityFilter(activeFilter.id, activeFilter.type);
+		} else {
+			console.log('active filter cancelled', activeFilter);
+			if (Object.keys(map).length > 0) {
+				map.resetAmenityFilters();
+			}
+		}
+	}, [map, activeFilter]);
 
 	useEffect(() => {
 		// Initialize map only once
@@ -135,6 +199,23 @@ function MapView() {
 					setCurrentFloor(mapState.floor);
 					setFeatures(mapState.allFeatures.features);
 					setAmenities(mapState.amenities);
+
+					// set amenity category group 'list' from store/data.ts
+					map.setAmenitiesCategory(
+						'list',
+						filterItems
+							.filter((i) => i.type === 'list')
+							.map((i) => i.id)
+							.flat(2)
+					);
+					// set amenity category group 'closest' from store/data.ts
+					map.setAmenitiesCategory(
+						'closest',
+						filterItems
+							.filter((i) => i.type === 'closest')
+							.map((i) => i.id)
+							.flat(2)
+					);
 				});
 
 				// set destination point for routing based on click event and cancel previous route if generated
@@ -150,6 +231,11 @@ function MapView() {
 				// subscribe to map floor selection listener, this always run once at map initiation and upon map.setFloor method call
 				map.getFloorSelectListener().subscribe((floor) => {
 					setCurrentFloor(floor);
+				});
+
+				// subscribe to route found listener
+				map.getRouteFoundListener().subscribe((res) => {
+					console.log('route found', res);
 				});
 			}
 		);

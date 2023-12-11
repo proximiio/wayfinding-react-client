@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useClickAway } from 'react-use';
 import FilterMenu from './FilterMenu';
@@ -9,6 +9,7 @@ import useMapStore from '@/store/mapStore';
 import RouteForm from './RouteForm';
 import PoiDetails from './PoiDetails';
 import Feature from 'proximiio-js-library/lib/models/feature';
+import { cn } from '@/lib/utils';
 
 function Sidebar() {
 	const [isOpen, setOpen] = useState(false);
@@ -23,10 +24,22 @@ function Sidebar() {
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 
 	useClickAway(ref, () => {
-		if (isOpen && !routeFinish?.id) {
-			onCloseHandler();
+		if (isOpen && routeFinish?.id) {
+			return;
 		}
+		if (isOpen && activeFilter?.id) {
+			return;
+		}
+		onCloseHandler();
 	});
+
+	// open sidebar if route finish is set by search/polygon click/url params
+	useEffect(() => {
+		if (routeFinish?.id) {
+			setOpen(true);
+			setColor('#e11d48');
+		}
+	}, [routeFinish]);
 
 	const onCloseHandler = () => {
 		setOpen(false);
@@ -44,6 +57,9 @@ function Sidebar() {
 				color={color}
 				setColor={setColor}
 				onClose={onCloseHandler}
+				className={cn(
+					routeFinish?.id && 'bg-white rounded-2xl m-3 p-0 sm:p-0'
+				)}
 			/>
 			<AnimatePresence>
 				{isOpen &&

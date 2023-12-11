@@ -85,5 +85,6 @@
 	"to-search": "to search",
 	"no-results": "No results found.",
 	"found-in-description": "Found in description",
-	"suggestions": "Suggestions"
+	"suggestions": "Suggestions",
+  "closest": "Closest"
 }
