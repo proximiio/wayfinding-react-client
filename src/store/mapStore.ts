@@ -74,6 +74,31 @@ const initialState: State = {
 
 const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
 
+const assignProperties = (
+	poi: Feature,
+	floors: FloorModel[],
+	currentLang: string
+) => {
+	if (poi.properties) {
+		if (!poi.properties._dynamic) poi.properties._dynamic = {};
+		if (!poi.geometry.type) poi.geometry.type = 'Point';
+		poi.properties.title =
+			poi.properties.title_i18n && poi.properties.title_i18n[currentLang]
+				? poi.properties.title_i18n[currentLang]
+				: poi.properties.title;
+		poi.properties._dynamic.floor = poi.properties.floor_id
+			? floors.find((i) => i.id === poi.properties.floor_id)
+			: null;
+		poi.properties._dynamic.floorName = poi.properties._dynamic.floor
+			? getFloorName({
+					floor: poi.properties._dynamic.floor,
+					language: currentLang,
+			  })
+			: null;
+	}
+	return poi;
+};
+
 const useMapStore = create<State & Actions>()(
 	//devtools(
 	(set, get) => ({
@@ -103,10 +128,16 @@ const useMapStore = create<State & Actions>()(
 			set(() => ({ currentFloor: floor }));
 		},
 		setRouteStart: (feature) => {
-			set(() => ({ routeStart: feature }));
+			set(() => {
+				feature = assignProperties(feature, get().floors, get().currentLang);
+				return { routeStart: feature };
+			});
 		},
 		setRouteFinish: (feature) => {
-			set(() => ({ routeFinish: feature }));
+			set(() => {
+				feature = assignProperties(feature, get().floors, get().currentLang);
+				return { routeFinish: feature };
+			});
 		},
 		setFeatures: (features) => {
 			set(() => ({ features }));
