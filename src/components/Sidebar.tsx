@@ -18,10 +18,16 @@ function Sidebar() {
 
 	const activeFilter = useMapStore((state) => state.activeFilter);
 	const routeFinish = useMapStore((state) => state.routeFinish);
+	const showCustomRoutePicker = useMapStore(
+		(state) => state.showCustomRoutePicker
+	);
 
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
+	const setShowCustomRoutePicker = useMapStore(
+		(state) => state.setShowCustomRoutePicker
+	);
 
 	useClickAway(ref, () => {
 		if (isOpen && routeFinish?.id) {
@@ -47,6 +53,7 @@ function Sidebar() {
 		setActiveFilter({} as FilterItemModel);
 		setRouteFinish({} as Feature);
 		setRouteStart({} as Feature);
+		setShowCustomRoutePicker(false);
 	};
 
 	return (
@@ -58,7 +65,9 @@ function Sidebar() {
 				setColor={setColor}
 				onClose={onCloseHandler}
 				className={cn(
-					routeFinish?.id && 'bg-white rounded-2xl m-3 p-0 sm:p-0'
+					routeFinish?.id &&
+						!showCustomRoutePicker &&
+						'bg-white rounded-2xl m-3 p-0 sm:p-0'
 				)}
 			/>
 			<AnimatePresence>
@@ -66,8 +75,13 @@ function Sidebar() {
 					Object.keys(activeFilter).length === 0 &&
 					Object.keys(routeFinish).length === 0 && <Filters key='1' />}
 				{isOpen && activeFilter?.type === 'list' && <PoiList key='2' />}
-				{isOpen && activeFilter?.type === 'closest' && <RouteForm key='3' />}
-				{isOpen && routeFinish?.id && <PoiDetails key='4' />}
+				{isOpen &&
+					(activeFilter?.type === 'closest' || showCustomRoutePicker) && (
+						<RouteForm key='3' />
+					)}
+				{isOpen && routeFinish?.id && !showCustomRoutePicker && (
+					<PoiDetails key='4' />
+				)}
 			</AnimatePresence>
 		</div>
 	);

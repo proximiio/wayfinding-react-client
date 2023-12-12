@@ -22,10 +22,11 @@ import Feature from 'proximiio-js-library/lib/models/feature';
 
 interface PoiSelectProps {
 	selectedPoi: Feature;
+	placeholder: string;
 	onSelect: (featureId: string) => void;
 }
 
-function PoiSelect({ selectedPoi, onSelect }: PoiSelectProps) {
+function PoiSelect({ selectedPoi, placeholder, onSelect }: PoiSelectProps) {
 	const pois = useMapStore((state) => state.getSortedPOIs());
 
 	const [open, setOpen] = useState(false);
@@ -46,7 +47,7 @@ function PoiSelect({ selectedPoi, onSelect }: PoiSelectProps) {
 				>
 					{selectedPoi?.id
 						? pois.find((poi) => poi.id === selectedPoi.id)?.properties.title
-						: t('startingPoint')}
+						: placeholder}
 					<ChevronsUpDown className='w-4 h-4 ml-2 opacity-50 shrink-0' />
 				</Button>
 			</PopoverTrigger>
@@ -63,7 +64,7 @@ function PoiSelect({ selectedPoi, onSelect }: PoiSelectProps) {
 						return 0;
 					}}
 				>
-					<CommandInput placeholder={t('startingPoint')} />
+					<CommandInput placeholder={placeholder} />
 					<CommandEmpty>{t('no-results')}</CommandEmpty>
 					<CommandGroup className='overflow-auto'>
 						{pois.map((poi) => (
@@ -80,7 +81,9 @@ function PoiSelect({ selectedPoi, onSelect }: PoiSelectProps) {
 									)}
 								/>
 								<span className='flex-1'>{poi.properties.title}</span>
-                <span className='text-black/30'>{t('floor')}: {poi.floorName}</span>
+								<span className='text-black/30'>
+									{t('floor')}: {poi.floorName}
+								</span>
 							</CommandItem>
 						))}
 					</CommandGroup>

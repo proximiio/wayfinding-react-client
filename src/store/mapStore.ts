@@ -29,6 +29,7 @@ type State = {
 	accessibleRoute: boolean;
 	filterItems: FilterItemModel[];
 	activeFilter: FilterItemModel;
+	showCustomRoutePicker: boolean;
 };
 
 type Actions = {
@@ -46,6 +47,7 @@ type Actions = {
 	setAmenities: (amenities: AmenityModel[]) => void;
 	setAccessibleRoute: (accessibleRoute: boolean) => void;
 	setActiveFilter: (activeFilter: FilterItemModel) => void;
+	setShowCustomRoutePicker: (visible: boolean) => void;
 	getSortedPOIs: () => SortedPoiItemModel[];
 	reset: () => void;
 };
@@ -67,6 +69,7 @@ const initialState: State = {
 	accessibleRoute: false,
 	filterItems,
 	activeFilter: {} as FilterItemModel,
+	showCustomRoutePicker: false,
 };
 
 const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
@@ -116,6 +119,9 @@ const useMapStore = create<State & Actions>()(
 		},
 		setActiveFilter: (activeFilter) => {
 			set(() => ({ activeFilter }));
+		},
+		setShowCustomRoutePicker: (visible) => {
+			set(() => ({ showCustomRoutePicker: visible }));
 		},
 		getSortedPOIs: () => {
 			const pois: SortedPoiItemModel[] = get()

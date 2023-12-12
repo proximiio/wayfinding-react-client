@@ -7,6 +7,7 @@ import { Button } from './ui/button';
 import { PiPersonSimpleWalk } from 'react-icons/pi';
 import { FilterItemModel } from '@/models/filterItem.model';
 import Feature from 'proximiio-js-library/lib/models/feature';
+import { useState } from 'react';
 
 function RouteForm() {
 	const features = useMapStore((state) => state.features);
@@ -14,24 +15,38 @@ function RouteForm() {
 	const routeStart = useMapStore((state) => state.routeStart);
 	const routeFinish = useMapStore((state) => state.routeFinish);
 	const map = useMapStore((state) => state.map);
+	const showCustomRoutePicker = useMapStore(
+		(state) => state.showCustomRoutePicker
+	);
+	const [startFeature, setStartFeature] = useState(routeStart);
+	const [finishFeature, setFinishFeature] = useState(routeFinish);
 
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
 
 	const startSelectHandler = (featureId: string) => {
-		const feature = features.find((item) => item.id === featureId)!;
-		setRouteStart(feature);
+		setStartFeature(features.find((item) => item.id === featureId)!);
+	};
+
+	const finishSelectHandler = (featureId: string) => {
+		setFinishFeature(features.find((item) => item.id === featureId)!);
 	};
 
 	const clickHandler = () => {
-		if (routeStart?.id && routeFinish?.id) {
+		if (startFeature?.id && finishFeature?.id) {
 			console.log('should find regular route');
+			setRouteStart(startFeature);
+			setRouteFinish(finishFeature);
 			return;
 		}
-		if (routeStart?.id && activeFilter?.id) {
+		if (startFeature?.id && activeFilter?.id) {
 			console.log('should find closest amenity route');
-			const closestFeature = map.getClosestFeature(activeFilter.id as string, routeStart) as Feature;
+			const closestFeature = map.getClosestFeature(
+				activeFilter.id as string,
+				startFeature
+			) as Feature;
+			setRouteStart(startFeature);
 			setRouteFinish(closestFeature);
 			setActiveFilter({} as FilterItemModel);
 			return;
@@ -51,11 +66,24 @@ function RouteForm() {
 				<h2 className='mb-4 text-lg font-semibold text-primary'>
 					{t(activeFilter.title)}
 				</h2>
-				<PoiSelect selectedPoi={routeStart} onSelect={startSelectHandler} />
+				<PoiSelect
+					selectedPoi={startFeature}
+					onSelect={startSelectHandler}
+					placeholder={t('startingPoint')}
+				/>
+				{showCustomRoutePicker && (
+					<PoiSelect
+						selectedPoi={finishFeature}
+						onSelect={finishSelectHandler}
+						placeholder={t('destination')}
+					/>
+				)}
 				{activeFilter?.type === 'closest' && <ClosestAmenitySelect />}
 				<Button
 					className='flex w-full'
-					disabled={!routeStart?.id || !activeFilter?.id}
+					disabled={
+						(!startFeature?.id && !finishFeature?.id) || (!activeFilter?.id && !showCustomRoutePicker)
+					}
 					onClick={clickHandler}
 				>
 					<PiPersonSimpleWalk className='mr-2 text-2xl' />
