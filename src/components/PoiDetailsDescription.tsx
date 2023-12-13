@@ -40,7 +40,7 @@ function PoiDetailsDescription() {
 	return (
 		<>
 			{details && (
-				<div className='mb-4'>
+				<div className='hidden mb-4 lg:block'>
 					<p className='text-sm'>
 						{details.slice(0, limit)} {details.length > limit ? '...' : ''}
 					</p>

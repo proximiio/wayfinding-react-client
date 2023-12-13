@@ -36,7 +36,7 @@ function PoiList() {
 				animate={{ opacity: 1, scale: 1 }}
 				exit={{ opacity: 0, scale: 0 }}
 				transition={{ duration: 0.2 }}
-				className='absolute z-10 p-3 pt-12 border-2 rounded-lg bg-white/80 top-20 left-5 sm:p-5 sm:pt-16'
+				className='fixed inset-x-0 bottom-0 z-10 p-5 border-2 rounded-lg lg:pt-12 lg:absolute bg-white/80 lg:top-20 lg:left-5 lg:inset-x-auto lg:bottom-auto'
 			>
 				<ul>
 					{filteredPois.map((feature, idx) => (

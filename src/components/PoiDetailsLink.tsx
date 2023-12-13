@@ -32,7 +32,7 @@ function PoiDetailsLink() {
 	return (
 		<>
 			{linkUrl && (
-				<p className='mb-4 text-sm'>
+				<p className='hidden mb-4 text-sm lg:block'>
 					{t('link')}:{' '}
 					<a href={linkUrl} target='_blank' className='hover:text-primary'>
 						{linkUrl}

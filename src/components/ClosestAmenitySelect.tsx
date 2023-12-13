@@ -45,7 +45,7 @@ function ClosestAmenitySelect() {
 					variant='outline'
 					role='combobox'
 					aria-expanded={open}
-					className='min-w-[320px] justify-between flex my-4'
+					className='lg:min-w-[320px] justify-between flex my-4'
 				>
 					{activeFilter?.id
 						? `${t('closest')} ${t(
@@ -56,7 +56,7 @@ function ClosestAmenitySelect() {
 					<ChevronsUpDown className='w-4 h-4 ml-2 opacity-50 shrink-0' />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className='min-w-[320px] p-0'>
+			<PopoverContent className='lg:min-w-[320px] p-0'>
 				<Command>
 					<CommandInput placeholder={t('destination')} />
 					<CommandEmpty>{t('no-results')}</CommandEmpty>

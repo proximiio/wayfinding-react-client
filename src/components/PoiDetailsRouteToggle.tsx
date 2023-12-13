@@ -19,7 +19,7 @@ function PoiDetailsRouteToggle() {
 					type='single'
 					value={accessibleRoute ? 'accessible' : 'fastest'}
 					onValueChange={onValueChangeHandler}
-					className='mb-4'
+					className='hidden mb-4 lg:flex'
 				>
 					<ToggleGroupItem
 						value='fastest'

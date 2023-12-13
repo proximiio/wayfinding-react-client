@@ -24,6 +24,7 @@ function RouteForm() {
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
+	const setShowCustomRoutePicker = useMapStore((state) => state.setShowCustomRoutePicker);
 
 	const startSelectHandler = (featureId: string) => {
 		setStartFeature(features.find((item) => item.id === featureId)!);
@@ -38,6 +39,7 @@ function RouteForm() {
 			console.log('should find regular route');
 			setRouteStart(startFeature);
 			setRouteFinish(finishFeature);
+			setShowCustomRoutePicker(false);
 			return;
 		}
 		if (startFeature?.id && activeFilter?.id) {
@@ -61,34 +63,37 @@ function RouteForm() {
 				animate={{ opacity: 1, scale: 1 }}
 				exit={{ opacity: 0, scale: 0 }}
 				transition={{ duration: 0.2 }}
-				className='absolute z-10 p-3 pt-12 border-2 rounded-lg bg-white/80 top-20 left-5 sm:p-5 sm:pt-16'
+				className='fixed inset-x-0 bottom-0 z-10 p-5 border-2 rounded-lg lg:pt-12 lg:absolute bg-white/80 lg:top-20 lg:left-5 lg:inset-x-auto lg:bottom-auto'
 			>
-				<h2 className='mb-4 text-lg font-semibold text-primary'>
+				<h2 className='text-lg font-semibold lg:mb-4 lg:mt-4 text-primary'>
 					{t(activeFilter.title)}
 				</h2>
-				<PoiSelect
-					selectedPoi={startFeature}
-					onSelect={startSelectHandler}
-					placeholder={t('startingPoint')}
-				/>
-				{showCustomRoutePicker && (
+				<div className='flex items-center gap-1 lg:block'>
 					<PoiSelect
-						selectedPoi={finishFeature}
-						onSelect={finishSelectHandler}
-						placeholder={t('destination')}
+						selectedPoi={startFeature}
+						onSelect={startSelectHandler}
+						placeholder={t('startingPoint')}
 					/>
-				)}
-				{activeFilter?.type === 'closest' && <ClosestAmenitySelect />}
-				<Button
-					className='flex w-full'
-					disabled={
-						(!startFeature?.id && !finishFeature?.id) || (!activeFilter?.id && !showCustomRoutePicker)
-					}
-					onClick={clickHandler}
-				>
-					<PiPersonSimpleWalk className='mr-2 text-2xl' />
-					{t('takeMeThere')}
-				</Button>
+					{showCustomRoutePicker && (
+						<PoiSelect
+							selectedPoi={finishFeature}
+							onSelect={finishSelectHandler}
+							placeholder={t('destination')}
+						/>
+					)}
+					{activeFilter?.type === 'closest' && <ClosestAmenitySelect />}
+					<Button
+						className='flex w-full'
+						disabled={
+							(!startFeature?.id || !finishFeature?.id) ||
+							(!activeFilter?.id && !showCustomRoutePicker)
+						}
+						onClick={clickHandler}
+					>
+						<PiPersonSimpleWalk className='mr-2 text-2xl' />
+						<span className='hidden sm:inline'>{t('takeMeThere')}</span>
+					</Button>
+				</div>
 			</motion.div>
 		</>
 	);

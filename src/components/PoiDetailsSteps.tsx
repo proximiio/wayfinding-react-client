@@ -125,12 +125,12 @@ function PoiDetailsSteps() {
 	return (
 		<>
 			{haveRouteDetails && (
-				<div className='flex items-stretch mb-4'>
+				<div className='flex items-stretch lg:mb-4'>
 					<div className='flex items-center flex-1 p-4 text-sm text-black rounded-l-lg bg-black/5'>
 						{steps[currentStep]?.description}
 					</div>
 					<div
-						className='p-4 text-4xl text-center text-white transition-colors bg-black rounded-r-lg cursor-pointer hover:bg-primary'
+						className='flex flex-col justify-center p-2 text-lg text-center text-white transition-colors bg-black rounded-r-lg cursor-pointer lg:p-4 lg:text-4xl hover:bg-primary'
 						onClick={nextStepHandler}
 					>
 						{currentStep !== steps.length - 1 ? (

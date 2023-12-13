@@ -28,7 +28,7 @@ function PoiDetailsDistance() {
 	return (
 		<>
 			{haveRouteDetails && (
-				<p className='mb-4 text-sm'>
+				<p className='hidden mb-4 text-sm lg:block'>
 					<strong>{t('distance')}:</strong> {distanceInMeters}m /{' '}
 					{distanceInMinutes}
 				</p>

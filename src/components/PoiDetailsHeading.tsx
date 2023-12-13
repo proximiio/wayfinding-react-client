@@ -54,13 +54,15 @@ function PoiDetailsHeading() {
 				{poi.properties?.title}
 			</h1>
 			{haveRouteDetails && (
-				<div className='flex items-center justify-center py-4'>
+				<div className='items-center justify-center hidden py-4 lg:flex'>
 					<QRCodeSVG value={qrCodeUrl} className='shrink-0' size={96} />
-					<p className='pl-4 text-lg font-semibold text-primary'>{t('scan-qr-code')}</p>
+					<p className='pl-4 text-lg font-semibold text-primary'>
+						{t('scan-qr-code')}
+					</p>
 				</div>
 			)}
-			<h3 className='text-sm text-primary'>{getOpenHours()}</h3>
-			<h3 className='mb-8 text-sm font-semibold'>
+			<h3 className='hidden text-sm text-primary lg:block'>{getOpenHours()}</h3>
+			<h3 className='mb-2 text-sm font-semibold lg:mb-8'>
 				{t('floor')}:{' '}
 				{poi.properties?._dynamic?.floorName
 					? poi.properties?._dynamic.floorName

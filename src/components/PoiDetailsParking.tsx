@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import useMapStore from '@/store/mapStore';
 import { t } from 'i18next';
 import Feature from 'proximiio-js-library/lib/models/feature';
@@ -14,6 +15,7 @@ function PoiDetailsParking({
 }: PoiDetailsParkingProps) {
 	const map = useMapStore((state) => state.map);
 	const currentLanguage = useMapStore((state) => state.currentLang);
+	const haveRouteDetails = useMapStore((state) => state.haveRouteDetails);
 	const parkingAmenityId = import.meta.env.VITE_WAYFINDING_PARKING_AMENITY_ID;
 	const poi = useMapStore((state) => state.routeFinish);
 
@@ -44,7 +46,10 @@ function PoiDetailsParking({
 		<>
 			{closestParkingFeature && closestParkingFeature?.properties && (
 				<p
-					className='cursor-pointer text-primary hover:text-accent'
+					className={cn(
+						'text-sm cursor-pointer text-primary hover:text-accent lg:text-md',
+						haveRouteDetails && 'hidden lg:block'
+					)}
 					onClick={locateParkingHandler}
 				>
 					<strong>{t('closest-parking')}:</strong>{' '}

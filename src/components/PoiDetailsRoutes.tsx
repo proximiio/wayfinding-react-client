@@ -4,6 +4,7 @@ import { TbRoute } from 'react-icons/tb';
 import { t } from 'i18next';
 import Feature from 'proximiio-js-library/lib/models/feature';
 import useMapStore from '@/store/mapStore';
+import { cn } from '@/lib/utils';
 
 interface PoiDetailsRoutesProps {
 	closestParkingFeature: Feature;
@@ -11,6 +12,7 @@ interface PoiDetailsRoutesProps {
 
 function PoiDetailsRoutes({ closestParkingFeature }: PoiDetailsRoutesProps) {
 	const features = useMapStore((state) => state.features);
+	const haveRouteDetails = useMapStore((state) => state.haveRouteDetails);
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setShowCustomRoutePicker = useMapStore(
 		(state) => state.setShowCustomRoutePicker
@@ -37,26 +39,26 @@ function PoiDetailsRoutes({ closestParkingFeature }: PoiDetailsRoutesProps) {
 	};
 
 	return (
-		<div className='grid grid-cols-3 gap-2 mt-4'>
+		<div className={cn('grid grid-cols-3 gap-2 mt-4', haveRouteDetails && 'hidden lg:grid')}>
 			<Button
 				onClick={() => getRouteHandler('parking')}
 				className='flex flex-col h-auto gap-1 font-light whitespace-normal'
 			>
-				<PiCar className='block text-2xl' />
+				<PiCar className='block text-lg lg:text-2xl' />
 				{t('route-from-parking')}
 			</Button>
 			<Button
 				onClick={() => getRouteHandler('entrance')}
 				className='flex flex-col h-auto gap-1 font-light whitespace-normal'
 			>
-				<PiPersonSimpleWalk className='block text-2xl' />
+				<PiPersonSimpleWalk className='block text-lg lg:text-2xl' />
 				{t('route-from-entrance')}
 			</Button>
 			<Button
 				onClick={() => getRouteHandler('other')}
 				className='flex flex-col h-auto gap-1 font-light whitespace-normal'
 			>
-				<TbRoute className='block text-2xl' />
+				<TbRoute className='block text-lg lg:text-2xl' />
 				{t('other-route')}
 			</Button>
 		</div>

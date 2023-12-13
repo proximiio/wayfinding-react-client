@@ -43,7 +43,7 @@ function PoiSelect({ selectedPoi, placeholder, onSelect }: PoiSelectProps) {
 					variant='outline'
 					role='combobox'
 					aria-expanded={open}
-					className='min-w-[320px] justify-between flex my-4'
+					className='lg:min-w-[320px] justify-between flex my-4'
 				>
 					{selectedPoi?.id
 						? pois.find((poi) => poi.id === selectedPoi.id)?.properties.title
@@ -51,7 +51,7 @@ function PoiSelect({ selectedPoi, placeholder, onSelect }: PoiSelectProps) {
 					<ChevronsUpDown className='w-4 h-4 ml-2 opacity-50 shrink-0' />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className='min-w-[320px] p-0'>
+			<PopoverContent className='lg:min-w-[320px] p-0'>
 				<Command
 					className='h-64 overflow-auto'
 					filter={(value, search) => {

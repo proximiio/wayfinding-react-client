@@ -25,10 +25,10 @@ function PoiDetails() {
 				animate={{ opacity: 1, scale: 1 }}
 				exit={{ opacity: 0, scale: 0 }}
 				transition={{ duration: 0.2 }}
-				className='absolute z-10 max-w-xs overflow-x-hidden overflow-y-auto bg-white rounded-lg shadow-xl top-20 left-5 lg:max-w-md'
+				className='fixed inset-x-0 bottom-0 z-10 overflow-x-hidden overflow-y-auto bg-white rounded-lg shadow-xl lg:absolute lg:top-20 lg:left-5 lg:max-w-md lg:bottom-auto'
 			>
 				<PoiDetailsImage />
-				<div className='px-6 py-2 bg-white rounded-tr-2xl relative top-[-20px] lg:px-10 lg:py-5'>
+				<div className='px-6 py-5 bg-white rounded-tr-2xl relative lg:top-[-20px] lg:px-10'>
 					<PoiDetailsHeading />
 					<PoiDetailsDescription />
 					<PoiDetailsLink />

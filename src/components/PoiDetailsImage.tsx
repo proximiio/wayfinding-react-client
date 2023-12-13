@@ -13,7 +13,7 @@ function PoiDetailsImage() {
 	};
 
 	return (
-		<div>
+		<div className='hidden lg:block'>
 			{loading && (
 				<div className='flex items-center h-56 p-8'>
 					<Skeleton className='w-12 h-12 rounded-full' />

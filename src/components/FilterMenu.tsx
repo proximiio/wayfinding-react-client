@@ -21,9 +21,9 @@ function FilterMenu({
 	return (
 		<div
 			className={cn(
-				'absolute z-20 p-1 top-20 left-5 hover:border-primary/70',
+				'absolute z-20 p-1 top-20 left-5 hover:border-primary/70 rounded-2xl',
 				isOpen
-					? 'p-2 hover:border-rose-500 sm:p-3'
+					? 'hover:border-rose-500 lg:p-3'
 					: 'border-2 rounded-full bg-white/80',
 				className
 			)}
