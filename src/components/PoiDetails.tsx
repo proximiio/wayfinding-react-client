@@ -8,6 +8,9 @@ import PoiDetailsDescription from './PoiDetailsDescription';
 import PoiDetailsLink from './PoiDetailsLink';
 import PoiDetailsParking from './PoiDetailsParking';
 import PoiDetailsRoutes from './PoiDetailsRoutes';
+import PoiDetailsDistance from './PoiDetailsDistance';
+import PoiDetailsRouteToggle from './PoiDetailsRouteToggle';
+import PoiDetailsSteps from './PoiDetailsSteps';
 
 function PoiDetails() {
 	const [closestParkingFeature, setClosestParkingFeature] = useState(
@@ -29,6 +32,9 @@ function PoiDetails() {
 					<PoiDetailsHeading />
 					<PoiDetailsDescription />
 					<PoiDetailsLink />
+					<PoiDetailsDistance />
+					<PoiDetailsRouteToggle />
+					<PoiDetailsSteps />
 					<PoiDetailsParking
 						closestParkingFeature={closestParkingFeature}
 						onSet={setClosestParkingFeature}

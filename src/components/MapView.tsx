@@ -44,6 +44,9 @@ function MapView() {
 	const setFeatures = useMapStore((state) => state.setFeatures);
 	const setAmenities = useMapStore((state) => state.setAmenities);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
+	const setHaveRouteDetails = useMapStore((state) => state.setHaveRouteDetails);
+	const setRouteDetails = useMapStore((state) => state.setRouteDetails);
+	const setCurrentStep = useMapStore((state) => state.setCurrentStep);
 
 	// This effect hook handles current floor state changes
 	/*useEffect(() => {
@@ -89,9 +92,10 @@ function MapView() {
 		console.log('start efffect');
 		if (routeStart?.id) {
 			console.log('routeStart', routeStart);
-			// if we also have route finish generate route
+			// if we also have route finish generate route and reset the current step
 			if (routeFinish?.id) {
 				findRoute({ finish: routeFinish.id, start: routeStart.id });
+				setCurrentStep(0);
 				return;
 			}
 		} else {
@@ -101,7 +105,7 @@ function MapView() {
 				map.cancelRoute();
 			}
 		}
-	}, [map, routeStart, routeFinish, findRoute]);
+	}, [map, routeStart, routeFinish, findRoute, setCurrentStep]);
 
 	// This effect hook handles route finish state changes
 	useEffect(() => {
@@ -236,7 +240,16 @@ function MapView() {
 				// subscribe to route found listener
 				map.getRouteFoundListener().subscribe((res) => {
 					console.log('route found', res);
+					if (res.details && res.TBTNav) {
+						setHaveRouteDetails(true);
+						setRouteDetails(res);
+					}
 				});
+
+				// subscribe to nav step listener and set current step from that
+				map.getNavStepSetListener().subscribe((step) => {
+					setCurrentStep(step);
+				})
 			}
 		);
 	});

@@ -21,8 +21,21 @@ function PoiDetailsDescription() {
 					? poi.properties.description_i18n[currentLanguage]
 					: poi.properties.description_i18n.en
 			);
+			return;
 		}
-	}, [poi?.properties?.description_i18n, currentLanguage]);
+		if (poi?.properties?.metadata?.description) {
+			setDetails(
+				poi.properties.metadata.description[currentLanguage]
+					? poi.properties.metadata.description[currentLanguage]
+					: poi.properties.metadata.description.en
+			);
+			return;
+		}
+	}, [
+		poi?.properties?.description_i18n,
+		poi?.properties?.metadata?.description,
+		currentLanguage,
+	]);
 
 	return (
 		<>

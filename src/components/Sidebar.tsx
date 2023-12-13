@@ -28,6 +28,7 @@ function Sidebar() {
 	const setShowCustomRoutePicker = useMapStore(
 		(state) => state.setShowCustomRoutePicker
 	);
+	const setHaveRouteDetails = useMapStore((state) => state.setHaveRouteDetails);
 
 	useClickAway(ref, () => {
 		if (isOpen && routeFinish?.id) {
@@ -54,6 +55,7 @@ function Sidebar() {
 		setRouteFinish({} as Feature);
 		setRouteStart({} as Feature);
 		setShowCustomRoutePicker(false);
+		setHaveRouteDetails(false);
 	};
 
 	return (

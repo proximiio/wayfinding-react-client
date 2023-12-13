@@ -1,9 +1,16 @@
 import useMapStore from '@/store/mapStore';
 import { t } from 'i18next';
+import { QRCodeSVG } from 'qrcode.react';
+import { useEffect, useState } from 'react';
 
 function PoiDetailsHeading() {
+	const [qrCodeUrl, setQrCodeUrl] = useState('');
+
 	const currentLanguage = useMapStore((state) => state.currentLang);
 	const poi = useMapStore((state) => state.routeFinish);
+	const haveRouteDetails = useMapStore((state) => state.haveRouteDetails);
+	const routeStart = useMapStore((state) => state.routeStart);
+	const routeFinish = useMapStore((state) => state.routeFinish);
 
 	const getOpenHours = () => {
 		const d = new Date();
@@ -26,12 +33,32 @@ function PoiDetailsHeading() {
 		}
 	};
 
+	useEffect(() => {
+		const url = new URL(window.location.href);
+		const urlParams = url.searchParams;
+		if (haveRouteDetails) {
+			if (!routeStart && routeFinish) {
+				urlParams.set('destinationFeature', routeFinish.properties.id);
+			}
+			if (routeFinish && routeStart) {
+				urlParams.set('destinationFeature', routeFinish.properties.id);
+				urlParams.set('startFeature', routeStart.properties.id);
+			}
+		}
+		setQrCodeUrl(url.href);
+	}, [haveRouteDetails, routeFinish, routeStart]);
+
 	return (
 		<>
 			<h1 className='text-2xl font-semibold text-primary'>
 				{poi.properties?.title}
 			</h1>
-			{/*<div>qr-code</div>*/}
+			{haveRouteDetails && (
+				<div className='flex items-center justify-center py-4'>
+					<QRCodeSVG value={qrCodeUrl} className='shrink-0' size={96} />
+					<p className='pl-4 text-lg font-semibold text-primary'>{t('scan-qr-code')}</p>
+				</div>
+			)}
 			<h3 className='text-sm text-primary'>{getOpenHours()}</h3>
 			<h3 className='mb-8 text-sm font-semibold'>
 				{t('floor')}:{' '}

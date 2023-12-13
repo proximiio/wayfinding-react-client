@@ -30,6 +30,10 @@ type State = {
 	filterItems: FilterItemModel[];
 	activeFilter: FilterItemModel;
 	showCustomRoutePicker: boolean;
+	haveRouteDetails: boolean;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	routeDetails: Record<string, any>;
+	currentStep: number;
 };
 
 type Actions = {
@@ -48,6 +52,9 @@ type Actions = {
 	setAccessibleRoute: (accessibleRoute: boolean) => void;
 	setActiveFilter: (activeFilter: FilterItemModel) => void;
 	setShowCustomRoutePicker: (visible: boolean) => void;
+	setHaveRouteDetails: (haveDetails: boolean) => void;
+	setRouteDetails: (route: unknown) => void;
+	setCurrentStep: (step: number) => void;
 	getSortedPOIs: () => SortedPoiItemModel[];
 	reset: () => void;
 };
@@ -70,6 +77,9 @@ const initialState: State = {
 	filterItems,
 	activeFilter: {} as FilterItemModel,
 	showCustomRoutePicker: false,
+	haveRouteDetails: false,
+	routeDetails: {},
+	currentStep: 0,
 };
 
 const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
@@ -153,6 +163,16 @@ const useMapStore = create<State & Actions>()(
 		},
 		setShowCustomRoutePicker: (visible) => {
 			set(() => ({ showCustomRoutePicker: visible }));
+		},
+		setHaveRouteDetails: (haveDetails) => {
+			set(() => ({ haveRouteDetails: haveDetails }));
+		},
+		setRouteDetails: (route) => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			set(() => ({ routeDetails: route as any }));
+		},
+		setCurrentStep: (step) => {
+			set(() => ({ currentStep: step }));
 		},
 		getSortedPOIs: () => {
 			const pois: SortedPoiItemModel[] = get()
