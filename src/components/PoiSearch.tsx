@@ -12,7 +12,7 @@ import {
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 import { GoDot } from 'react-icons/go';
 import { t } from 'i18next';
-import * as removeAccents from 'remove-accents';
+import removeAccents from 'remove-accents';
 import useMapStore from '@/store/mapStore';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
 
@@ -29,9 +29,9 @@ function PoiSearch() {
 	const [search, setSearch] = useState('');
 	const [filteredPois, setFilteredPois] = useState<SortedPoiItemModel[]>(pois);
 	const [foundInTitle, setFoundInTitle] = useState<SortedPoiItemModel[]>([]);
-	const [foundInDescription, setFoundInDescription] = useState<SortedPoiItemModel[]>(
-		[]
-	);
+	const [foundInDescription, setFoundInDescription] = useState<
+		SortedPoiItemModel[]
+	>([]);
 
 	useEffect(() => {
 		const down = (e: KeyboardEvent) => {

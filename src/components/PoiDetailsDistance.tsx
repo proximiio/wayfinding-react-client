@@ -1,7 +1,7 @@
 import useMapStore from '@/store/mapStore';
 import { t } from 'i18next';
 import { useEffect, useState } from 'react';
-import * as humanizeDuration from 'humanize-duration';
+import humanizeDuration from 'humanize-duration';
 import { cn } from '@/lib/utils';
 
 function PoiDetailsDistance({ showMore }: { showMore: boolean }) {
