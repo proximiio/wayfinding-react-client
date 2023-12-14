@@ -1,4 +1,4 @@
-FROM node:20.10-alpine
+FROM node:latest AS builder
 
 WORKDIR /app
 
@@ -10,6 +10,19 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 5173
+# Use NGINX base image to serve the React app
+FROM nginx:latest
 
-CMD [ "npm", "run", "preview" ]
+# Remove default NGINX website
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy the built React app from the previous stage
+COPY --from=builder /app/dist /usr/share/nginx/html/wayfinding-demo
+
+# Copy custom NGINX configuration to adjust MIME types
+COPY nginx.conf /etc/nginx/sites-enabled/default.conf
+
+# Expose the port
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
