@@ -1,9 +1,10 @@
+import { cn } from '@/lib/utils';
 import useMapStore from '@/store/mapStore';
 import { t } from 'i18next';
 import { useEffect, useState } from 'react';
 
 
-function PoiDetailsLink() {
+function PoiDetailsLink({ showMore }: { showMore: boolean }) {
 	const [linkUrl, setLinkUrl] = useState('');
 	const poi = useMapStore((state) => state.routeFinish);
 
@@ -32,7 +33,7 @@ function PoiDetailsLink() {
 	return (
 		<>
 			{linkUrl && (
-				<p className='hidden mb-4 text-sm lg:block'>
+				<p className={cn('mb-4 text-sm lg:block', !showMore && 'hidden')}>
 					{t('link')}:{' '}
 					<a href={linkUrl} target='_blank' className='hover:text-primary'>
 						{linkUrl}

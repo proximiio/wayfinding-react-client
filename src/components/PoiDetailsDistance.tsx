@@ -2,8 +2,9 @@ import useMapStore from '@/store/mapStore';
 import { t } from 'i18next';
 import { useEffect, useState } from 'react';
 import * as humanizeDuration from 'humanize-duration';
+import { cn } from '@/lib/utils';
 
-function PoiDetailsDistance() {
+function PoiDetailsDistance({ showMore }: { showMore: boolean }) {
 	const haveRouteDetails = useMapStore((state) => state.haveRouteDetails);
 	const routeDetails = useMapStore((state) => state.routeDetails);
 	const currentLanguage = useMapStore((state) => state.currentLang);
@@ -28,7 +29,7 @@ function PoiDetailsDistance() {
 	return (
 		<>
 			{haveRouteDetails && (
-				<p className='hidden mb-4 text-sm lg:block'>
+				<p className={cn('mb-4 text-sm lg:block', !showMore && 'hidden')}>
 					<strong>{t('distance')}:</strong> {distanceInMeters}m /{' '}
 					{distanceInMinutes}
 				</p>

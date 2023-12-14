@@ -1,9 +1,10 @@
+import { cn } from '@/lib/utils';
 import useMapStore from '@/store/mapStore';
 import { t } from 'i18next';
 import { QRCodeSVG } from 'qrcode.react';
 import { useEffect, useState } from 'react';
 
-function PoiDetailsHeading() {
+function PoiDetailsHeading({ showMore }: { showMore: boolean }) {
 	const [qrCodeUrl, setQrCodeUrl] = useState('');
 
 	const currentLanguage = useMapStore((state) => state.currentLang);
@@ -61,7 +62,7 @@ function PoiDetailsHeading() {
 					</p>
 				</div>
 			)}
-			<h3 className='hidden text-sm text-primary lg:block'>{getOpenHours()}</h3>
+			<h3 className={cn('text-sm text-primary lg:block', !showMore && 'hidden')}>{getOpenHours()}</h3>
 			<h3 className='mb-2 text-sm font-semibold lg:mb-8'>
 				{t('floor')}:{' '}
 				{poi.properties?._dynamic?.floorName

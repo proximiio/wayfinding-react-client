@@ -6,11 +6,13 @@ import { useEffect } from 'react';
 
 interface PoiDetailsParkingProps {
 	closestParkingFeature: Feature;
+	showMore: boolean;
 	onSet: (feature: Feature) => void;
 }
 
 function PoiDetailsParking({
 	closestParkingFeature,
+	showMore,
 	onSet,
 }: PoiDetailsParkingProps) {
 	const map = useMapStore((state) => state.map);
@@ -48,7 +50,9 @@ function PoiDetailsParking({
 				<p
 					className={cn(
 						'text-sm cursor-pointer text-primary hover:text-accent lg:text-md',
-						haveRouteDetails && 'hidden lg:block'
+						haveRouteDetails && 'lg:block',
+						haveRouteDetails && !showMore && 'hidden',
+						showMore && 'mt-4'
 					)}
 					onClick={locateParkingHandler}
 				>

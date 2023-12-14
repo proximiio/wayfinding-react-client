@@ -5,12 +5,14 @@ import { t } from 'i18next';
 import Feature from 'proximiio-js-library/lib/models/feature';
 import useMapStore from '@/store/mapStore';
 import { cn } from '@/lib/utils';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface PoiDetailsRoutesProps {
 	closestParkingFeature: Feature;
+	showMore: boolean;
 }
 
-function PoiDetailsRoutes({ closestParkingFeature }: PoiDetailsRoutesProps) {
+function PoiDetailsRoutes({ closestParkingFeature, showMore }: PoiDetailsRoutesProps) {
 	const features = useMapStore((state) => state.features);
 	const haveRouteDetails = useMapStore((state) => state.haveRouteDetails);
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
@@ -39,29 +41,45 @@ function PoiDetailsRoutes({ closestParkingFeature }: PoiDetailsRoutesProps) {
 	};
 
 	return (
-		<div className={cn('grid grid-cols-3 gap-2 mt-4', haveRouteDetails && 'hidden lg:grid')}>
-			<Button
-				onClick={() => getRouteHandler('parking')}
-				className='flex flex-col h-auto gap-1 font-light whitespace-normal'
+		<AnimatePresence>
+			<motion.div
+				className={cn(
+					'grid grid-cols-3 gap-2 mt-4',
+					haveRouteDetails && 'lg:grid',
+					haveRouteDetails && !showMore && 'hidden'
+				)}
+				initial={{ scale: 0, opacity: 0 }}
+				animate={{ scale: 1, opacity: 1 }}
+				transition={{
+					type: 'spring',
+					stiffness: 260,
+					damping: 20,
+					delay: .2,
+				}}
 			>
-				<PiCar className='block text-lg lg:text-2xl' />
-				{t('route-from-parking')}
-			</Button>
-			<Button
-				onClick={() => getRouteHandler('entrance')}
-				className='flex flex-col h-auto gap-1 font-light whitespace-normal'
-			>
-				<PiPersonSimpleWalk className='block text-lg lg:text-2xl' />
-				{t('route-from-entrance')}
-			</Button>
-			<Button
-				onClick={() => getRouteHandler('other')}
-				className='flex flex-col h-auto gap-1 font-light whitespace-normal'
-			>
-				<TbRoute className='block text-lg lg:text-2xl' />
-				{t('other-route')}
-			</Button>
-		</div>
+				<Button
+					onClick={() => getRouteHandler('parking')}
+					className='flex flex-col h-auto gap-1 font-light whitespace-normal'
+				>
+					<PiCar className='block text-lg lg:text-2xl' />
+					{t('route-from-parking')}
+				</Button>
+				<Button
+					onClick={() => getRouteHandler('entrance')}
+					className='flex flex-col h-auto gap-1 font-light whitespace-normal'
+				>
+					<PiPersonSimpleWalk className='block text-lg lg:text-2xl' />
+					{t('route-from-entrance')}
+				</Button>
+				<Button
+					onClick={() => getRouteHandler('other')}
+					className='flex flex-col h-auto gap-1 font-light whitespace-normal'
+				>
+					<TbRoute className='block text-lg lg:text-2xl' />
+					{t('other-route')}
+				</Button>
+			</motion.div>
+		</AnimatePresence>
 	);
 }
 

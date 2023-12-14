@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import useMapStore from '@/store/mapStore';
 import maplibregl from 'maplibre-gl';
 import useRouting from '@/hooks/useRouting';
+import { FilterItemModel } from '@/models/filterItem.model';
 // import { Subscription } from 'rxjs';
 
 function MapView() {
@@ -47,6 +48,8 @@ function MapView() {
 	const setHaveRouteDetails = useMapStore((state) => state.setHaveRouteDetails);
 	const setRouteDetails = useMapStore((state) => state.setRouteDetails);
 	const setCurrentStep = useMapStore((state) => state.setCurrentStep);
+	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
+	const setShowCustomRoutePicker = useMapStore((state) => state.setShowCustomRoutePicker);
 
 	// This effect hook handles current floor state changes
 	/*useEffect(() => {
@@ -120,6 +123,8 @@ function MapView() {
 			map.setFloorByLevel(routeFinish.properties.level);
 			// handle polygon selection, only required when polygons are enabled
 			map.handlePolygonSelection(routeFinish);
+			setActiveFilter({} as FilterItemModel);
+			setShowCustomRoutePicker(false);
 		} else {
 			console.log('routeFinish cancelled', routeFinish);
 			if (Object.keys(map).length > 0) {
@@ -129,7 +134,7 @@ function MapView() {
 				map.handlePolygonSelection();
 			}
 		}
-	}, [map, routeFinish]);
+	}, [map, routeFinish, setActiveFilter, setShowCustomRoutePicker]);
 
 	// This effect hook handles active filter state changes
 	useEffect(() => {

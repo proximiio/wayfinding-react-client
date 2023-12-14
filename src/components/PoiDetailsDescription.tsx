@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import useMapStore from '@/store/mapStore';
 import { t } from 'i18next';
 import { useEffect, useState } from 'react';
@@ -6,9 +7,9 @@ import { TfiAngleDown, TfiAngleUp } from 'react-icons/tfi';
 const defaultDetails =
 	'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
 
-function PoiDetailsDescription() {
+function PoiDetailsDescription({ showMore }: { showMore: boolean }) {
 	const [details, setDetails] = useState(defaultDetails);
-	const [showMore, setShowMore] = useState(false);
+	const [toggleDetails, setToggleDetails] = useState(false);
 	const [limit, setLimit] = useState(200);
 	const poi = useMapStore((state) => state.routeFinish);
 
@@ -40,7 +41,7 @@ function PoiDetailsDescription() {
 	return (
 		<>
 			{details && (
-				<div className='hidden mb-4 lg:block'>
+				<div className={cn('mb-4 lg:block', !showMore && 'hidden')}>
 					<p className='text-sm'>
 						{details.slice(0, limit)} {details.length > limit ? '...' : ''}
 					</p>
@@ -48,7 +49,7 @@ function PoiDetailsDescription() {
 						<span
 							onClick={() => {
 								setLimit(details.length);
-								setShowMore(true);
+								setToggleDetails(true);
 							}}
 							className='text-sm font-semibold cursor-pointer hover:text-primary'
 						>
@@ -56,11 +57,11 @@ function PoiDetailsDescription() {
 							<TfiAngleDown className='inline-flex ml-1 text-xs' />
 						</span>
 					)}
-					{showMore && (
+					{toggleDetails && (
 						<span
 							onClick={() => {
 								setLimit(200);
-								setShowMore(false);
+								setToggleDetails(false);
 							}}
 							className='text-sm font-semibold cursor-pointer hover:text-primary'
 						>
