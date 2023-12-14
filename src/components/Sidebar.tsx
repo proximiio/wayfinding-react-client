@@ -37,6 +37,9 @@ function Sidebar() {
 		if (isOpen && activeFilter?.id) {
 			return;
 		}
+		if (!isOpen) {
+			return
+		}
 		onCloseHandler();
 	});
 
@@ -49,6 +52,7 @@ function Sidebar() {
 	}, [routeFinish]);
 
 	const onCloseHandler = () => {
+		console.log('close handler');
 		setOpen(false);
 		setColor('#000');
 		setActiveFilter({} as FilterItemModel);

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import useKiosk from '@/hooks/useKiosk';
 import PoiSearch from './components/PoiSearch';
 import Sidebar from './components/Sidebar';
+import LocateMeButton from './components/LocateMeButton';
 
 function App() {
 	const { t, i18n } = useTranslation();
@@ -70,6 +71,7 @@ function App() {
 					<PoiSearch />
 					<FloorPicker />
 					<Sidebar />
+					<LocateMeButton />
 					<MapView />
 				</main>
 			)}

@@ -5,16 +5,20 @@ import useMapStore from '@/store/mapStore';
 import maplibregl from 'maplibre-gl';
 import useRouting from '@/hooks/useRouting';
 import { FilterItemModel } from '@/models/filterItem.model';
+import { useShallow } from 'zustand/react/shallow';
 
 function MapView() {
 	const mapInitiated = useRef(false);
 	const [findRoute] = useRouting();
-	const zoom = 19;
-	const pitch = 40;
-	const bearing = 12;
+	const zoom = import.meta.env.VITE_WAYFINDING_DEFAULT_ZOOM;
+	const pitch = import.meta.env.VITE_WAYFINDING_DEFAULT_PITCH;
+	const bearing = import.meta.env.VITE_WAYFINDING_DEFAULT_BEARING;
 	const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
 	const defaultLocation = {
-		coordinates: import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_COORDINATES,
+		coordinates: [
+			import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LONGITUDE,
+			import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LATITUDE,
+		],
 		level: import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LEVEL,
 	};
 	const mapPadding = {
@@ -34,7 +38,7 @@ function MapView() {
 	const activeFilter = useMapStore((state) => state.activeFilter);
 
 	// store actions
-	const setMap = useMapStore((state) => state.setMap);
+	const setMap = useMapStore(useShallow((state) => state.setMap));
 	const setPlaces = useMapStore((state) => state.setPlaces);
 	const setCurrentPlace = useMapStore((state) => state.setCurrentPlace);
 	const setFloors = useMapStore((state) => state.setFloors);
@@ -46,7 +50,9 @@ function MapView() {
 	const setRouteDetails = useMapStore((state) => state.setRouteDetails);
 	const setCurrentStep = useMapStore((state) => state.setCurrentStep);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
-	const setShowCustomRoutePicker = useMapStore((state) => state.setShowCustomRoutePicker);
+	const setShowCustomRoutePicker = useMapStore(
+		(state) => state.setShowCustomRoutePicker
+	);
 
 	// This effect hook handles route start state changes
 	useEffect(() => {
@@ -127,7 +133,7 @@ function MapView() {
 					defaultPlaceId: defaultPlaceId, // if you have more than 1 place in your account, it's a good idea to define defaultPlaceId for the map, otherwise the first one will be picked up
 					isKiosk: kioskMode, // if enabled starting point for routing will be based on values defined in kioskSettings, if disabled findRoute methods will expect start point to be send.
 					kioskSettings: {
-						coordinates: defaultLocation.coordinates,
+						coordinates: defaultLocation.coordinates as [number, number],
 						level: defaultLocation.level,
 					},
 					fitBoundsPadding: mapPadding, // setting the padding option to use for zooming into the bounds when route is drawn,
@@ -212,7 +218,7 @@ function MapView() {
 				// subscribe to nav step listener and set current step from that
 				map.getNavStepSetListener().subscribe((step) => {
 					setCurrentStep(step);
-				})
+				});
 			}
 		);
 	});
