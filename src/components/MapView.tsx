@@ -5,7 +5,6 @@ import useMapStore from '@/store/mapStore';
 import maplibregl from 'maplibre-gl';
 import useRouting from '@/hooks/useRouting';
 import { FilterItemModel } from '@/models/filterItem.model';
-// import { Subscription } from 'rxjs';
 
 function MapView() {
 	const mapInitiated = useRef(false);
@@ -26,9 +25,7 @@ function MapView() {
 	};
 
 	// store state
-	// const map = useMapStore((state) => state.map);
 	const kioskMode = useMapStore((state) => state.kioskMode);
-	// const currentFloor = useMapStore((state) => state.currentFloor);
 	const currentLang = useMapStore((state) => state.currentLang);
 	const filterItems = useMapStore((state) => state.filterItems);
 	const map = useMapStore((state) => state.map);
@@ -50,45 +47,6 @@ function MapView() {
 	const setCurrentStep = useMapStore((state) => state.setCurrentStep);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
 	const setShowCustomRoutePicker = useMapStore((state) => state.setShowCustomRoutePicker);
-
-	// This effect hook handles current floor state changes
-	/*useEffect(() => {
-		const subscriptions: Subscription[] = [];
-
-		if (Object.keys(map).length > 0) {
-			// set destination point for routing based on click event and cancel previous route if generated
-			const polygonClickSub = map
-				.getPolygonClickListener()
-				.subscribe((feature) => {
-					setRouteFinish(feature);
-				});
-
-			// subscribe to map floor selection listener, this always run once at map initiation and upon map.setFloor method call
-			const floorSelectSub = map.getFloorSelectListener().subscribe((floor) => {
-				console.log(`floor listener`, floor, currentFloor);
-				if (currentFloor && currentFloor.id !== floor.id) {
-					console.log('should set floor', floor);
-					setCurrentFloor(floor);
-				}
-			});
-
-			if (currentFloor?.id) {
-				map.setFloorById(currentFloor.id);
-				console.log('current floor changed', currentFloor);
-			}
-
-			subscriptions.push(polygonClickSub, floorSelectSub);
-		}
-		return () => {
-			subscriptions.forEach((sub) => sub.unsubscribe());
-		};
-	}, [currentFloor, map, setRouteFinish, setCurrentFloor]);*/
-
-	/*useEffect(() => {
-		if (Object.keys(map).length > 0 && currentFloor?.id) {
-			map.setFloorById(currentFloor.id);
-		}
-	}, [currentFloor, map]);*/
 
 	// This effect hook handles route start state changes
 	useEffect(() => {
