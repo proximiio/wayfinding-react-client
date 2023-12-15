@@ -20,7 +20,7 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # For BASE URL config use this
-#COPY --from=builder /app/dist /usr/share/nginx/html/wayfinding-demo
+#COPY --from=builder /app/dist /usr/share/nginx/html/{PASTE YOUR BASE URL FROM ENV FILE}
 
 # Copy custom NGINX configuration to adjust MIME types
 COPY nginx.conf /etc/nginx/sites-enabled/default.conf
