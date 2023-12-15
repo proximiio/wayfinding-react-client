@@ -1,3 +1,4 @@
+import { FilterItemModel } from '@/models/filterItem.model';
 import useMapStore from '@/store/mapStore';
 import Feature from 'proximiio-js-library/lib/models/feature';
 import { useCallback } from 'react';
@@ -7,25 +8,30 @@ export default function UseKiosk() {
 
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
+	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
+	const setShowCustomRoutePicker = useMapStore(
+		(state) => state.setShowCustomRoutePicker
+	);
+	const setHaveRouteDetails = useMapStore((state) => state.setHaveRouteDetails);
 
 	// handle reset to default view
 	const resetView = useCallback(() => {
 		if (Object.keys(map).length > 0) {
-			/*this.sidebarService.onSetEndPoi(null);
-      if (this.sidebarService.filteredAmenity) {
-        this.sidebarService.onAmenityToggle(
-          "amenities",
-          this.sidebarService.filteredAmenity
-        );
-        this.sidebarService.showClosestAmenityPicker = false;
-        this.sidebarService.activeListItem = null;
-      }*/
-
 			setRouteStart({} as Feature);
 			setRouteFinish({} as Feature);
+			setActiveFilter({} as FilterItemModel);
+			setShowCustomRoutePicker(false);
+			setHaveRouteDetails(false);
 			map.refetch();
 		}
-	}, [map, setRouteStart, setRouteFinish]);
+	}, [
+		map,
+		setRouteStart,
+		setRouteFinish,
+		setActiveFilter,
+		setShowCustomRoutePicker,
+		setHaveRouteDetails,
+	]);
 
 	// idleTime function handle timeouts to reset to default view
 	const idleTime = useCallback(() => {
