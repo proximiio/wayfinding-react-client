@@ -27,7 +27,8 @@ i18n
 			escapeValue: false, // not needed for react as it escapes by default
 		},
 		backend: {
-			loadPath: `${import.meta.env.BASE_URL}/locales/{{lng}}/{{ns}}.json`,
+			//loadPath: `${import.meta.env.BASE_URL}/locales/{{lng}}/{{ns}}.json`, // use this in case BASE_URL is defined
+			loadPath: `/locales/{{lng}}/{{ns}}.json`,
 			crossDomain: true,
 		},
 	});
