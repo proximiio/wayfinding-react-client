@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import Proximiio from 'proximiio-js-library';
 import { State } from 'proximiio-js-library/lib/components/map/main';
 import { useEffect, useRef } from 'react';
@@ -37,6 +38,9 @@ function MapView() {
 	const routeStart = useMapStore((state) => state.routeStart);
 	const activeFilter = useMapStore((state) => state.activeFilter);
 	const activeKiosk = useMapStore((state) => state.activeKiosk);
+	const features = useMapStore((state) => state.features);
+	const places = useMapStore((state) => state.places);
+	const currentPlace = useMapStore((state) => state.currentPlace);
 
 	// store actions
 	const setMap = useMapStore(useShallow((state) => state.setMap));
@@ -46,6 +50,7 @@ function MapView() {
 	const setCurrentFloor = useMapStore((state) => state.setCurrentFloor);
 	const setFeatures = useMapStore((state) => state.setFeatures);
 	const setAmenities = useMapStore((state) => state.setAmenities);
+	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 	const setHaveRouteDetails = useMapStore((state) => state.setHaveRouteDetails);
 	const setRouteDetails = useMapStore((state) => state.setRouteDetails);
@@ -117,6 +122,45 @@ function MapView() {
 			}
 		}
 	}, [map, activeFilter]);
+
+	// This effect hook handles URL query parameters related to start, destination and place
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const startParam = urlParams.get('startFeature'); // in case you change url param name in urlParams option of map constuctor, change that too
+		const destinationParam = urlParams.get('destinationFeature'); // in case you change url param name in urlParams option of map constuctor, change that too
+		const placeParam = urlParams.get('defaultPlace'); // in case you change url param name in urlParams option of map constuctor, change that too
+
+		const startFeature = startParam
+			? features.find(
+					(f) =>
+						f.id === startParam ||
+						f.properties.id === startParam ||
+						f.properties.title === startParam
+			  )
+			: undefined;
+		if (startFeature) {
+			setRouteStart(startFeature);
+		}
+
+		const destinationFeature = destinationParam
+			? features.find(
+					(f) =>
+						f.id === destinationParam ||
+						f.properties.id === destinationParam ||
+						f.properties.title === destinationParam
+			  )
+			: undefined;
+		if (destinationFeature) {
+			setRouteFinish(destinationFeature);
+		}
+
+		const defaultPlace = placeParam
+			? places.find((p) => p.id === placeParam || p.name === placeParam)
+			: undefined;
+		if (defaultPlace) {
+			map.setPlace(defaultPlace.id);
+		}
+	}, [features, setRouteFinish, setRouteStart, places, currentPlace, map]);
 
 	useEffect(() => {
 		// Initialize map only once
