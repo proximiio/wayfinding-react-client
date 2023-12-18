@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import useMapStore from '@/store/mapStore';
+import Feature from 'proximiio-js-library/lib/models/feature';
 
 interface FilterPickerProps {
 	heading: string;
@@ -13,10 +14,35 @@ interface FilterPickerProps {
 }
 
 function FilterPicker({ heading, color, items }: FilterPickerProps) {
+	const kioskMode = useMapStore((state) => state.kioskMode);
+	const map = useMapStore((state) => state.map);
+	const activeKiosk = useMapStore((state) => state.activeKiosk);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
+	const setRouteStart = useMapStore((state) => state.setRouteStart);
+	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 
 	const filterClickHandler = (item: FilterItemModel) => {
-		setActiveFilter(item);
+		if (!kioskMode) {
+			setActiveFilter(item);
+		} else {
+			const kioskFeature = new Feature({
+				id: 'kiosk',
+				geometry: {
+					type: 'Point',
+					coordinates: [activeKiosk?.longitude, activeKiosk?.latitude],
+				},
+				type: 'Feature',
+				properties: {
+					...activeKiosk,
+				},
+			});
+			const closestFeature = map.getClosestFeature(
+				item.id as string,
+				kioskFeature
+			) as Feature;
+			setRouteStart(kioskFeature);
+			setRouteFinish(closestFeature);
+		}
 	};
 
 	return (

@@ -24,7 +24,9 @@ function RouteForm() {
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
-	const setShowCustomRoutePicker = useMapStore((state) => state.setShowCustomRoutePicker);
+	const setShowCustomRoutePicker = useMapStore(
+		(state) => state.setShowCustomRoutePicker
+	);
 
 	const startSelectHandler = (featureId: string) => {
 		setStartFeature(features.find((item) => item.id === featureId)!);
@@ -53,6 +55,22 @@ function RouteForm() {
 			setActiveFilter({} as FilterItemModel);
 			return;
 		}
+	};
+
+	const isButtonDisabled = () => {
+		const startFeatureNotSelected = !startFeature?.id;
+		const finishFeatureNotSelected = !finishFeature?.id;
+		const noActiveFilter = !activeFilter?.id;
+
+		if (startFeatureNotSelected) {
+			return true;
+		}
+
+		if (finishFeatureNotSelected && noActiveFilter) {
+			return true;
+		}
+
+		return false;
 	};
 
 	return (
@@ -84,10 +102,7 @@ function RouteForm() {
 					{activeFilter?.type === 'closest' && <ClosestAmenitySelect />}
 					<Button
 						className='flex w-full'
-						disabled={
-							(!startFeature?.id || !finishFeature?.id) ||
-							(!activeFilter?.id && !showCustomRoutePicker)
-						}
+						disabled={isButtonDisabled()}
 						onClick={clickHandler}
 					>
 						<PiPersonSimpleWalk className='mr-2 text-2xl' />

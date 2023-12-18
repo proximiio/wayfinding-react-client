@@ -18,6 +18,7 @@ function Sidebar() {
 
 	const activeFilter = useMapStore((state) => state.activeFilter);
 	const routeFinish = useMapStore((state) => state.routeFinish);
+	const kioskMode = useMapStore((state) => state.kioskMode);
 	const showCustomRoutePicker = useMapStore(
 		(state) => state.showCustomRoutePicker
 	);
@@ -82,7 +83,7 @@ function Sidebar() {
 					Object.keys(routeFinish).length === 0 && <Filters key='1' />}
 				{isOpen && activeFilter?.type === 'list' && <PoiList key='2' />}
 				{isOpen &&
-					(activeFilter?.type === 'closest' || showCustomRoutePicker) && (
+					((activeFilter?.type === 'closest' && !kioskMode) || showCustomRoutePicker) && (
 						<RouteForm key='3' />
 					)}
 				{isOpen && routeFinish?.id && !showCustomRoutePicker && (
