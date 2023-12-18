@@ -16,7 +16,7 @@ function PoiDetailsImage({ showMore }: { showMore: boolean }) {
 
 	return (
 		<AnimatePresence>
-			<motion.div className={cn('lg:block max-h-96', !showMore && 'hidden')}>
+			<motion.div className={cn('lg:block max-h-96 overflow-hidden', !showMore && 'hidden')}>
 				{loading && (
 					<div className='flex items-center h-56 p-8'>
 						<Skeleton className='w-12 h-12 rounded-full' />

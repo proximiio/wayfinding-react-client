@@ -16,10 +16,10 @@ function MapView() {
 	const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
 	const defaultLocation = {
 		coordinates: [
-			import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LONGITUDE,
-			import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LATITUDE,
+			+import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LONGITUDE,
+			+import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LATITUDE,
 		],
-		level: import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LEVEL,
+		level: +import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LEVEL,
 	};
 	const mapPadding = {
 		top: 250,
@@ -36,6 +36,7 @@ function MapView() {
 	const routeFinish = useMapStore((state) => state.routeFinish);
 	const routeStart = useMapStore((state) => state.routeStart);
 	const activeFilter = useMapStore((state) => state.activeFilter);
+	const activeKiosk = useMapStore((state) => state.activeKiosk);
 
 	// store actions
 	const setMap = useMapStore(useShallow((state) => state.setMap));
@@ -61,7 +62,10 @@ function MapView() {
 			console.log('routeStart', routeStart);
 			// if we also have route finish generate route and reset the current step
 			if (routeFinish?.id) {
-				findRoute({ finish: routeFinish.id, start: routeStart.id });
+				findRoute({
+					finish: routeFinish.id,
+					start: routeStart.id === 'kiosk' ? undefined : routeStart.id,
+				});
 				setCurrentStep(0);
 				return;
 			}
@@ -127,14 +131,21 @@ function MapView() {
 					// you can define any of the mapbox options in there, we are retrieving those from state service
 					mapboxOptions: {
 						zoom: zoom,
-						pitch: pitch,
-						bearing: bearing,
+						pitch: kioskMode && activeKiosk?.pitch ? activeKiosk.pitch : pitch,
+						bearing:
+							kioskMode && activeKiosk?.bearing ? activeKiosk.bearing : bearing,
 					},
 					defaultPlaceId: defaultPlaceId, // if you have more than 1 place in your account, it's a good idea to define defaultPlaceId for the map, otherwise the first one will be picked up
 					isKiosk: kioskMode, // if enabled starting point for routing will be based on values defined in kioskSettings, if disabled findRoute methods will expect start point to be send.
 					kioskSettings: {
-						coordinates: defaultLocation.coordinates as [number, number],
-						level: defaultLocation.level,
+						coordinates:
+							kioskMode && activeKiosk?.longitude && activeKiosk?.latitude
+								? [activeKiosk.longitude, activeKiosk.latitude]
+								: (defaultLocation.coordinates as [number, number]),
+						level:
+							kioskMode && activeKiosk?.level
+								? activeKiosk.level
+								: defaultLocation.level,
 					},
 					fitBoundsPadding: mapPadding, // setting the padding option to use for zooming into the bounds when route is drawn,
 					handleUrlParams: true, // enable handling url params, this way you can load map with predefined route generated
@@ -189,6 +200,36 @@ function MapView() {
 							.map((i) => i.id)
 							.flat(2)
 					);
+
+					// handle kiosk mode intitialization
+					if (kioskMode) {
+						const kioskPoi = mapState.allFeatures.features.find(
+							(f) => f.id === activeKiosk?.poiId
+						);
+						if (activeKiosk?.bounds) {
+							map.getMapboxInstance().setMaxBounds(activeKiosk.bounds);
+						}
+						if (activeKiosk?.zoom) {
+							map.getMapboxInstance().setZoom(activeKiosk.zoom);
+						}
+						if (kioskPoi && activeKiosk) {
+							activeKiosk.longitude = kioskPoi.geometry.coordinates[0];
+							activeKiosk.latitude = kioskPoi.geometry.coordinates[1];
+							activeKiosk.level = kioskPoi.properties.level;
+
+							if (
+								activeKiosk.longitude &&
+								activeKiosk.latitude &&
+								typeof activeKiosk.level !== 'undefined'
+							) {
+								map.setKiosk(
+									activeKiosk.latitude,
+									activeKiosk.longitude,
+									activeKiosk.level
+								);
+							}
+						}
+					}
 				});
 
 				// set destination point for routing based on click event and cancel previous route if generated

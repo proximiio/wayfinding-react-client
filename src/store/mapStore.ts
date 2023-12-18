@@ -9,7 +9,8 @@ import { isPointWithinRadius } from 'geolib';
 import { getFloorName } from '@/lib/utils';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
 import { FilterItemModel } from '@/models/filterItem.model';
-import { filterItems } from './data';
+import { filterItems, kiosks } from './data';
+import { KioskModel } from '@/models/kiosk.model';
 
 // import { devtools } from 'zustand/middleware';
 // define types for state values and actions separately
@@ -34,6 +35,8 @@ type State = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	routeDetails: Record<string, any>;
 	currentStep: number;
+	activeKiosk: KioskModel | undefined;
+	kiosks: KioskModel[];
 };
 
 type Actions = {
@@ -55,6 +58,7 @@ type Actions = {
 	setHaveRouteDetails: (haveDetails: boolean) => void;
 	setRouteDetails: (route: unknown) => void;
 	setCurrentStep: (step: number) => void;
+	setActiveKiosk: (kiosk: KioskModel | undefined) => void;
 	getSortedPOIs: () => SortedPoiItemModel[];
 	reset: () => void;
 };
@@ -80,6 +84,8 @@ const initialState: State = {
 	haveRouteDetails: false,
 	routeDetails: {},
 	currentStep: 0,
+	activeKiosk: {} as KioskModel,
+	kiosks: kiosks,
 };
 
 const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
@@ -173,6 +179,9 @@ const useMapStore = create<State & Actions>()(
 		},
 		setCurrentStep: (step) => {
 			set(() => ({ currentStep: step }));
+		},
+		setActiveKiosk: (kiosk: KioskModel | undefined) => {
+			set(() => ({ activeKiosk: kiosk }));
 		},
 		getSortedPOIs: () => {
 			const pois: SortedPoiItemModel[] = get()

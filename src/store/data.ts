@@ -1,4 +1,5 @@
 import { FilterItemModel } from '@/models/filterItem.model';
+import { KioskModel } from '@/models/kiosk.model';
 import { PiCoffee } from 'react-icons/pi';
 import { PiTShirtLight } from 'react-icons/pi';
 import { PiShoppingCart } from 'react-icons/pi';
@@ -70,5 +71,39 @@ export const filterItems: FilterItemModel[] = [
 		icon: PiMoney,
 		id: '44010f6f-9963-4433-ad86-40b89b829c41:2cd016a5-8703-417c-af07-d49aef074ad3',
 		type: 'closest',
+	},
+];
+
+export const kiosks: KioskModel[] = [
+	{
+		name: 'kiosk1',
+		latitude: 25.33766469,
+		longitude: 51.4814541,
+		level: 0,
+		pitch: 0,
+		bearing: 179.2,
+		zoom: 18,
+		bounds: [
+			[51.478472777, 25.336273415],
+			[51.482695283, 25.338782543],
+		],
+	},
+	{
+		name: 'kiosk2',
+		latitude: 25.33687709,
+		longitude: 51.4814541,
+		level: 2,
+		pitch: 0,
+		bearing: -91.2,
+		zoom: 17,
+		bounds: [
+			[51.479646637, 25.335341258],
+			[51.482528207, 25.339278794],
+		],
+	},
+	{
+		name: 'entrance',
+		poiId:
+			'44010f6f-9963-4433-ad86-40b89b829c41:9b8fea62-ef62-4598-8e8e-deaaaf359f47',
 	},
 ];

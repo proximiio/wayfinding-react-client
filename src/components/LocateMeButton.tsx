@@ -4,20 +4,37 @@ import { MdMyLocation } from 'react-icons/md';
 
 function LocateMeButton() {
 	const map = useMapStore((state) => state.map);
+	const activeKiosk = useMapStore((state) => state.activeKiosk);
+	const kioskMode = useMapStore((state) => state.kioskMode);
 
 	const locateMeHandler = () => {
 		if (Object.keys(map).length > 0) {
 			map.getMapboxInstance().flyTo({
 				center: [
-					+import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LONGITUDE,
-					+import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LATITUDE,
+					kioskMode && activeKiosk?.longitude
+						? activeKiosk.longitude
+						: +import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LONGITUDE,
+					kioskMode && activeKiosk?.latitude
+						? activeKiosk.latitude
+						: +import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LATITUDE,
 				],
-				bearing: +import.meta.env.VITE_WAYFINDING_DEFAULT_BEARING,
-				pitch: +import.meta.env.VITE_WAYFINDING_DEFAULT_PITCH,
-				zoom: +import.meta.env.VITE_WAYFINDING_DEFAULT_ZOOM,
+				bearing:
+					kioskMode && activeKiosk?.bearing
+						? activeKiosk.bearing
+						: +import.meta.env.VITE_WAYFINDING_DEFAULT_BEARING,
+				pitch:
+					kioskMode && activeKiosk?.pitch
+						? activeKiosk.pitch
+						: +import.meta.env.VITE_WAYFINDING_DEFAULT_PITCH,
+				zoom:
+					kioskMode && activeKiosk?.zoom
+						? activeKiosk.zoom
+						: +import.meta.env.VITE_WAYFINDING_DEFAULT_ZOOM,
 			});
 			map.setFloorByLevel(
-				+import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LEVEL
+				kioskMode && activeKiosk?.level
+					? activeKiosk.level
+					: +import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LEVEL
 			);
 		}
 	};

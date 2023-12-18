@@ -7,6 +7,7 @@ import useKiosk from '@/hooks/useKiosk';
 import PoiSearch from './components/PoiSearch';
 import Sidebar from './components/Sidebar';
 import LocateMeButton from './components/LocateMeButton';
+import { kiosks } from './store/data';
 
 function App() {
 	const { t, i18n } = useTranslation();
@@ -24,6 +25,7 @@ function App() {
 	const map = useMapStore((state) => state.map);
 
 	const setCurrentLang = useMapStore((state) => state.setCurrentLang);
+	const setActiveKiosk = useMapStore((state) => state.setActiveKiosk);
 
 	// This effect hook handles URL query parameters related to language and kiosk mode
 	useEffect(() => {
@@ -41,11 +43,22 @@ function App() {
 
 		// If 'kiosk' parameter exists in URL, set kiosk mode
 		if (urlParams.get('kiosk')) {
+			const kiosk = kiosks.find(
+				(kiosk) => kiosk.name === urlParams.get('kiosk')
+			);
 			setKioskMode(true);
+			setActiveKiosk(kiosk);
 		}
 
 		setAppInitiated(true);
-	}, [appInitiated, i18n, setKioskMode, setCurrentLang, setAppInitiated]);
+	}, [
+		appInitiated,
+		i18n,
+		setKioskMode,
+		setActiveKiosk,
+		setCurrentLang,
+		setAppInitiated,
+	]);
 
 	// This effect hook handles map and kioskMode changes
 	useEffect(() => {
