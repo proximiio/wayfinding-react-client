@@ -47,6 +47,12 @@ function PoiSearch() {
 		[features, setRouteFinish]
 	);
 
+	// store filtered pois in ref to ensure that filteredPoisRef.current always holds the latest value of filteredPois
+	const filteredPoisRef = useRef<SortedPoiItemModel[]>([]);
+	useEffect(() => {
+		filteredPoisRef.current = filteredPois;
+	}, [filteredPois]);
+
 	useEffect(() => {
 		const down = (e: KeyboardEvent) => {
 			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
@@ -66,11 +72,13 @@ function PoiSearch() {
 		};
 
 		const onKeyPress = (button: string, e: MouseEvent | undefined) => {
+			e?.stopPropagation();
 			if (button === '{enter}') {
-				console.log('enter');
+				if (filteredPoisRef.current.length > 0) {
+					onSelectHandle(filteredPoisRef.current[0].id);
+				}
 			}
 			if (button === '{shift}' || button === '{lock}') {
-				e?.stopPropagation();
 				handleShift();
 			}
 		};
@@ -105,7 +113,7 @@ function PoiSearch() {
 				}
 			}
 		}
-	}, [open, kioskMode]);
+	}, [open, kioskMode, filteredPois]);
 
 	useEffect(() => {
 		const filtered = [...pois]
