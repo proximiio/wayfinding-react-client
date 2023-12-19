@@ -62,3 +62,8 @@
 .maplibregl-ctrl-top-right {
   @apply top-4
 }
+
+.hg-theme-default .hg-button {
+  @apply h-10;
+  @apply lg:h-20 lg:text-lg lg:font-bold;
+}
