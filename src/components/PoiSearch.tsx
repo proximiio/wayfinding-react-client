@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -15,12 +15,15 @@ import { t } from 'i18next';
 import removeAccents from 'remove-accents';
 import useMapStore from '@/store/mapStore';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
+import Keyboard from 'simple-keyboard';
+import 'react-simple-keyboard/build/css/index.css';
 
 function PoiSearch() {
 	// store state
 	const pois = useMapStore((state) => state.getSortedPOIs());
 	const currentLang = useMapStore((state) => state.currentLang);
 	const features = useMapStore((state) => state.features);
+	const kioskMode = useMapStore((state) => state.kioskMode);
 
 	// store actions
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
@@ -33,6 +36,17 @@ function PoiSearch() {
 		SortedPoiItemModel[]
 	>([]);
 
+	const keyboard = useRef<Keyboard>();
+
+	const onSelectHandle = useCallback(
+		(featureId: string) => {
+			const feature = features.find((item) => item.id === featureId)!;
+			setOpen(false);
+			setRouteFinish(feature);
+		},
+		[features, setRouteFinish]
+	);
+
 	useEffect(() => {
 		const down = (e: KeyboardEvent) => {
 			if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
@@ -44,6 +58,54 @@ function PoiSearch() {
 		document.addEventListener('keydown', down);
 		return () => document.removeEventListener('keydown', down);
 	}, []);
+
+	useEffect(() => {
+		const onChange = (input: string, e: MouseEvent | undefined) => {
+			e?.stopPropagation();
+			setSearch(input);
+		};
+
+		const onKeyPress = (button: string, e: MouseEvent | undefined) => {
+			if (button === '{enter}') {
+				console.log('enter');
+			}
+			if (button === '{shift}' || button === '{lock}') {
+				e?.stopPropagation();
+				handleShift();
+			}
+		};
+
+		const handleShift = () => {
+			const currentLayout = keyboard.current?.options.layoutName;
+			const shiftToggle = currentLayout === 'default' ? 'shift' : 'default';
+
+			keyboard.current?.setOptions({
+				layoutName: shiftToggle,
+			});
+		};
+
+		if (
+			kioskMode &&
+			import.meta.env.VITE_WAYFINDING_USE_VIRTUAL_KEYBOARD_AT_KIOSKS === 'true'
+		) {
+			if (open) {
+				console.log('should open keyboard');
+				if (!keyboard.current?.activeButtonClass) {
+					keyboard.current = new Keyboard({
+						preventMouseDownDefault: true,
+						onChange: (input, e) => onChange(input, e),
+						onKeyPress: (button, e) => onKeyPress(button, e),
+					});
+				}
+			} else {
+				console.log('should close keyboard');
+				if (keyboard.current?.activeButtonClass) {
+					keyboard.current?.destroy();
+					keyboard.current = {} as Keyboard;
+				}
+			}
+		}
+	}, [open, kioskMode]);
 
 	useEffect(() => {
 		const filtered = [...pois]
@@ -88,12 +150,6 @@ function PoiSearch() {
 			setFoundInDescription(filtered.filter((item) => item.foundInDescription));
 		}
 	}, [search, currentLang, pois, filteredPois]);
-
-	const onSelectHandle = (featureId: string) => {
-		const feature = features.find((item) => item.id === featureId)!;
-		setOpen(false);
-		setRouteFinish(feature);
-	};
 
 	return (
 		<>
@@ -156,6 +212,11 @@ function PoiSearch() {
 					)}
 				</CommandList>
 			</CommandDialog>
+			{/*showKeyboard && (
+				<div className='absolute bottom-0 z-[100] w-full'>
+					<Keyboard keyboardRef={(r) => (keyboard.current = r)} />
+				</div>
+			)*/}
 		</>
 	);
 }
