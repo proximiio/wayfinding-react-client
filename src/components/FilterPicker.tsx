@@ -86,7 +86,7 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 									<img src={item.iconImage} alt={t(item.title)} />
 								)}
 							</Button>
-							<p className='mt-1 overflow-hidden text-xs text-ellipsis whitespace-nowrap sm:overflow-auto sm:whitespace-normal'>
+							<p className='mt-1 overflow-hidden text-xs text-ellipsis whitespace-nowrap sm:whitespace-normal'>
 								{t(item.title)}
 							</p>
 						</motion.li>

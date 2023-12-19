@@ -36,6 +36,7 @@ type State = {
 	routeDetails: Record<string, any>;
 	currentStep: number;
 	activeKiosk: KioskModel | undefined;
+	sidebarIsOpen: boolean;
 	kiosks: KioskModel[];
 };
 
@@ -59,7 +60,10 @@ type Actions = {
 	setRouteDetails: (route: unknown) => void;
 	setCurrentStep: (step: number) => void;
 	setActiveKiosk: (kiosk: KioskModel | undefined) => void;
+	setSidebarIsOpen: (isOpen: boolean) => void;
 	getSortedPOIs: () => SortedPoiItemModel[];
+	locateMe: () => void;
+	resetView: () => void;
 	reset: () => void;
 };
 
@@ -85,6 +89,7 @@ const initialState: State = {
 	routeDetails: {},
 	currentStep: 0,
 	activeKiosk: {} as KioskModel,
+	sidebarIsOpen: false,
 	kiosks: kiosks,
 };
 
@@ -183,6 +188,9 @@ const useMapStore = create<State & Actions>()(
 		setActiveKiosk: (kiosk: KioskModel | undefined) => {
 			set(() => ({ activeKiosk: kiosk }));
 		},
+		setSidebarIsOpen: (isOpen: boolean) => {
+			set(() => ({ sidebarIsOpen: isOpen }));
+		},
 		getSortedPOIs: () => {
 			const pois: SortedPoiItemModel[] = get()
 				.features.filter(
@@ -251,6 +259,49 @@ const useMapStore = create<State & Actions>()(
 		},
 		reset: () => {
 			set(initialState);
+		},
+		locateMe: () => {
+			if (Object.keys(get().map).length > 0) {
+				get()
+					.map.getMapboxInstance()
+					.flyTo({
+						center: [
+							get().kioskMode && get().activeKiosk?.longitude
+								? get().activeKiosk!.longitude!
+								: +import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LONGITUDE,
+							get().kioskMode && get().activeKiosk?.latitude
+								? get().activeKiosk!.latitude!
+								: +import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LATITUDE,
+						],
+						bearing:
+							get().kioskMode && get().activeKiosk?.bearing
+								? get().activeKiosk!.bearing!
+								: +import.meta.env.VITE_WAYFINDING_DEFAULT_BEARING,
+						pitch:
+							get().kioskMode && get().activeKiosk?.pitch
+								? get().activeKiosk!.pitch!
+								: +import.meta.env.VITE_WAYFINDING_DEFAULT_PITCH,
+						zoom:
+							get().kioskMode && get().activeKiosk?.zoom
+								? get().activeKiosk!.zoom!
+								: +import.meta.env.VITE_WAYFINDING_DEFAULT_ZOOM,
+					});
+				get().map.setFloorByLevel(
+					get().kioskMode && get().activeKiosk?.level
+						? get().activeKiosk!.level!
+						: +import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LEVEL
+				);
+			}
+		},
+		resetView() {
+			set({
+				routeStart: {} as Feature,
+				routeFinish: {} as Feature,
+				activeFilter: {} as FilterItemModel,
+				showCustomRoutePicker: false,
+				haveRouteDetails: false,
+				sidebarIsOpen: false,
+			});
 		},
 	})
 	//{ name: 'mapStore' }

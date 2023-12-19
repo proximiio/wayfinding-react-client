@@ -7,6 +7,7 @@ import maplibregl from 'maplibre-gl';
 import useRouting from '@/hooks/useRouting';
 import { FilterItemModel } from '@/models/filterItem.model';
 import { useShallow } from 'zustand/react/shallow';
+import i18n from '@/i18n';
 
 function MapView() {
 	const mapInitiated = useRef(false);
@@ -25,7 +26,7 @@ function MapView() {
 	const mapPadding = {
 		top: 250,
 		bottom: 250,
-		left: 500,
+		left: 250,
 		right: 250,
 	};
 
@@ -41,6 +42,7 @@ function MapView() {
 	const features = useMapStore((state) => state.features);
 	const places = useMapStore((state) => state.places);
 	const currentPlace = useMapStore((state) => state.currentPlace);
+	const accessibleRoute = useMapStore((state) => state.accessibleRoute);
 
 	// store actions
 	const setMap = useMapStore(useShallow((state) => state.setMap));
@@ -56,6 +58,7 @@ function MapView() {
 	const setRouteDetails = useMapStore((state) => state.setRouteDetails);
 	const setCurrentStep = useMapStore((state) => state.setCurrentStep);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
+	const setAccessibleRoute = useMapStore((state) => state.setAccessibleRoute);
 	const setShowCustomRoutePicker = useMapStore(
 		(state) => state.setShowCustomRoutePicker
 	);
@@ -161,6 +164,15 @@ function MapView() {
 			map.setPlace(defaultPlace.id);
 		}
 	}, [features, setRouteFinish, setRouteStart, places, currentPlace, map]);
+
+	// This effect hook language change
+	useEffect(() => {
+		console.log('change language', currentLang);
+		i18n.changeLanguage(currentLang);
+		if (Object.keys(map).length > 0) {
+			map.setLanguage(currentLang);
+		}
+	}, [currentLang, map]);
 
 	useEffect(() => {
 		// Initialize map only once
@@ -298,6 +310,13 @@ function MapView() {
 						setHaveRouteDetails(true);
 						setRouteDetails(res);
 					}
+				});
+
+				// subscribe to route failed listener
+				map.getRouteFailedListener().subscribe((res) => {
+					console.log('route failed', res);
+					// if route found failed, try again with non/accessible route
+					setAccessibleRoute(!accessibleRoute);
 				});
 
 				// subscribe to nav step listener and set current step from that

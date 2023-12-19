@@ -4,18 +4,19 @@ import { useClickAway } from 'react-use';
 import FilterMenu from './FilterMenu';
 import PoiList from './PoiList';
 import Filters from './Filters';
-import { FilterItemModel } from '@/models/filterItem.model';
 import useMapStore from '@/store/mapStore';
 import RouteForm from './RouteForm';
 import PoiDetails from './PoiDetails';
-import Feature from 'proximiio-js-library/lib/models/feature';
 import { cn } from '@/lib/utils';
 
 function Sidebar() {
-	const [isOpen, setOpen] = useState(false);
 	const [color, setColor] = useState('#000');
 	const ref = useRef(null);
 
+	const [isOpen, setOpen] = useMapStore((state) => [
+		state.sidebarIsOpen,
+		state.setSidebarIsOpen,
+	]);
 	const activeFilter = useMapStore((state) => state.activeFilter);
 	const routeFinish = useMapStore((state) => state.routeFinish);
 	const kioskMode = useMapStore((state) => state.kioskMode);
@@ -23,13 +24,7 @@ function Sidebar() {
 		(state) => state.showCustomRoutePicker
 	);
 
-	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
-	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
-	const setRouteStart = useMapStore((state) => state.setRouteStart);
-	const setShowCustomRoutePicker = useMapStore(
-		(state) => state.setShowCustomRoutePicker
-	);
-	const setHaveRouteDetails = useMapStore((state) => state.setHaveRouteDetails);
+	const resetView = useMapStore((state) => state.resetView);
 
 	useClickAway(ref, () => {
 		if (isOpen && routeFinish?.id) {
@@ -39,7 +34,7 @@ function Sidebar() {
 			return;
 		}
 		if (!isOpen) {
-			return
+			return;
 		}
 		onCloseHandler();
 	});
@@ -50,17 +45,16 @@ function Sidebar() {
 			setOpen(true);
 			setColor('#e11d48');
 		}
-	}, [routeFinish]);
+		if (!isOpen) {
+			setColor('#000');
+		}
+	}, [routeFinish, setOpen, isOpen]);
 
 	const onCloseHandler = () => {
 		console.log('close handler');
 		setOpen(false);
 		setColor('#000');
-		setActiveFilter({} as FilterItemModel);
-		setRouteFinish({} as Feature);
-		setRouteStart({} as Feature);
-		setShowCustomRoutePicker(false);
-		setHaveRouteDetails(false);
+		resetView();
 	};
 
 	return (
@@ -73,7 +67,9 @@ function Sidebar() {
 				onClose={onCloseHandler}
 				className={cn(
 					routeFinish?.id && 'bg-white shadow-md lg:shadow-none lg:m-3 lg:p-1',
-					(activeFilter?.type === 'list' || activeFilter?.type === 'closest' || showCustomRoutePicker) &&
+					(activeFilter?.type === 'list' ||
+						activeFilter?.type === 'closest' ||
+						showCustomRoutePicker) &&
 						'bg-white shadow-md lg:shadow-none lg:bg-transparent'
 				)}
 			/>
@@ -83,9 +79,8 @@ function Sidebar() {
 					Object.keys(routeFinish).length === 0 && <Filters key='1' />}
 				{isOpen && activeFilter?.type === 'list' && <PoiList key='2' />}
 				{isOpen &&
-					((activeFilter?.type === 'closest' && !kioskMode) || showCustomRoutePicker) && (
-						<RouteForm key='3' />
-					)}
+					((activeFilter?.type === 'closest' && !kioskMode) ||
+						showCustomRoutePicker) && <RouteForm key='3' />}
 				{isOpen && routeFinish?.id && !showCustomRoutePicker && (
 					<PoiDetails key='4' />
 				)}

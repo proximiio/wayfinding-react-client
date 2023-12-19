@@ -38,6 +38,12 @@
 	"atm": "Bancomat",
 	"taxi": "Taxi",
 	"metro": "Metro",
+	"clothing": "Abbigliamento",
+	"groceries": "Generi alimentari",
+	"shoes": "Scarpe",
+	"accessible-toilet": "Bagno accessibile",
+	"baby-changing": "Cambio bambini",
+	"emergency-care": "Cura d'emergenza",
 	"showTheClosest": "Mostra il più vicino",
 	"startingPoint": "Punto di partenza",
 	"destination": "Arrivo",
@@ -86,5 +92,6 @@
 	"no-results": "Nessun risultato trovato.",
 	"found-in-description": "Trovato nella descrizione",
 	"suggestions": "Suggerimenti",
-	"closest": "Più vicino"
+	"closest": "Più vicino",
+	"reset-view": "Resetta vista"
 }

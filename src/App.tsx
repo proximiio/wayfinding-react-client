@@ -8,8 +8,14 @@ import PoiSearch from './components/PoiSearch';
 import Sidebar from './components/Sidebar';
 import LocateMeButton from './components/LocateMeButton';
 import { kiosks } from './store/data';
+import LanguageToggle from './components/LanguageToggle';
+import ResetViewButton from './components/ResetViewButton';
 
 function App() {
+	const showLanguageToggle = import.meta.env
+		.VITE_WAYFINDING_SHOW_LANGUAGE_TOGGLE === 'true';
+	const showResetViewButton = import.meta.env
+		.VITE_WAYFINDING_SHOW_RESET_BUTTON === 'true';
 	const { t, i18n } = useTranslation();
 	const [idleTime] = useKiosk();
 
@@ -85,6 +91,8 @@ function App() {
 					<FloorPicker />
 					<Sidebar />
 					<LocateMeButton />
+					{showLanguageToggle && <LanguageToggle />}
+					{showResetViewButton && <ResetViewButton />}
 					<MapView />
 				</main>
 			)}

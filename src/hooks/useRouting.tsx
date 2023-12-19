@@ -48,6 +48,7 @@ export default function UseRouting() {
 				return;
 			}
 			map.findRouteByIds(finish, start, accessibleRoute, wayfindingConfig);
+			console.log('findRoute', { start, finish, wayfindingConfig });
 		},
 		[accessibleRoute, map]
 	);

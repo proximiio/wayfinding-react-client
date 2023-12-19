@@ -13,6 +13,8 @@ interface ImportMetaEnv {
 	readonly VITE_WAYFINDING_DEFAULT_ZOOM: number;
 	readonly VITE_WAYFINDING_DEFAULT_PITCH: number;
 	readonly VITE_WAYFINDING_DEFAULT_BEARING: number;
+	readonly VITE_WAYFINDING_SHOW_LANGUAGE_TOGGLE: 'true' | 'false';
+	readonly VITE_WAYFINDING_SHOW_RESET_BUTTON: 'true' | 'false';
 }
 
 interface ImportMeta {
