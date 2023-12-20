@@ -37,14 +37,14 @@ function RouteForm() {
 	};
 
 	const clickHandler = () => {
-		if (startFeature?.id && finishFeature?.id) {
+		if (startFeature !== 'kiosk' && startFeature?.id && finishFeature?.id) {
 			console.log('should find regular route');
 			setRouteStart(startFeature);
 			setRouteFinish(finishFeature);
 			setShowCustomRoutePicker(false);
 			return;
 		}
-		if (startFeature?.id && activeFilter?.id) {
+		if (startFeature !== 'kiosk' && startFeature?.id && activeFilter?.id) {
 			console.log('should find closest amenity route');
 			const closestFeature = map.getClosestFeature(
 				activeFilter.id as string,
@@ -58,7 +58,8 @@ function RouteForm() {
 	};
 
 	const isButtonDisabled = () => {
-		const startFeatureNotSelected = !startFeature?.id;
+		const startFeatureNotSelected =
+			startFeature !== 'kiosk' && !startFeature?.id;
 		const finishFeatureNotSelected = !finishFeature?.id;
 		const noActiveFilter = !activeFilter?.id;
 
@@ -87,11 +88,13 @@ function RouteForm() {
 					{t(activeFilter.title)}
 				</h2>
 				<div className='flex items-center gap-1 lg:block'>
-					<PoiSelect
-						selectedPoi={startFeature}
-						onSelect={startSelectHandler}
-						placeholder={t('startingPoint')}
-					/>
+					{startFeature !== 'kiosk' && (
+						<PoiSelect
+							selectedPoi={startFeature}
+							onSelect={startSelectHandler}
+							placeholder={t('startingPoint')}
+						/>
+					)}
 					{showCustomRoutePicker && (
 						<PoiSelect
 							selectedPoi={finishFeature}

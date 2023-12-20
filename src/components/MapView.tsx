@@ -64,29 +64,6 @@ function MapView() {
 		(state) => state.setShowCustomRoutePicker
 	);
 
-	// This effect hook handles route start state changes
-	useEffect(() => {
-		console.log('start efffect');
-		if (routeStart === 'kiosk' || routeStart?.id) {
-			console.log('routeStart', routeStart);
-			// if we also have route finish generate route and reset the current step
-			if (routeFinish?.id) {
-				findRoute({
-					finish: routeFinish.id,
-					start: routeStart === 'kiosk' ? undefined : routeStart.id,
-				});
-				setCurrentStep(0);
-				return;
-			}
-		} else {
-			console.log('routeStart cancelled', routeStart);
-			if (Object.keys(map).length > 0) {
-				// cancel route if it's rendered
-				map.cancelRoute();
-			}
-		}
-	}, [map, routeStart, routeFinish, findRoute, setCurrentStep]);
-
 	// This effect hook handles route finish state changes
 	useEffect(() => {
 		console.log('finish effect');
@@ -112,6 +89,29 @@ function MapView() {
 			}
 		}
 	}, [map, routeFinish, setActiveFilter, setShowCustomRoutePicker]);
+
+	// This effect hook handles route start state changes
+	useEffect(() => {
+		console.log('start efffect');
+		if (routeStart === 'kiosk' || routeStart?.id) {
+			console.log('routeStart', routeStart);
+			// if we also have route finish generate route and reset the current step
+			if (routeFinish?.id) {
+				findRoute({
+					finish: routeFinish.id,
+					start: routeStart === 'kiosk' ? undefined : routeStart.id,
+				});
+				setCurrentStep(0);
+				return;
+			}
+		} else {
+			console.log('routeStart cancelled', routeStart);
+			if (Object.keys(map).length > 0) {
+				// cancel route if it's rendered
+				map.cancelRoute();
+			}
+		}
+	}, [map, routeStart, routeFinish, findRoute, setCurrentStep]);
 
 	// This effect hook handles active filter state changes
 	useEffect(() => {
