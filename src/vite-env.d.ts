@@ -16,6 +16,7 @@ interface ImportMetaEnv {
 	readonly VITE_WAYFINDING_SHOW_LANGUAGE_TOGGLE: 'true' | 'false';
 	readonly VITE_WAYFINDING_SHOW_RESET_BUTTON: 'true' | 'false';
 	readonly VITE_WAYFINDING_USE_VIRTUAL_KEYBOARD_AT_KIOSKS: 'true' | 'false';
+	readonly VITE_WAYFINDING_USE_GPS_LOCATION: 'true' | 'false';
 }
 
 interface ImportMeta {

@@ -32,6 +32,7 @@ function MapView() {
 
 	// store state
 	const kioskMode = useMapStore((state) => state.kioskMode);
+	const gpsMode = useMapStore((state) => state.gpsMode);
 	const currentLang = useMapStore((state) => state.currentLang);
 	const filterItems = useMapStore((state) => state.filterItems);
 	const map = useMapStore((state) => state.map);
@@ -66,13 +67,13 @@ function MapView() {
 	// This effect hook handles route start state changes
 	useEffect(() => {
 		console.log('start efffect');
-		if (routeStart?.id) {
+		if (routeStart === 'kiosk' || routeStart?.id) {
 			console.log('routeStart', routeStart);
 			// if we also have route finish generate route and reset the current step
 			if (routeFinish?.id) {
 				findRoute({
 					finish: routeFinish.id,
-					start: routeStart.id === 'kiosk' ? undefined : routeStart.id,
+					start: routeStart === 'kiosk' ? undefined : routeStart.id,
 				});
 				setCurrentStep(0);
 				return;
@@ -206,12 +207,12 @@ function MapView() {
 					fitBoundsPadding: mapPadding, // setting the padding option to use for zooming into the bounds when route is drawn,
 					handleUrlParams: true, // enable handling url params, this way you can load map with predefined route generated
 					language: currentLang, // init with predefined language setting
-					// useGpsLocation: true, // if enabled your location will be detected with geolocation API and used as a starting point for routing
-					// geolocationControlOptions: {
-					//   autoTrigger: true, // if enabled map will automatically enable geolocation
-					//   autoLocate: false, // if enabled map will automatically focus on user location
-					//   position: 'bottom-right', //  position on the map to which the control will be added.
-					// },
+					useGpsLocation: gpsMode, // if enabled your location will be detected with geolocation API and used as a starting point for routing
+					geolocationControlOptions: {
+						autoTrigger: true, // if enabled map will automatically enable geolocation
+						autoLocate: false, // if enabled map will automatically focus on user location
+						position: 'bottom-right', //  position on the map to which the control will be added.
+					},
 					showLevelDirectionIcon: true, // if enabled arrow icon will be shown at the levelchanger indicating direction of level change along the found route
 					initPolygons: true,
 					routeAnimation: {

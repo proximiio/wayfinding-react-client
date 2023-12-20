@@ -43,7 +43,9 @@ function PoiDetailsHeading({ showMore }: { showMore: boolean }) {
 			}
 			if (routeFinish && routeStart) {
 				urlParams.set('destinationFeature', routeFinish.properties.id);
-				urlParams.set('startFeature', routeStart.properties.id);
+				if (routeStart !== 'kiosk' && routeStart.properties) {
+					urlParams.set('startFeature', routeStart.properties.id);
+				}
 			}
 		}
 		setQrCodeUrl(url.href);

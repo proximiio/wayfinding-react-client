@@ -39,6 +39,7 @@ export default function UseRouting() {
 				avoidTicketGates: accessibleRoute ? true : false,
 			};
 			if (type === 'closest') {
+				console.log('closest', finish, start);
 				map.findRouteToNearestFeature(
 					finish,
 					start,

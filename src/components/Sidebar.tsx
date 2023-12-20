@@ -20,6 +20,7 @@ function Sidebar() {
 	const activeFilter = useMapStore((state) => state.activeFilter);
 	const routeFinish = useMapStore((state) => state.routeFinish);
 	const kioskMode = useMapStore((state) => state.kioskMode);
+	const gpsMode = useMapStore((state) => state.gpsMode);
 	const showCustomRoutePicker = useMapStore(
 		(state) => state.showCustomRoutePicker
 	);
@@ -79,7 +80,7 @@ function Sidebar() {
 					Object.keys(routeFinish).length === 0 && <Filters key='1' />}
 				{isOpen && activeFilter?.type === 'list' && <PoiList key='2' />}
 				{isOpen &&
-					((activeFilter?.type === 'closest' && !kioskMode) ||
+					((activeFilter?.type === 'closest' && !kioskMode && !gpsMode) ||
 						showCustomRoutePicker) && <RouteForm key='3' />}
 				{isOpen && routeFinish?.id && !showCustomRoutePicker && (
 					<PoiDetails key='4' />

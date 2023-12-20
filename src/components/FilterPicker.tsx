@@ -15,32 +15,20 @@ interface FilterPickerProps {
 
 function FilterPicker({ heading, color, items }: FilterPickerProps) {
 	const kioskMode = useMapStore((state) => state.kioskMode);
+	const gpsMode = useMapStore((state) => state.gpsMode);
 	const map = useMapStore((state) => state.map);
-	const activeKiosk = useMapStore((state) => state.activeKiosk);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 
 	const filterClickHandler = (item: FilterItemModel) => {
-		if (!kioskMode || item.type !== 'closest') {
+		if ((!gpsMode && !kioskMode) || item.type !== 'closest') {
 			setActiveFilter(item);
 		} else {
-			const kioskFeature = new Feature({
-				id: 'kiosk',
-				geometry: {
-					type: 'Point',
-					coordinates: [activeKiosk?.longitude, activeKiosk?.latitude],
-				},
-				type: 'Feature',
-				properties: {
-					...activeKiosk,
-				},
-			});
 			const closestFeature = map.getClosestFeature(
-				item.id as string,
-				kioskFeature
+				item.id as string
 			) as Feature;
-			setRouteStart(kioskFeature);
+			setRouteStart('kiosk');
 			setRouteFinish(closestFeature);
 		}
 	};

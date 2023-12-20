@@ -16,7 +16,7 @@ import removeAccents from 'remove-accents';
 import useMapStore from '@/store/mapStore';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
 import Keyboard from 'simple-keyboard';
-import 'react-simple-keyboard/build/css/index.css';
+import 'simple-keyboard/build/css/index.css';
 
 function PoiSearch() {
 	// store state

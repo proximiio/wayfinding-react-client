@@ -19,7 +19,7 @@ function PoiDetailsRoutes({
 	const features = useMapStore((state) => state.features);
 	const haveRouteDetails = useMapStore((state) => state.haveRouteDetails);
 	const kioskMode = useMapStore((state) => state.kioskMode);
-	const activeKiosk = useMapStore((state) => state.activeKiosk);
+	const gpsMode = useMapStore((state) => state.gpsMode);
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setShowCustomRoutePicker = useMapStore(
 		(state) => state.setShowCustomRoutePicker
@@ -47,26 +47,15 @@ function PoiDetailsRoutes({
 			return;
 		}
 		if (from === 'kiosk') {
-			const kioskFeature = new Feature({
-				id: 'kiosk',
-				geometry: {
-					type: 'Point',
-					coordinates: [activeKiosk?.longitude, activeKiosk?.latitude],
-				},
-				type: 'Feature',
-				properties: {
-					...activeKiosk,
-				},
-			});
-			setRouteStart(kioskFeature);
-			console.log('from kiosk', kioskFeature);
+			setRouteStart('kiosk');
+			console.log('from kiosk');
 			return;
 		}
 	};
 
 	return (
 		<AnimatePresence>
-			{kioskMode && (
+			{(kioskMode || gpsMode) && (
 				<motion.div
 					className={cn(
 						'mt-4',
@@ -91,7 +80,7 @@ function PoiDetailsRoutes({
 					</Button>
 				</motion.div>
 			)}
-			{!kioskMode && (
+			{!kioskMode && !gpsMode && (
 				<motion.div
 					className={cn(
 						'grid grid-cols-3 gap-2 mt-4',

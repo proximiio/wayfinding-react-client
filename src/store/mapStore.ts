@@ -18,12 +18,13 @@ type State = {
 	appInitiated: boolean;
 	map: Map;
 	kioskMode: boolean;
+	gpsMode: boolean;
 	currentLang: string;
 	places: PlaceModel[];
 	currentPlace: PlaceModel;
 	floors: FloorModel[];
 	currentFloor: FloorModel;
-	routeStart: Feature;
+	routeStart: Feature | 'kiosk';
 	routeFinish: Feature;
 	features: Feature[];
 	amenities: AmenityModel[];
@@ -49,7 +50,7 @@ type Actions = {
 	setCurrentPlace: (place: PlaceModel) => void;
 	setFloors: (floors: FloorModel[]) => void;
 	setCurrentFloor: (floor: FloorModel) => void;
-	setRouteStart: (feature: Feature) => void;
+	setRouteStart: (feature: Feature | 'kiosk') => void;
 	setRouteFinish: (feature: Feature) => void;
 	setFeatures: (features: Feature[]) => void;
 	setAmenities: (amenities: AmenityModel[]) => void;
@@ -72,6 +73,7 @@ const initialState: State = {
 	appInitiated: false,
 	map: {} as Map,
 	kioskMode: false,
+	gpsMode: import.meta.env.VITE_WAYFINDING_USE_GPS_LOCATION === 'true',
 	currentLang: 'en',
 	places: [],
 	currentPlace: {} as PlaceModel,
@@ -150,7 +152,9 @@ const useMapStore = create<State & Actions>()(
 		},
 		setRouteStart: (feature) => {
 			set(() => {
-				feature = assignProperties(feature, get().floors, get().currentLang);
+				if (feature !== 'kiosk') {
+					feature = assignProperties(feature, get().floors, get().currentLang);
+				}
 				return { routeStart: feature };
 			});
 		},
