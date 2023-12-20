@@ -10,6 +10,7 @@ import LocateMeButton from './components/LocateMeButton';
 import { kiosks } from './store/data';
 import LanguageToggle from './components/LanguageToggle';
 import ResetViewButton from './components/ResetViewButton';
+import { Toaster } from './components/ui/toaster';
 
 function App() {
 	const showLanguageToggle = import.meta.env
@@ -94,6 +95,7 @@ function App() {
 					{showLanguageToggle && <LanguageToggle />}
 					{showResetViewButton && <ResetViewButton />}
 					<MapView />
+					<Toaster />
 				</main>
 			)}
 		</>

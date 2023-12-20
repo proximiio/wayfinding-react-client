@@ -211,7 +211,7 @@ function MapView() {
 					geolocationControlOptions: {
 						autoTrigger: true, // if enabled map will automatically enable geolocation
 						autoLocate: false, // if enabled map will automatically focus on user location
-						position: 'bottom-right', //  position on the map to which the control will be added.
+						position: 'top-right', //  position on the map to which the control will be added.
 					},
 					showLevelDirectionIcon: true, // if enabled arrow icon will be shown at the levelchanger indicating direction of level change along the found route
 					initPolygons: true,

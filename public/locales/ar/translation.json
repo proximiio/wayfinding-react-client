@@ -94,5 +94,7 @@
 	"suggestions": "اقتراحات",
 	"closest": "الأقرب",
 	"reset-view": "إعادة تعيين العرض",
-	"click-here": "انقر هنا"
+	"click-here": "انقر هنا",
+	"routeFailedTitle": "أوه لا! حدث خطأ ما.",
+	"routeFailed": "لم نجد مسارًا من موقع GPS الخاص بك. يتم عرض المسار من المدخل الرئيسي."
 }

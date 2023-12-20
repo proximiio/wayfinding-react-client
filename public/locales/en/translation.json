@@ -94,5 +94,7 @@
 	"suggestions": "Suggestions",
 	"closest": "Closest",
 	"reset-view": "Reset view",
-	"click-here": "Click here"
+	"click-here": "Click here",
+	"routeFailedTitle": "Uh oh! Something went wrong.",
+	"routeFailed": "We did not find a route from your GPS location. Showing route from main entrance."
 }

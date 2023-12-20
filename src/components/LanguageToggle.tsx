@@ -7,10 +7,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import ReactCountryFlag from 'react-country-flag';
 import useMapStore from '@/store/mapStore';
+import { cn } from '@/lib/utils';
 
 function LanguageToggle() {
 	const setCurrentLang = useMapStore((state) => state.setCurrentLang);
 	const currentLang = useMapStore((state) => state.currentLang);
+	const gpsMode = useMapStore((state) => state.gpsMode);
 	const languages = [
 		{
 			value: 'en',
@@ -40,7 +42,9 @@ function LanguageToggle() {
 				<Button
 					variant='outline'
 					size='icon'
-					className='absolute z-10 flex items-center justify-center w-12 h-12 overflow-hidden text-2xl border-2 rounded-full cursor-pointer right-2 top-20 hover:border-primary/70 bg-white/80'
+					className={cn(
+						'absolute z-10 flex items-center justify-center w-12 h-12 overflow-hidden text-2xl border-2 rounded-full cursor-pointer right-2 top-20 hover:border-primary/70 bg-white/80', gpsMode && 'top-28'
+					)}
 				>
 					<ReactCountryFlag
 						countryCode={
@@ -55,20 +59,22 @@ function LanguageToggle() {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className='w-auto min-w-0 p-0 bg-transparent border-0 shadow-none outline-none'>
-				{languages.filter(i => i.value !== currentLang).map((language, idx) => (
-					<DropdownMenuItem
-						key={idx}
-						onClick={() => setCurrentLang(language.value)}
-            className='flex items-center justify-center w-10 h-10 p-0 mb-2 overflow-hidden border-2 rounded-full cursor-pointer border-black/20 hover:border-primary hover:bg-transparent focus:bg-transparent'
-					>
-						<ReactCountryFlag
-							countryCode={language.countryCode}
-							svg
-							className='!w-12 !h-12 max-w-none'
-							title='US'
-						/>
-					</DropdownMenuItem>
-				))}
+				{languages
+					.filter((i) => i.value !== currentLang)
+					.map((language, idx) => (
+						<DropdownMenuItem
+							key={idx}
+							onClick={() => setCurrentLang(language.value)}
+							className='flex items-center justify-center w-10 h-10 p-0 mb-2 overflow-hidden border-2 rounded-full cursor-pointer border-black/20 hover:border-primary hover:bg-transparent focus:bg-transparent'
+						>
+							<ReactCountryFlag
+								countryCode={language.countryCode}
+								svg
+								className='!w-12 !h-12 max-w-none'
+								title='US'
+							/>
+						</DropdownMenuItem>
+					))}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
