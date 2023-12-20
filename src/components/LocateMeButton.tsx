@@ -8,7 +8,7 @@ function LocateMeButton() {
 	return (
 		<div
 			className={cn(
-				'absolute z-[6] p-4 top-40 left-5 hover:border-primary/70 border-2 rounded-full bg-white/80 text-2xl cursor-pointer'
+				'absolute z-[6] p-4 top-40 left-2 sm:left-5 hover:border-primary/70 border-2 rounded-full bg-white/80 text-2xl cursor-pointer'
 			)}
 			onClick={locateMe}
 		>

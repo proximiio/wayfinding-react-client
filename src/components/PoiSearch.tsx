@@ -113,7 +113,7 @@ function PoiSearch() {
 				}
 			}
 		}
-	}, [open, kioskMode, filteredPois]);
+	}, [open, kioskMode, filteredPois, onSelectHandle]);
 
 	useEffect(() => {
 		const filtered = [...pois]
@@ -162,12 +162,13 @@ function PoiSearch() {
 	return (
 		<>
 			<button
-				className='absolute z-10 flex items-center px-5 py-2 text-sm transition-colors border-2 rounded-full bg-white/80 top-5 left-5 right-12 text-muted-foreground hover:border-primary/70 lg:right-auto'
+				className='absolute z-10 flex items-center px-5 py-2 text-sm transition-colors border-2 rounded-full bg-white/80 top-5 left-2 sm:left-5 right-12 text-muted-foreground hover:border-primary/70 lg:right-auto'
 				onClick={() => setOpen(true)}
 			>
 				<HiMagnifyingGlass className='mr-2' />
-				{t('click-here-or-press')}
-				<kbd className='pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 mx-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100'>
+				<span className='hidden md:inline'>{t('click-here-or-press')}</span>
+				<span className='inline md:hidden'>{t('click-here')}&nbsp;</span>
+				<kbd className='pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 mx-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100 hidden md:inline-flex'>
 					<span className='text-xs'>Ctrl + </span>F
 				</kbd>
 				{t('to-search')}
@@ -220,11 +221,6 @@ function PoiSearch() {
 					)}
 				</CommandList>
 			</CommandDialog>
-			{/*showKeyboard && (
-				<div className='absolute bottom-0 z-[100] w-full'>
-					<Keyboard keyboardRef={(r) => (keyboard.current = r)} />
-				</div>
-			)*/}
 		</>
 	);
 }

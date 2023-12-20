@@ -22,7 +22,7 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 
 	const filterClickHandler = (item: FilterItemModel) => {
-		if (!kioskMode) {
+		if (!kioskMode || item.type !== 'closest') {
 			setActiveFilter(item);
 		} else {
 			const kioskFeature = new Feature({

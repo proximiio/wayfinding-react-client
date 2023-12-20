@@ -35,12 +35,12 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^13.5.0",
     "react-icons": "^4.12.0",
-    "react-simple-keyboard": "^3.7.53",
     "react-use": "^17.4.2",
     "remove-accents": "^0.5.0",
     "simple-keyboard": "^3.7.36",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
+    "vite-plugin-pwa": "^0.17.4",
     "zustand": "^4.4.6"
   },
   "devDependencies": {

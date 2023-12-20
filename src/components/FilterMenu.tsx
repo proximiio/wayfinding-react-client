@@ -21,7 +21,7 @@ function FilterMenu({
 	return (
 		<div
 			className={cn(
-				'absolute z-30 p-1 top-20 left-5 hover:border-primary/70 rounded-2xl',
+				'absolute z-30 p-1 top-20 left-2 sm:left-5 hover:border-primary/70 rounded-2xl',
 				isOpen
 					? 'hover:border-rose-500 lg:p-3'
 					: 'border-2 rounded-full bg-white/80',
@@ -29,6 +29,7 @@ function FilterMenu({
 			)}
 		>
 			<Hamburger
+				label='Menu'
 				toggled={isOpen}
 				size={26}
 				toggle={() => setOpen(!isOpen)}
