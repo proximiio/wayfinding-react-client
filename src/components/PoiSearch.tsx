@@ -162,7 +162,7 @@ function PoiSearch() {
 	return (
 		<>
 			<button
-				className='absolute right-auto z-10 flex items-center p-4 text-2xl transition-colors border-2 rounded-full lg:px-5 lg:py-2 lg:text-sm bg-white/80 top-5 left-2 sm:left-5 text-muted-foreground hover:border-primary/70'
+				className='absolute right-auto z-10 flex items-center p-4 text-2xl transition-colors border-2 rounded-full lg:px-5 lg:py-2 lg:text-sm bg-white/80 top-[88px] sm:top-5 left-2 sm:left-5 text-muted-foreground hover:border-primary/70'
 				onClick={() => setOpen(true)}
 			>
 				<HiMagnifyingGlass className='lg:mr-2' />
