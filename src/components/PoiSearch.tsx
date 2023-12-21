@@ -162,16 +162,17 @@ function PoiSearch() {
 	return (
 		<>
 			<button
-				className='absolute z-10 flex items-center px-5 py-2 text-sm transition-colors border-2 rounded-full bg-white/80 top-5 left-2 sm:left-5 right-12 text-muted-foreground hover:border-primary/70 lg:right-auto'
+				className='absolute right-auto z-10 flex items-center p-4 text-2xl transition-colors border-2 rounded-full lg:px-5 lg:py-2 lg:text-sm bg-white/80 top-5 left-2 sm:left-5 text-muted-foreground hover:border-primary/70'
 				onClick={() => setOpen(true)}
 			>
-				<HiMagnifyingGlass className='mr-2' />
-				<span className='hidden md:inline'>{t('click-here-or-press')}</span>
-				<span className='inline md:hidden'>{t('click-here')}&nbsp;</span>
-				<kbd className='pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 mx-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100 hidden md:inline-flex'>
-					<span className='text-xs'>Ctrl + </span>F
-				</kbd>
-				{t('to-search')}
+				<HiMagnifyingGlass className='lg:mr-2' />
+				<span className="hidden lg:inline">
+					{t('click-here-or-press')}
+					<kbd className='pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 mx-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100'>
+						<span className='text-xs'>Ctrl + </span>F
+					</kbd>
+					{t('to-search')}
+				</span>
 			</button>
 			<CommandDialog
 				dialogProps={{ open: open, onOpenChange: setOpen }}

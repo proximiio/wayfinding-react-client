@@ -30,7 +30,7 @@ function FloorPicker() {
 	});
 
 	return (
-		<div className='absolute z-10 flex items-center justify-center gap-1 left-[calc(50%-90px)] flex-wrap sm:flex-nowrap w-[180px] sm:left-[calc(50%-140px)] top-20 sm:w-[280px] lg:top-5'>
+		<div className='absolute z-10 flex items-center justify-center gap-1 left-[calc(50%-90px)] flex-wrap sm:flex-nowrap w-[180px] sm:left-[calc(50%-140px)] top-5 sm:w-[280px]'>
 			{floorsList}
 		</div>
 	);
