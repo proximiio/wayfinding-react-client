@@ -189,6 +189,10 @@ function MapView() {
 				const map = new Proximiio.Map({
 					// you can define any of the mapbox options in there, we are retrieving those from state service
 					mapboxOptions: {
+						center: [
+							+import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LONGITUDE,
+							+import.meta.env.VITE_WAYFINDING_DEFAULT_LOCATION_LATITUDE,
+						],
 						zoom: zoom,
 						pitch: kioskMode && activeKiosk?.pitch ? activeKiosk.pitch : pitch,
 						bearing:
@@ -222,6 +226,9 @@ function MapView() {
 						type: 'point',
 					},
 					blockFeatureClickWhileRouting: true,
+					defaultFloorLevel: +import.meta.env
+						.VITE_WAYFINDING_DEFAULT_LOCATION_LEVEL,
+					zoomIntoPlace: false,
 				});
 
 				map.getMapReadyListener().subscribe((ready) => {
