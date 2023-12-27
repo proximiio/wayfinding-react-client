@@ -29,6 +29,8 @@ function MapView() {
 		left: 250,
 		right: 250,
 	};
+	const refetchData =
+		import.meta.env.VITE_WAYFINDING_AUTO_DATA_REFETCH === 'true';
 
 	// store state
 	const kioskMode = useMapStore((state) => state.kioskMode);
@@ -288,6 +290,13 @@ function MapView() {
 						}
 					}
 				});
+
+				// set data refetching interval if enabled in .env file
+				if (refetchData) {
+					setInterval(() => {
+						map.refetch();
+					}, +import.meta.env.VITE_WAYFINDING_REFETCH_INTERVAL);
+				}
 
 				// set destination point for routing based on click event and cancel previous route if generated
 				map.getPolygonClickListener().subscribe((feature) => {
