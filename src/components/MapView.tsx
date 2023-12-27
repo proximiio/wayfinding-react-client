@@ -106,14 +106,8 @@ function MapView() {
 				setCurrentStep(0);
 				return;
 			}
-		} else {
-			console.log('routeStart cancelled', routeStart);
-			if (Object.keys(map).length > 0) {
-				// cancel route if it's rendered
-				map.cancelRoute();
-			}
 		}
-	}, [map, routeStart, routeFinish, findRoute, setCurrentStep]);
+	}, [routeStart, routeFinish, findRoute, setCurrentStep]);
 
 	// This effect hook handles active filter state changes
 	useEffect(() => {
