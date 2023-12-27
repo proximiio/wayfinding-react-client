@@ -69,7 +69,7 @@ export default defineConfig(({ mode }) => {
 			port: +env.PORT,
 			strictPort: true,
 			host: true,
-			origin: `http://127.0.0.1:${+env.port}`,
+			origin: `http://127.0.0.1:${+env.PORT}`,
 		},
 		resolve: {
 			alias: {
