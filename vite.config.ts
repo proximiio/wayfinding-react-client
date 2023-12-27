@@ -62,14 +62,14 @@ export default defineConfig(({ mode }) => {
 		],
 		base: env.BASE_URL,
 		preview: {
-			port: parseInt(env.PORT),
+			port: +env.PORT,
 			strictPort: true,
 		},
 		server: {
-			port: parseInt(env.PORT),
+			port: +env.PORT,
 			strictPort: true,
 			host: true,
-			origin: `http://0.0.0.0:${parseInt(env.port)}`,
+			origin: `http://127.0.0.1:${+env.port}`,
 		},
 		resolve: {
 			alias: {
