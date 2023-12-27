@@ -71,7 +71,7 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 							>
 								{item.icon && React.createElement(item.icon)}
 								{item.iconImage && (
-									<img src={item.iconImage} alt={t(item.title)} />
+									<img src={item.iconImage} alt={t(item.title)} className='w-1/2' />
 								)}
 							</Button>
 							<p className='mt-1 overflow-hidden text-xs text-ellipsis whitespace-nowrap sm:whitespace-normal'>
