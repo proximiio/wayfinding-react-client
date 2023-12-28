@@ -55,7 +55,11 @@ function LanguageToggle() {
 						}
 						svg
 						className='!w-16 !h-16 max-w-none'
-						title='US'
+						title={
+							languages.find((i) => i.value === currentLang)
+								? languages.find((i) => i.value === currentLang)!.title
+								: 'US'
+						}
 					/>
 				</Button>
 			</DropdownMenuTrigger>
