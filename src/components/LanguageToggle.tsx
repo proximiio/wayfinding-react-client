@@ -43,7 +43,8 @@ function LanguageToggle() {
 					variant='outline'
 					size='icon'
 					className={cn(
-						'absolute z-10 flex items-center justify-center w-12 h-12 overflow-hidden text-2xl border-2 rounded-full cursor-pointer right-2 top-20 hover:border-primary/70 bg-white/80', gpsMode && 'top-28'
+						'absolute z-10 flex items-center justify-center w-12 h-12 overflow-hidden text-2xl border-2 rounded-full cursor-pointer right-2 top-20 hover:border-primary/70 bg-white/80',
+						gpsMode && 'top-28'
 					)}
 				>
 					<ReactCountryFlag
@@ -71,7 +72,7 @@ function LanguageToggle() {
 								countryCode={language.countryCode}
 								svg
 								className='!w-12 !h-12 max-w-none'
-								title='US'
+								title={language.title}
 							/>
 						</DropdownMenuItem>
 					))}
