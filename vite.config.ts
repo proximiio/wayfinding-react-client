@@ -18,14 +18,14 @@ export default defineConfig(({ mode }) => {
 				base: `${env.BASE_URL}/`,
 				includeAssets: [
 					'favicon.ico',
-					'apple-touc-icon.png',
+					'apple-touch-icon.png',
 					'masked-icon.svg',
 				],
 				workbox: {
 					maximumFileSizeToCacheInBytes: 3000000,
 				},
 				manifest: {
-					name: 'Proximi.io - Wayfinding Client',
+					name: env.VITE_APP_TITLE,
 					short_name: 'Wayfinding',
 					description: 'Wayfinding client demo application by Proximi.io',
 					icons: [
