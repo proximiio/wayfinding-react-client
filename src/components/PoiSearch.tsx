@@ -1,4 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
+import { GoDot } from 'react-icons/go';
+import { t } from 'i18next';
+import removeAccents from 'remove-accents';
+import Keyboard from 'simple-keyboard';
+import 'simple-keyboard/build/css/index.css';
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -9,14 +15,9 @@ import {
 	CommandSeparator,
 	CommandShortcut,
 } from '@/components/ui/command';
-import { HiMagnifyingGlass } from 'react-icons/hi2';
-import { GoDot } from 'react-icons/go';
-import { t } from 'i18next';
-import removeAccents from 'remove-accents';
-import useMapStore from '@/store/mapStore';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
-import Keyboard from 'simple-keyboard';
-import 'simple-keyboard/build/css/index.css';
+
+import useMapStore from '@/store/mapStore';
 
 function PoiSearch() {
 	// store state

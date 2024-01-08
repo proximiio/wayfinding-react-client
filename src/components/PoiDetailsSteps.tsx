@@ -1,11 +1,12 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { getFloorName } from '@/lib/utils';
-import useMapStore from '@/store/mapStore';
+import { useEffect, useState } from 'react';
 import { t } from 'i18next';
 import Feature from 'proximiio-js-library/lib/models/feature';
-import { useEffect, useState } from 'react';
 import { LuChevronsRight } from 'react-icons/lu';
 import { TbPennant } from 'react-icons/tb';
+import { getFloorName } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 interface StepModel {
 	bearingFromLastStep: number;
@@ -115,10 +116,10 @@ function PoiDetailsSteps() {
 
 		if (currentStep !== lastStepIndex) {
 			setCurrentStep(currentStep + 1);
-      map.setNavStep(currentStep + 1);
+			map.setNavStep(currentStep + 1);
 		} else {
 			setCurrentStep(0);
-      map.setNavStep(0);
+			map.setNavStep(0);
 		}
 	};
 
@@ -138,7 +139,9 @@ function PoiDetailsSteps() {
 						) : (
 							<TbPennant className='mx-auto mb-1' />
 						)}
-						<p className='text-sm uppercase'>{currentStep !== steps.length - 1 ? t('next') : t('arrived')}</p>
+						<p className='text-sm uppercase'>
+							{currentStep !== steps.length - 1 ? t('next') : t('arrived')}
+						</p>
 					</div>
 				</div>
 			)}

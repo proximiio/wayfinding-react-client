@@ -1,5 +1,5 @@
-import useMapStore from '@/store/mapStore';
 import { useCallback } from 'react';
+import useMapStore from '@/store/mapStore';
 
 export default function UseKiosk() {
 	const map = useMapStore((state) => state.map);

@@ -1,8 +1,7 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { useState } from 'react';
-
+import { t } from 'i18next';
 import { Check, ChevronsUpDown } from 'lucide-react';
-
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,8 +16,8 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
-import useMapStore from '@/store/mapStore';
-import { t } from 'i18next';
+
+import useMapStore from '@/store/mapStore';s
 
 function ClosestAmenitySelect() {
 	const activeFilter = useMapStore((state) => state.activeFilter);

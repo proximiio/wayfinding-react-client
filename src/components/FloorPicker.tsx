@@ -1,7 +1,8 @@
 import { FloorModel } from 'proximiio-js-library/lib/models/floor';
 import { Button } from '@/components/ui/button';
-import useMapStore from '@/store/mapStore';
 import { getFloorName } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 function FloorPicker() {
 	//store state

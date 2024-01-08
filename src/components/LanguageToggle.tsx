@@ -1,3 +1,4 @@
+import ReactCountryFlag from 'react-country-flag';
 import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
@@ -5,9 +6,9 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import ReactCountryFlag from 'react-country-flag';
-import useMapStore from '@/store/mapStore';
 import { cn } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 function LanguageToggle() {
 	const setCurrentLang = useMapStore((state) => state.setCurrentLang);

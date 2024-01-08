@@ -1,8 +1,9 @@
-import { cn } from '@/lib/utils';
-import useMapStore from '@/store/mapStore';
+import { useEffect } from 'react';
 import { t } from 'i18next';
 import Feature from 'proximiio-js-library/lib/models/feature';
-import { useEffect } from 'react';
+import { cn } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 interface PoiDetailsParkingProps {
 	closestParkingFeature: Feature;

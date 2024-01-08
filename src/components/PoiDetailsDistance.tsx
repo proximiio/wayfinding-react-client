@@ -1,8 +1,9 @@
-import useMapStore from '@/store/mapStore';
-import { t } from 'i18next';
 import { useEffect, useState } from 'react';
+import { t } from 'i18next';
 import humanizeDuration from 'humanize-duration';
 import { cn } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 function PoiDetailsDistance({ showMore }: { showMore: boolean }) {
 	const haveRouteDetails = useMapStore((state) => state.haveRouteDetails);

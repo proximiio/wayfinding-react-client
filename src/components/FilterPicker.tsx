@@ -1,11 +1,12 @@
-import { FilterItemModel } from '@/models/filterItem.model';
-import { t } from 'i18next';
 import React from 'react';
-import { Button } from './ui/button';
+import { t } from 'i18next';
 import { AnimatePresence, motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import useMapStore from '@/store/mapStore';
 import Feature from 'proximiio-js-library/lib/models/feature';
+import { FilterItemModel } from '@/models/filterItem.model';
+import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 interface FilterPickerProps {
 	heading: string;
@@ -71,7 +72,11 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 							>
 								{item.icon && React.createElement(item.icon)}
 								{item.iconImage && (
-									<img src={item.iconImage} alt={t(item.title)} className='w-1/2' />
+									<img
+										src={item.iconImage}
+										alt={t(item.title)}
+										className='w-1/2'
+									/>
 								)}
 							</Button>
 							<p className='mt-1 overflow-hidden text-xs text-ellipsis whitespace-nowrap sm:whitespace-normal'>

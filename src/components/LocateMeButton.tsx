@@ -1,10 +1,11 @@
-import { cn } from '@/lib/utils';
-import useMapStore from '@/store/mapStore';
 import { MdMyLocation } from 'react-icons/md';
+import { cn } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 function LocateMeButton() {
 	const locateMe = useMapStore((state) => state.locateMe);
-	
+
 	return (
 		<div
 			className={cn(

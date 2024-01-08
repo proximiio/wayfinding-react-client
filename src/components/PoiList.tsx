@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import useMapStore from '@/store/mapStore';
 import { FilterItemModel } from '@/models/filterItem.model';
+
+import useMapStore from '@/store/mapStore';
 
 function PoiList() {
 	const activeFilter = useMapStore((state) => state.activeFilter);

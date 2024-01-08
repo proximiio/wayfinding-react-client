@@ -1,7 +1,7 @@
 import { useState } from 'react';
-
+import { t } from 'i18next';
+import Feature from 'proximiio-js-library/lib/models/feature';
 import { Check, ChevronsUpDown } from 'lucide-react';
-
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,9 +16,8 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
+
 import useMapStore from '@/store/mapStore';
-import { t } from 'i18next';
-import Feature from 'proximiio-js-library/lib/models/feature';
 
 interface PoiSelectProps {
 	selectedPoi: Feature;

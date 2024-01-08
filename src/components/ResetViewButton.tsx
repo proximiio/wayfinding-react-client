@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import { cn } from '@/lib/utils';
 import { MdLockReset } from 'react-icons/md';
 import {
@@ -6,7 +7,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { t } from 'i18next';
+
 import useMapStore from '@/store/mapStore';
 
 function ResetViewButton() {

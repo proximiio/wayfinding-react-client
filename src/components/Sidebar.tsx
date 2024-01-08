@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useClickAway } from 'react-use';
+import { cn } from '@/lib/utils';
 import FilterMenu from './FilterMenu';
 import PoiList from './PoiList';
 import Filters from './Filters';
-import useMapStore from '@/store/mapStore';
 import RouteForm from './RouteForm';
 import PoiDetails from './PoiDetails';
-import { cn } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 function Sidebar() {
 	const [color, setColor] = useState('#000');

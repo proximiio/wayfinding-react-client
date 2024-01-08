@@ -1,6 +1,7 @@
 import { t } from 'i18next';
 import { motion } from 'framer-motion';
 import FilterPicker from './FilterPicker';
+
 import useMapStore from '@/store/mapStore';
 
 function Filters() {

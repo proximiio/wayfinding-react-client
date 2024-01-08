@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
-import useMapStore from '@/store/mapStore';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 function PoiDetailsImage({ showMore }: { showMore: boolean }) {
 	const [loading, setLoading] = useState(true);
@@ -16,7 +17,12 @@ function PoiDetailsImage({ showMore }: { showMore: boolean }) {
 
 	return (
 		<AnimatePresence>
-			<motion.div className={cn('lg:block max-h-96 overflow-hidden', !showMore && 'hidden')}>
+			<motion.div
+				className={cn(
+					'lg:block max-h-96 overflow-hidden',
+					!showMore && 'hidden'
+				)}
+			>
 				{loading && (
 					<div className='flex items-center h-56 p-8'>
 						<Skeleton className='w-12 h-12 rounded-full' />

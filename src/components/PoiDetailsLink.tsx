@@ -1,8 +1,8 @@
-import { cn } from '@/lib/utils';
-import useMapStore from '@/store/mapStore';
-import { t } from 'i18next';
 import { useEffect, useState } from 'react';
+import { t } from 'i18next';
+import { cn } from '@/lib/utils';
 
+import useMapStore from '@/store/mapStore';
 
 function PoiDetailsLink({ showMore }: { showMore: boolean }) {
 	const [linkUrl, setLinkUrl] = useState('');

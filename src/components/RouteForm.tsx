@@ -1,13 +1,14 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import useMapStore from '@/store/mapStore';
 import { t } from 'i18next';
+import { PiPersonSimpleWalk } from 'react-icons/pi';
+import Feature from 'proximiio-js-library/lib/models/feature';
+import { FilterItemModel } from '@/models/filterItem.model';
+import { Button } from './ui/button';
 import PoiSelect from './PoiSelect';
 import ClosestAmenitySelect from './ClosestAmenitySelect';
-import { Button } from './ui/button';
-import { PiPersonSimpleWalk } from 'react-icons/pi';
-import { FilterItemModel } from '@/models/filterItem.model';
-import Feature from 'proximiio-js-library/lib/models/feature';
-import { useState } from 'react';
+
+import useMapStore from '@/store/mapStore';
 
 function RouteForm() {
 	const features = useMapStore((state) => state.features);

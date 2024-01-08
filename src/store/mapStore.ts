@@ -9,8 +9,8 @@ import { isPointWithinRadius } from 'geolib';
 import { getFloorName } from '@/lib/utils';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
 import { FilterItemModel } from '@/models/filterItem.model';
-import { filterItems, kiosks } from './data';
 import { KioskModel } from '@/models/kiosk.model';
+import { filterItems, kiosks } from './data';
 
 // import { devtools } from 'zustand/middleware';
 // define types for state values and actions separately

@@ -1,13 +1,14 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
+import { useEffect, useRef } from 'react';
 import Proximiio from 'proximiio-js-library';
 import { State } from 'proximiio-js-library/lib/components/map/main';
-import { useEffect, useRef } from 'react';
-import useMapStore from '@/store/mapStore';
 import maplibregl from 'maplibre-gl';
+import { useShallow } from 'zustand/react/shallow';
 import useRouting from '@/hooks/useRouting';
 import { FilterItemModel } from '@/models/filterItem.model';
-import { useShallow } from 'zustand/react/shallow';
 import i18n from '@/i18n';
+
+import useMapStore from '@/store/mapStore';
 
 function MapView() {
 	const mapInitiated = useRef(false);

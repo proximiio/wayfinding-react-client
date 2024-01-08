@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Feature from 'proximiio-js-library/lib/models/feature';
+import { GoChevronUp, GoChevronDown } from 'react-icons/go';
+import { cn } from '@/lib/utils';
 import PoiDetailsImage from './PoiDetailsImage';
 import PoiDetailsHeading from './PoiDetailsHeading';
 import PoiDetailsDescription from './PoiDetailsDescription';
@@ -11,8 +13,6 @@ import PoiDetailsRoutes from './PoiDetailsRoutes';
 import PoiDetailsDistance from './PoiDetailsDistance';
 import PoiDetailsRouteToggle from './PoiDetailsRouteToggle';
 import PoiDetailsSteps from './PoiDetailsSteps';
-import { GoChevronUp, GoChevronDown } from 'react-icons/go';
-import { cn } from '@/lib/utils';
 
 function PoiDetails() {
 	const [closestParkingFeature, setClosestParkingFeature] = useState(

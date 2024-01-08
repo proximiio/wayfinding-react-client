@@ -1,11 +1,12 @@
-import { Button } from './ui/button';
+import { t } from 'i18next';
+import { AnimatePresence, motion } from 'framer-motion';
 import { PiCar, PiPersonSimpleWalk } from 'react-icons/pi';
 import { TbRoute } from 'react-icons/tb';
-import { t } from 'i18next';
 import Feature from 'proximiio-js-library/lib/models/feature';
-import useMapStore from '@/store/mapStore';
+import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
-import { AnimatePresence, motion } from 'framer-motion';
+
+import useMapStore from '@/store/mapStore';
 
 interface PoiDetailsRoutesProps {
 	closestParkingFeature: Feature;

@@ -1,8 +1,9 @@
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { cn } from '@/lib/utils';
-import useMapStore from '@/store/mapStore';
 import { t } from 'i18next';
 import { PiPersonSimpleWalk, PiElevator } from 'react-icons/pi';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { cn } from '@/lib/utils';
+
+import useMapStore from '@/store/mapStore';
 
 function PoiDetailsRouteToggle({ showMore }: { showMore: boolean }) {
 	const accessibleRoute = useMapStore((state) => state.accessibleRoute);

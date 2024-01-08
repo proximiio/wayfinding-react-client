@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
-import MapView from './components/MapView';
-import FloorPicker from './components/FloorPicker';
-import useMapStore from './store/mapStore';
 import { useTranslation } from 'react-i18next';
 import useKiosk from '@/hooks/useKiosk';
-import PoiSearch from './components/PoiSearch';
-import Sidebar from './components/Sidebar';
-import LocateMeButton from './components/LocateMeButton';
-import { kiosks } from './store/data';
-import LanguageToggle from './components/LanguageToggle';
-import ResetViewButton from './components/ResetViewButton';
-import { Toaster } from './components/ui/toaster';
+import MapView from '@/components/MapView';
+import FloorPicker from '@/components/FloorPicker';
+import PoiSearch from '@/components/PoiSearch';
+import Sidebar from '@/components/Sidebar';
+import LocateMeButton from '@/components/LocateMeButton';
+import LanguageToggle from '@/components/LanguageToggle';
+import ResetViewButton from '@/components/ResetViewButton';
+import { Toaster } from '@/components/ui/toaster';
+import { kiosks } from '@/store/data';
+import useMapStore from '@/store/mapStore';
 
 function App() {
 	const showLanguageToggle = import.meta.env
