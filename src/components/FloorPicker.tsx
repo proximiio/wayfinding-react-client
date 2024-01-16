@@ -23,7 +23,7 @@ function FloorPicker() {
 				key={floor.id}
 				variant={currentFloor?.id === floor.id ? 'dark' : 'default'}
 				onClick={() => handleFloorClick(floor)}
-				className='w-8 h-8 sm:w-12 sm:h-12'
+				className='h-8 min-w-8 sm:min-w-12 sm:h-12'
 			>
 				{getFloorName({ floor, language: currentLang })}
 			</Button>
@@ -31,7 +31,7 @@ function FloorPicker() {
 	});
 
 	return (
-		<div className='absolute z-10 flex items-center justify-center gap-1 left-[calc(50%-90px)] flex-wrap sm:flex-nowrap w-[180px] sm:left-[calc(50%-140px)] top-5 sm:w-[280px]'>
+		<div className='absolute z-10 flex items-center justify-center gap-1 left-[calc(50%-90px)] flex-wrap w-[180px] sm:left-[calc(50%-230px)] top-5 sm:w-[460px]'>
 			{floorsList}
 		</div>
 	);
