@@ -17,7 +17,7 @@ import {
 	PopoverTrigger,
 } from '@/components/ui/popover';
 
-import useMapStore from '@/store/mapStore';s
+import useMapStore from '@/store/mapStore';
 
 function ClosestAmenitySelect() {
 	const activeFilter = useMapStore((state) => state.activeFilter);
