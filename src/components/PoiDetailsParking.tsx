@@ -29,12 +29,14 @@ function PoiDetailsParking({
 					parkingAmenityId,
 					poi
 				) as Feature;
-				closestParkingFeature.properties.title =
-					closestParkingFeature.properties.title_i18n &&
-					closestParkingFeature.properties.title_i18n[currentLanguage]
-						? closestParkingFeature.properties.title_i18n[currentLanguage]
-						: closestParkingFeature.properties.title;
-				onSet(closestParkingFeature);
+				if (closestParkingFeature) {
+					closestParkingFeature.properties.title =
+						closestParkingFeature.properties.title_i18n &&
+						closestParkingFeature.properties.title_i18n[currentLanguage]
+							? closestParkingFeature.properties.title_i18n[currentLanguage]
+							: closestParkingFeature.properties.title;
+					onSet(closestParkingFeature);
+				}
 			}
 		};
 
