@@ -9,14 +9,13 @@ import LocateMeButton from '@/components/LocateMeButton';
 import LanguageToggle from '@/components/LanguageToggle';
 import ResetViewButton from '@/components/ResetViewButton';
 import { Toaster } from '@/components/ui/toaster';
-import { kiosks } from '@/store/data';
 import useMapStore from '@/store/mapStore';
 
 function App() {
-	const showLanguageToggle = import.meta.env
-		.VITE_WAYFINDING_SHOW_LANGUAGE_TOGGLE === 'true';
-	const showResetViewButton = import.meta.env
-		.VITE_WAYFINDING_SHOW_RESET_BUTTON === 'true';
+	const showLanguageToggle =
+		import.meta.env.VITE_WAYFINDING_SHOW_LANGUAGE_TOGGLE === 'true';
+	const showResetViewButton =
+		import.meta.env.VITE_WAYFINDING_SHOW_RESET_BUTTON === 'true';
 	const { t, i18n } = useTranslation();
 	const [idleTime] = useKiosk();
 
@@ -32,7 +31,6 @@ function App() {
 	const map = useMapStore((state) => state.map);
 
 	const setCurrentLang = useMapStore((state) => state.setCurrentLang);
-	const setActiveKiosk = useMapStore((state) => state.setActiveKiosk);
 
 	// This effect hook handles URL query parameters related to language and kiosk mode
 	useEffect(() => {
@@ -50,11 +48,7 @@ function App() {
 
 		// If 'kiosk' parameter exists in URL, set kiosk mode
 		if (urlParams.get('kiosk')) {
-			const kiosk = kiosks.find(
-				(kiosk) => kiosk.name === urlParams.get('kiosk')
-			);
 			setKioskMode(true);
-			setActiveKiosk(kiosk);
 		}
 
 		setAppInitiated(true);
@@ -62,7 +56,6 @@ function App() {
 		appInitiated,
 		i18n,
 		setKioskMode,
-		setActiveKiosk,
 		setCurrentLang,
 		setAppInitiated,
 	]);

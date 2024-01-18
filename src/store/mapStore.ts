@@ -10,7 +10,7 @@ import { getFloorName } from '@/lib/utils';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
 import { FilterItemModel } from '@/models/filterItem.model';
 import { KioskModel } from '@/models/kiosk.model';
-import { filterItems, kiosks } from './data';
+import { filterItems } from './data';
 
 // import { devtools } from 'zustand/middleware';
 // define types for state values and actions separately
@@ -60,6 +60,7 @@ type Actions = {
 	setHaveRouteDetails: (haveDetails: boolean) => void;
 	setRouteDetails: (route: unknown) => void;
 	setCurrentStep: (step: number) => void;
+	setKiosks: (kiosks: KioskModel[]) => void;
 	setActiveKiosk: (kiosk: KioskModel | undefined) => void;
 	setSidebarIsOpen: (isOpen: boolean) => void;
 	getSortedPOIs: () => SortedPoiItemModel[];
@@ -90,9 +91,9 @@ const initialState: State = {
 	haveRouteDetails: false,
 	routeDetails: {},
 	currentStep: 0,
+	kiosks: [],
 	activeKiosk: {} as KioskModel,
 	sidebarIsOpen: false,
-	kiosks: kiosks,
 };
 
 const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
@@ -188,6 +189,9 @@ const useMapStore = create<State & Actions>()(
 		},
 		setCurrentStep: (step) => {
 			set(() => ({ currentStep: step }));
+		},
+		setKiosks: (kiosks) => {
+			set(() => ({ kiosks }));
 		},
 		setActiveKiosk: (kiosk: KioskModel | undefined) => {
 			set(() => ({ activeKiosk: kiosk }));

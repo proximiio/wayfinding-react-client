@@ -9,6 +9,7 @@ import { FilterItemModel } from '@/models/filterItem.model';
 import i18n from '@/i18n';
 
 import useMapStore from '@/store/mapStore';
+import { kiosks as predefinedKiosks } from '@/store/data';
 
 function MapView() {
 	const mapInitiated = useRef(false);
@@ -47,12 +48,14 @@ function MapView() {
 	const places = useMapStore((state) => state.places);
 	const currentPlace = useMapStore((state) => state.currentPlace);
 	const accessibleRoute = useMapStore((state) => state.accessibleRoute);
+	const kiosks = useMapStore((state) => state.kiosks);
 
 	// store actions
 	const setMap = useMapStore(useShallow((state) => state.setMap));
 	const setPlaces = useMapStore((state) => state.setPlaces);
 	const setCurrentPlace = useMapStore((state) => state.setCurrentPlace);
 	const setFloors = useMapStore((state) => state.setFloors);
+	const setKiosks = useMapStore((state) => state.setKiosks);
 	const setCurrentFloor = useMapStore((state) => state.setCurrentFloor);
 	const setFeatures = useMapStore((state) => state.setFeatures);
 	const setAmenities = useMapStore((state) => state.setAmenities);
@@ -62,6 +65,7 @@ function MapView() {
 	const setRouteDetails = useMapStore((state) => state.setRouteDetails);
 	const setCurrentStep = useMapStore((state) => state.setCurrentStep);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
+	const setActiveKiosk = useMapStore((state) => state.setActiveKiosk);
 	const setAccessibleRoute = useMapStore((state) => state.setAccessibleRoute);
 	const setShowCustomRoutePicker = useMapStore(
 		(state) => state.setShowCustomRoutePicker
@@ -172,6 +176,57 @@ function MapView() {
 		}
 	}, [currentLang, map]);
 
+	// This effect hook kiosks change
+	useEffect(() => {
+		if (kiosks.length > 0 && Object.keys(map).length > 0) {
+			// handle kiosk mode intitialization
+			const urlParams = new URLSearchParams(window.location.search);
+			if (urlParams.get('kiosk') && kioskMode) {
+				const kiosk = kiosks.find(
+					(kiosk) =>
+						kiosk.name === urlParams.get('kiosk') ||
+						kiosk.id === urlParams.get('kiosk')
+				);
+				setActiveKiosk(kiosk);
+
+				const kioskPoi = features.find((f) => f.id === activeKiosk?.poiId);
+
+				if (activeKiosk?.bounds) {
+					map.getMapboxInstance().setMaxBounds(activeKiosk.bounds);
+				}
+				if (activeKiosk?.zoom) {
+					map.getMapboxInstance().setZoom(activeKiosk.zoom);
+				}
+				if (activeKiosk?.bearing) {
+					map.getMapboxInstance().setBearing(activeKiosk.bearing);
+				}
+				if (activeKiosk?.pitch) {
+					map.getMapboxInstance().setPitch(activeKiosk.pitch);
+				}
+
+				if (activeKiosk) {
+					if (kioskPoi) {
+						activeKiosk.longitude = kioskPoi.geometry.coordinates[0];
+						activeKiosk.latitude = kioskPoi.geometry.coordinates[1];
+						activeKiosk.level = kioskPoi.properties.level;
+					}
+
+					if (
+						activeKiosk.longitude &&
+						activeKiosk.latitude &&
+						typeof activeKiosk.level !== 'undefined'
+					) {
+						map.setKiosk(
+							activeKiosk.latitude,
+							activeKiosk.longitude,
+							activeKiosk.level
+						);
+					}
+				}
+			}
+		}
+	}, [kiosks, activeKiosk, features, kioskMode, map, setActiveKiosk]);
+
 	useEffect(() => {
 		// Initialize map only once
 		if (mapInitiated.current) return;
@@ -244,6 +299,16 @@ function MapView() {
 					setCurrentFloor(mapState.floor);
 					setFeatures(mapState.allFeatures.features);
 					setAmenities(mapState.amenities);
+					setKiosks([
+						...predefinedKiosks,
+						...mapState.kiosks.map((kiosk) => {
+							return {
+								...kiosk,
+								latitude: kiosk.coordinates.lat,
+								longitude: kiosk.coordinates.lng,
+							};
+						}),
+					]);
 
 					// set amenity category group 'list' from store/data.ts
 					map.setAmenitiesCategory(
@@ -261,36 +326,6 @@ function MapView() {
 							.map((i) => i.id)
 							.flat(2)
 					);
-
-					// handle kiosk mode intitialization
-					if (kioskMode) {
-						const kioskPoi = mapState.allFeatures.features.find(
-							(f) => f.id === activeKiosk?.poiId
-						);
-						if (activeKiosk?.bounds) {
-							map.getMapboxInstance().setMaxBounds(activeKiosk.bounds);
-						}
-						if (activeKiosk?.zoom) {
-							map.getMapboxInstance().setZoom(activeKiosk.zoom);
-						}
-						if (kioskPoi && activeKiosk) {
-							activeKiosk.longitude = kioskPoi.geometry.coordinates[0];
-							activeKiosk.latitude = kioskPoi.geometry.coordinates[1];
-							activeKiosk.level = kioskPoi.properties.level;
-
-							if (
-								activeKiosk.longitude &&
-								activeKiosk.latitude &&
-								typeof activeKiosk.level !== 'undefined'
-							) {
-								map.setKiosk(
-									activeKiosk.latitude,
-									activeKiosk.longitude,
-									activeKiosk.level
-								);
-							}
-						}
-					}
 				});
 
 				// set data refetching interval if enabled in .env file
