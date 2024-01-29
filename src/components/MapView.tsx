@@ -4,6 +4,13 @@ import Proximiio from 'proximiio-js-library';
 import { State } from 'proximiio-js-library/lib/components/map/main';
 import maplibregl from 'maplibre-gl';
 import { useShallow } from 'zustand/react/shallow';
+import {
+	osName,
+	browserName,
+	mobileModel,
+	mobileVendor,
+	deviceType,
+} from 'react-device-detect';
 import useRouting from '@/hooks/useRouting';
 import { FilterItemModel } from '@/models/filterItem.model';
 import i18n from '@/i18n';
@@ -49,6 +56,7 @@ function MapView() {
 	const currentPlace = useMapStore((state) => state.currentPlace);
 	const accessibleRoute = useMapStore((state) => state.accessibleRoute);
 	const kiosks = useMapStore((state) => state.kiosks);
+	const amenities = useMapStore((state) => state.amenities);
 
 	// store actions
 	const setMap = useMapStore(useShallow((state) => state.setMap));
@@ -86,6 +94,34 @@ function MapView() {
 			map.handlePolygonSelection(routeFinish);
 			setActiveFilter({} as FilterItemModel);
 			setShowCustomRoutePicker(false);
+
+			// save select log for feature & amenity
+			const featureAmenity = amenities.find(
+				(i) => i.id === routeFinish.properties.amenity
+			);
+			const userData = {
+				osName,
+				browserName,
+				mobileModel,
+				mobileVendor,
+				deviceType,
+			};
+			new Proximiio.SelectLogger({
+				clickedElementId: routeFinish.id,
+				clickedElementType: 'feature',
+				clickedElementTitle: routeFinish.properties.title,
+				kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
+				metadata: userData,
+			});
+			if (featureAmenity) {
+				new Proximiio.SelectLogger({
+					clickedElementId: routeFinish.properties.amenity,
+					clickedElementType: 'amenity',
+					clickedElementTitle: featureAmenity.title,
+					kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
+					metadata: userData,
+				});
+			}
 		} else {
 			console.log('routeFinish cancelled', routeFinish);
 			if (Object.keys(map).length > 0) {
@@ -95,7 +131,14 @@ function MapView() {
 				map.handlePolygonSelection();
 			}
 		}
-	}, [map, routeFinish, setActiveFilter, setShowCustomRoutePicker]);
+	}, [
+		map,
+		routeFinish,
+		amenities,
+		activeKiosk,
+		setActiveFilter,
+		setShowCustomRoutePicker,
+	]);
 
 	// This effect hook handles route start state changes
 	useEffect(() => {

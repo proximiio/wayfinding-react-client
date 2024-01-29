@@ -1,7 +1,15 @@
 import React from 'react';
 import { t } from 'i18next';
 import { AnimatePresence, motion } from 'framer-motion';
+import Proximiio from 'proximiio-js-library';
 import Feature from 'proximiio-js-library/lib/models/feature';
+import {
+	osName,
+	browserName,
+	mobileModel,
+	mobileVendor,
+	deviceType,
+} from 'react-device-detect';
 import { FilterItemModel } from '@/models/filterItem.model';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
@@ -18,6 +26,7 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 	const kioskMode = useMapStore((state) => state.kioskMode);
 	const gpsMode = useMapStore((state) => state.gpsMode);
 	const map = useMapStore((state) => state.map);
+	const activeKiosk = useMapStore((state) => state.activeKiosk);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
@@ -32,6 +41,22 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 			setRouteStart('kiosk');
 			setRouteFinish(closestFeature);
 		}
+
+		//save amenity_category log
+		const userData = {
+			osName,
+			browserName,
+			mobileModel,
+			mobileVendor,
+			deviceType,
+		};
+		new Proximiio.SelectLogger({
+			clickedElementId: Array.isArray(item.id) ? item.id.join('_') : item.id,
+			clickedElementType: 'amenity_category',
+			clickedElementTitle: item.title,
+			kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
+			metadata: userData,
+		});
 	};
 
 	return (
