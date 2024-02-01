@@ -81,20 +81,7 @@ export const filterCategories: FilterCategoryModel[] = [
 				icon: PiMoney,
 				id: '44010f6f-9963-4433-ad86-40b89b829c41:2cd016a5-8703-417c-af07-d49aef074ad3',
 				type: 'closest',
-			},
-			{
-				title: 'wifi',
-				icon: PiMoney,
-				type: 'info',
-				content: `
-					<h3 class="text-xl font-bold mb-2 mt-4">Welcome to City Centre Mirdif! We understand that staying connected is important in today’s world. That’s why we’re excited to offer FREE WIFI to all of our shoppers.</h3>
-					<ul>
-						<li>1. Look for WIFI UAE hotspots, then connect to the #Free_Mall_Wifi network</li>
-						<li>2. Your device should automatically be taken to our login page.</li>
-						<li>3. Enter your details and follow the instructions to gain high-speed internet service</li>
-					</ul>
-				`,
-			},
+			}
 		],
 	},
 ];
