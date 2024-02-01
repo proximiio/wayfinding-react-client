@@ -21,9 +21,10 @@ import useMapStore from '@/store/mapStore';
 
 function ClosestAmenitySelect() {
 	const activeFilter = useMapStore((state) => state.activeFilter);
-	const closestItems = useMapStore((state) => state.filterItems).filter(
-		(i) => i.type === 'closest'
-	);
+	const closestItems = useMapStore((state) => state.filterCategories)
+		.map((category) => category.items)
+		.flat()
+		.filter((i) => i.type === 'closest');
 
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
 
@@ -75,7 +76,7 @@ function ClosestAmenitySelect() {
 											: 'opacity-0'
 									)}
 								/>
-								{`${t('closest')} ${item.title}`}
+								{`${t('closest')} ${t(item.title)}`}
 							</CommandItem>
 						))}
 					</CommandGroup>

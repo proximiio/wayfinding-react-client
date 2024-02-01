@@ -8,9 +8,9 @@ import { create } from 'zustand';
 import { isPointWithinRadius } from 'geolib';
 import { getFloorName } from '@/lib/utils';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
-import { FilterItemModel } from '@/models/filterItem.model';
+import { FilterCategoryModel, FilterItemModel } from '@/models/filterItem.model';
 import { KioskModel } from '@/models/kiosk.model';
-import { filterItems } from './data';
+import { filterCategories } from './data';
 
 // import { devtools } from 'zustand/middleware';
 // define types for state values and actions separately
@@ -29,7 +29,7 @@ type State = {
 	features: Feature[];
 	amenities: AmenityModel[];
 	accessibleRoute: boolean;
-	filterItems: FilterItemModel[];
+	filterCategories: FilterCategoryModel[];
 	activeFilter: FilterItemModel;
 	showCustomRoutePicker: boolean;
 	haveRouteDetails: boolean;
@@ -85,7 +85,7 @@ const initialState: State = {
 	features: [],
 	amenities: [],
 	accessibleRoute: false,
-	filterItems,
+	filterCategories,
 	activeFilter: {} as FilterItemModel,
 	showCustomRoutePicker: false,
 	haveRouteDetails: false,

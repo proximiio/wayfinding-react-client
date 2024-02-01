@@ -96,5 +96,6 @@
 	"reset-view": "Nollaa näkymä",
 	"click-here": "Klikkaa tästä",
 	"routeFailedTitle": "Voi ei! Jotain meni pieleen.",
-	"routeFailed": "Emme löytäneet reittiä GPS-sijainnistasi. Näytetään reitti pääsisäänkäynniltä."
+	"routeFailed": "Emme löytäneet reittiä GPS-sijainnistasi. Näytetään reitti pääsisäänkäynniltä.",
+	"more": "Lisää"
 }

@@ -45,7 +45,7 @@ function MapView() {
 	const kioskMode = useMapStore((state) => state.kioskMode);
 	const gpsMode = useMapStore((state) => state.gpsMode);
 	const currentLang = useMapStore((state) => state.currentLang);
-	const filterItems = useMapStore((state) => state.filterItems);
+	const filterCategories = useMapStore((state) => state.filterCategories);
 	const map = useMapStore((state) => state.map);
 	const routeFinish = useMapStore((state) => state.routeFinish);
 	const routeStart = useMapStore((state) => state.routeStart);
@@ -161,15 +161,18 @@ function MapView() {
 	useEffect(() => {
 		console.log('active filter effect');
 		if (activeFilter?.id) {
+			const foundCategory = filterCategories.find((category) =>
+				category.items.find((items) => items.id === activeFilter.id)
+			);
 			console.log('active filter', activeFilter);
-			map.setAmenityFilter(activeFilter.id, activeFilter.type);
+			map.setAmenityFilter(activeFilter.id, foundCategory!.title);
 		} else {
 			console.log('active filter cancelled', activeFilter);
 			if (Object.keys(map).length > 0) {
 				map.resetAmenityFilters();
 			}
 		}
-	}, [map, activeFilter]);
+	}, [map, activeFilter, filterCategories]);
 
 	// This effect hook handles URL query parameters related to start, destination and place
 	useEffect(() => {
@@ -353,22 +356,13 @@ function MapView() {
 						}),
 					]);
 
-					// set amenity category group 'list' from store/data.ts
-					map.setAmenitiesCategory(
-						'list',
-						filterItems
-							.filter((i) => i.type === 'list')
-							.map((i) => i.id)
-							.flat(2)
-					);
-					// set amenity category group 'closest' from store/data.ts
-					map.setAmenitiesCategory(
-						'closest',
-						filterItems
-							.filter((i) => i.type === 'closest')
-							.map((i) => i.id)
-							.flat(2)
-					);
+					// set amenity category group from store/data.ts
+					for (const category of filterCategories) {
+						map.setAmenitiesCategory(
+							category.title,
+							category.items.map((i) => i.id ? i.id : 'undefined').flat(2)
+						);
+					}
 				});
 
 				// set data refetching interval if enabled in .env file

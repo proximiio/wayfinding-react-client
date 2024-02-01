@@ -9,6 +9,7 @@ import RouteForm from './RouteForm';
 import PoiDetails from './PoiDetails';
 
 import useMapStore from '@/store/mapStore';
+import InfoBox from './InfoBox';
 
 function Sidebar() {
 	const [color, setColor] = useState('#000');
@@ -71,6 +72,7 @@ function Sidebar() {
 					routeFinish?.id && 'bg-white border-2 lg:border-0 lg:m-3 lg:p-1',
 					(activeFilter?.type === 'list' ||
 						activeFilter?.type === 'closest' ||
+						activeFilter?.type === 'info' ||
 						showCustomRoutePicker) &&
 						'bg-white shadow-md lg:shadow-none lg:bg-transparent'
 				)}
@@ -83,8 +85,9 @@ function Sidebar() {
 				{isOpen &&
 					((activeFilter?.type === 'closest' && !kioskMode && !gpsMode) ||
 						showCustomRoutePicker) && <RouteForm key='3' />}
+				{isOpen && activeFilter?.type === 'info' && <InfoBox key='4' />}
 				{isOpen && routeFinish?.id && !showCustomRoutePicker && (
-					<PoiDetails key='4' />
+					<PoiDetails key='5' />
 				)}
 			</AnimatePresence>
 		</div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { t } from 'i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import Proximiio from 'proximiio-js-library';
@@ -10,6 +10,7 @@ import {
 	mobileVendor,
 	deviceType,
 } from 'react-device-detect';
+import { HiOutlineEllipsisHorizontal } from 'react-icons/hi2';
 import { FilterItemModel } from '@/models/filterItem.model';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
@@ -18,7 +19,7 @@ import useMapStore from '@/store/mapStore';
 
 interface FilterPickerProps {
 	heading: string;
-	color: 'primary' | 'secondary';
+	color?: string;
 	items: FilterItemModel[];
 }
 
@@ -30,6 +31,12 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
+
+	const defaultItemsLimit = +import.meta.env.VITE_WAYFINDING_CATEGORY_ITEMS_LIMIT;
+	const [itemsLimit, setItemsLimit] = useState(defaultItemsLimit);
+	const [showMore, setShowMore] = useState(false);
+
+	const moreThanLimit = items.length > itemsLimit;
 
 	const filterClickHandler = (item: FilterItemModel) => {
 		if ((!gpsMode && !kioskMode) || item.type !== 'closest') {
@@ -51,12 +58,17 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 			deviceType,
 		};
 		new Proximiio.SelectLogger({
-			clickedElementId: Array.isArray(item.id) ? item.id.join('_') : item.id,
+			clickedElementId: Array.isArray(item.id) ? item.id.join('_') : item.id ? item.id : 'undefined',
 			clickedElementType: 'amenity_category',
 			clickedElementTitle: item.title,
 			kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
 			metadata: userData,
 		});
+	};
+
+	const toggleHandler = () => {
+		setShowMore(true);
+		setItemsLimit(10000);
 	};
 
 	return (
@@ -76,7 +88,42 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 					{heading}
 				</motion.h1>
 				<ul className='grid grid-cols-5 gap-2 mb-2 sm:mb-6'>
-					{items.map((item, idx) => (
+					{items
+						.slice(0, moreThanLimit ? itemsLimit - 1 : itemsLimit)
+						.map((item, idx) => (
+							<motion.li
+								initial={{ scale: 0, opacity: 0 }}
+								animate={{ scale: 1, opacity: 1 }}
+								transition={{
+									type: 'spring',
+									stiffness: 260,
+									damping: 20,
+									delay: 0.1 + (showMore ? idx - defaultItemsLimit : idx) / 10,
+								}}
+								key={idx}
+								className='w-12 text-center sm:w-16'
+							>
+								<Button
+									size='icon'
+									variant={color === 'primary' ? 'default' : 'secondary'}
+									className='w-12 h-12 text-lg sm:w-16 sm:h-16 sm:text-2xl'
+									onClick={() => filterClickHandler(item)}
+								>
+									{item.icon && React.createElement(item.icon)}
+									{item.iconImage && (
+										<img
+											src={item.iconImage}
+											alt={t(item.title)}
+											className='w-1/2'
+										/>
+									)}
+								</Button>
+								<p className='mt-1 overflow-hidden text-xs text-ellipsis whitespace-nowrap sm:whitespace-normal'>
+									{t(item.title)}
+								</p>
+							</motion.li>
+						))}
+					{moreThanLimit && (
 						<motion.li
 							initial={{ scale: 0, opacity: 0 }}
 							animate={{ scale: 1, opacity: 1 }}
@@ -84,31 +131,23 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 								type: 'spring',
 								stiffness: 260,
 								damping: 20,
-								delay: 0.1 + idx / 10,
+								delay: 0.1 + itemsLimit / 10,
 							}}
-							key={idx}
 							className='w-12 text-center sm:w-16'
 						>
 							<Button
 								size='icon'
 								variant={color === 'primary' ? 'default' : 'secondary'}
 								className='w-12 h-12 text-lg sm:w-16 sm:h-16 sm:text-2xl'
-								onClick={() => filterClickHandler(item)}
+								onClick={toggleHandler}
 							>
-								{item.icon && React.createElement(item.icon)}
-								{item.iconImage && (
-									<img
-										src={item.iconImage}
-										alt={t(item.title)}
-										className='w-1/2'
-									/>
-								)}
+								<HiOutlineEllipsisHorizontal />
 							</Button>
 							<p className='mt-1 overflow-hidden text-xs text-ellipsis whitespace-nowrap sm:whitespace-normal'>
-								{t(item.title)}
+								{t('more')}
 							</p>
 						</motion.li>
-					))}
+					)}
 				</ul>
 			</AnimatePresence>
 		</>
