@@ -96,6 +96,20 @@ function MapView() {
 			setShowCustomRoutePicker(false);
 
 			// save select log for feature & amenity
+			const urlParams = new URLSearchParams(window.location.search);
+			const destinationParam = urlParams.get('destinationFeature');
+			const qrParam = urlParams.get('qrCode');
+			const routedFromParams =
+				destinationParam &&
+				(destinationParam === routeFinish.id ||
+					destinationParam === routeFinish.properties.id ||
+					destinationParam === routeFinish.properties.title);
+			let source: 'manual' | 'qr' | 'urlParam' = 'manual';
+
+			if (routedFromParams) {
+				source = qrParam ? 'qr' : 'urlParam';
+			}
+
 			const featureAmenity = amenities.find(
 				(i) => i.id === routeFinish.properties.amenity
 			);
@@ -112,6 +126,7 @@ function MapView() {
 				clickedElementTitle: routeFinish.properties.title,
 				kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
 				metadata: userData,
+				source,
 			});
 			if (featureAmenity) {
 				new Proximiio.SelectLogger({
@@ -120,6 +135,7 @@ function MapView() {
 					clickedElementTitle: featureAmenity.title,
 					kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
 					metadata: userData,
+					source,
 				});
 			}
 		} else {
@@ -360,7 +376,7 @@ function MapView() {
 					for (const category of filterCategories) {
 						map.setAmenitiesCategory(
 							category.title,
-							category.items.map((i) => i.id ? i.id : 'undefined').flat(2)
+							category.items.map((i) => (i.id ? i.id : 'undefined')).flat(2)
 						);
 					}
 				});

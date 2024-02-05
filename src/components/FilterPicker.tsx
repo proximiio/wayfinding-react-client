@@ -63,6 +63,7 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 			clickedElementTitle: item.title,
 			kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
 			metadata: userData,
+			source: 'manual'
 		});
 	};
 

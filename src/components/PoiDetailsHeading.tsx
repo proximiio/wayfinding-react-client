@@ -38,6 +38,7 @@ function PoiDetailsHeading({ showMore }: { showMore: boolean }) {
 	useEffect(() => {
 		const url = new URL(window.location.href);
 		const urlParams = url.searchParams;
+		urlParams.set('qrCode', 'true');
 		if (haveRouteDetails) {
 			if (!routeStart && routeFinish) {
 				urlParams.set('destinationFeature', routeFinish.properties.id);
