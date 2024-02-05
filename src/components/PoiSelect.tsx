@@ -57,7 +57,7 @@ function PoiSelect({ selectedPoi, placeholder, onSelect }: PoiSelectProps) {
 						const feature = pois.find(
 							(item) =>
 								item.id === value &&
-								item.properties.title.toLowerCase().includes(search)
+								item.properties.title.toLowerCase().includes(search.toLowerCase())
 						);
 						if (feature) return 1;
 						return 0;
