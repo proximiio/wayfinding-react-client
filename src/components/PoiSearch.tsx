@@ -154,7 +154,6 @@ function PoiSearch() {
 			}) as SortedPoiItemModel[];
 
 		if (filtered.length !== filteredPois.length) {
-			console.log(filtered);
 			setFilteredPois(filtered);
 			setFoundInTitle(filtered.filter((item) => !item.foundInDescription));
 			setFoundInDescription(filtered.filter((item) => item.foundInDescription));

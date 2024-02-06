@@ -32,39 +32,46 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
 
-	const defaultItemsLimit = +import.meta.env.VITE_WAYFINDING_CATEGORY_ITEMS_LIMIT;
+	const defaultItemsLimit = +import.meta.env
+		.VITE_WAYFINDING_CATEGORY_ITEMS_LIMIT;
 	const [itemsLimit, setItemsLimit] = useState(defaultItemsLimit);
 	const [showMore, setShowMore] = useState(false);
 
 	const moreThanLimit = items.length > itemsLimit;
 
 	const filterClickHandler = (item: FilterItemModel) => {
-		if ((!gpsMode && !kioskMode) || item.type !== 'closest') {
-			setActiveFilter(item);
-		} else {
-			const closestFeature = map.getClosestFeature(
-				item.id as string
-			) as Feature;
-			setRouteStart('kiosk');
-			setRouteFinish(closestFeature);
-		}
+		if (Object.keys(map).length > 0) {
+			if ((!gpsMode && !kioskMode) || item.type !== 'closest') {
+				setActiveFilter(item);
+			} else {
+				const closestFeature = map.getClosestFeature(
+					item.id as string
+				) as Feature;
+				setRouteStart('kiosk');
+				setRouteFinish(closestFeature);
+			}
 
-		//save amenity_category log
-		const userData = {
-			osName,
-			browserName,
-			mobileModel,
-			mobileVendor,
-			deviceType,
-		};
-		new Proximiio.SelectLogger({
-			clickedElementId: Array.isArray(item.id) ? item.id.join('_') : item.id ? item.id : 'undefined',
-			clickedElementType: 'amenity_category',
-			clickedElementTitle: item.title,
-			kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
-			metadata: userData,
-			source: 'manual'
-		});
+			//save amenity_category log
+			const userData = {
+				osName,
+				browserName,
+				mobileModel,
+				mobileVendor,
+				deviceType,
+			};
+			new Proximiio.SelectLogger({
+				clickedElementId: Array.isArray(item.id)
+					? item.id.join('_')
+					: item.id
+					? item.id
+					: 'undefined',
+				clickedElementType: 'amenity_category',
+				clickedElementTitle: item.title,
+				kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
+				metadata: userData,
+				source: 'manual',
+			});
+		}
 	};
 
 	const toggleHandler = () => {
