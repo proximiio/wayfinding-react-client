@@ -84,7 +84,7 @@ function App() {
 				<main>
 					<div className='flex'>
 						{showAds && activeAd && (
-							<div className='w-1/4'>
+							<div className='hidden w-1/4 xl:block'>
 								<img
 									src={activeAd.url}
 									alt={activeAd.name}
@@ -93,7 +93,10 @@ function App() {
 							</div>
 						)}
 						<div
-							className={cn('w-full relative', showAds && activeAd && 'w-3/4')}
+							className={cn(
+								'w-full relative',
+								showAds && activeAd && 'w-full xl:w-3/4'
+							)}
 						>
 							{Object.keys(map).length === 0 && (
 								<div className='absolute flex w-full h-screen'>
