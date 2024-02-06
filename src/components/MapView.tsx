@@ -40,6 +40,7 @@ function MapView() {
 	};
 	const refetchData =
 		import.meta.env.VITE_WAYFINDING_AUTO_DATA_REFETCH === 'true';
+	const showAds = import.meta.env.VITE_WAYFINDING_SHOW_ADS === 'true';
 
 	// store state
 	const kioskMode = useMapStore((state) => state.kioskMode);
@@ -57,6 +58,7 @@ function MapView() {
 	const accessibleRoute = useMapStore((state) => state.accessibleRoute);
 	const kiosks = useMapStore((state) => state.kiosks);
 	const amenities = useMapStore((state) => state.amenities);
+	const ads = useMapStore((state) => state.ads);
 
 	// store actions
 	const setMap = useMapStore(useShallow((state) => state.setMap));
@@ -78,6 +80,7 @@ function MapView() {
 	const setShowCustomRoutePicker = useMapStore(
 		(state) => state.setShowCustomRoutePicker
 	);
+	const setActiveAd = useMapStore((state) => state.setActiveAd);
 
 	// This effect hook handles route finish state changes
 	useEffect(() => {
@@ -289,6 +292,55 @@ function MapView() {
 		}
 	}, [kiosks, activeKiosk, features, kioskMode, map, setActiveKiosk]);
 
+	// This effect handles ads
+	useEffect(() => {
+		if (showAds) {
+			const defaultAd = ads.find((ad) => ad.isDefault);
+
+			if (activeFilter?.id) {
+				const amenityAd = ads.find((ad) => {
+					if (Array.isArray(activeFilter.id)) {
+						ad.amenities?.some((ad) => activeFilter.id!.includes(ad));
+						return;
+					}
+					if (typeof activeFilter.id === 'string') {
+						return ad.amenities?.includes(activeFilter.id);
+					}
+				});
+				if (amenityAd) {
+					setActiveAd(amenityAd);
+					return;
+				} else {
+					setActiveAd(defaultAd);
+					return;
+				}
+			} else {
+				setActiveAd(defaultAd);
+			}
+
+			if (routeFinish?.id) {
+				const amenityAd = ads.find((ad) =>
+					ad.amenities?.includes(routeFinish.properties.amenity)
+				);
+				const poiAd = ads.find((ad) => ad.features?.includes(routeFinish.id));
+				if (poiAd) {
+					setActiveAd(poiAd);
+					return;
+				}
+				if (amenityAd) {
+					setActiveAd(amenityAd);
+					return;
+				}
+				if (!poiAd && !amenityAd) {
+					setActiveAd(defaultAd);
+					return;
+				}
+			} else {
+				setActiveAd(defaultAd);
+			}
+		}
+	}, [routeFinish, showAds, ads, activeFilter.id, setActiveAd]);
+
 	useEffect(() => {
 		// Initialize map only once
 		if (mapInitiated.current) return;
@@ -429,7 +481,7 @@ function MapView() {
 
 	return (
 		<>
-			<div id='proximiioMap' className='w-screen h-screen'></div>
+			<div id='proximiioMap' className='w-full h-screen'></div>
 		</>
 	);
 }

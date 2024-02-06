@@ -20,6 +20,7 @@ interface ImportMetaEnv {
 	readonly VITE_WAYFINDING_AUTO_DATA_REFETCH: 'true' | 'false';
 	readonly VITE_WAYFINDING_REFETCH_INTERVAL: number;
 	readonly VITE_WAYFINDING_CATEGORY_ITEMS_LIMIT: number;
+	readonly VITE_WAYFINDING_SHOW_ADS: 'true' | 'false';
 }
 
 interface ImportMeta {

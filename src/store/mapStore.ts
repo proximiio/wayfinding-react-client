@@ -8,9 +8,13 @@ import { create } from 'zustand';
 import { isPointWithinRadius } from 'geolib';
 import { getFloorName } from '@/lib/utils';
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
-import { FilterCategoryModel, FilterItemModel } from '@/models/filterItem.model';
+import {
+	FilterCategoryModel,
+	FilterItemModel,
+} from '@/models/filterItem.model';
 import { KioskModel } from '@/models/kiosk.model';
 import { filterCategories } from './data';
+import { AdModel } from 'proximiio-js-library/lib/models/ad';
 
 // import { devtools } from 'zustand/middleware';
 // define types for state values and actions separately
@@ -39,6 +43,8 @@ type State = {
 	activeKiosk: KioskModel | undefined;
 	sidebarIsOpen: boolean;
 	kiosks: KioskModel[];
+	ads: AdModel[];
+	activeAd: AdModel | undefined;
 };
 
 type Actions = {
@@ -62,6 +68,8 @@ type Actions = {
 	setCurrentStep: (step: number) => void;
 	setKiosks: (kiosks: KioskModel[]) => void;
 	setActiveKiosk: (kiosk: KioskModel | undefined) => void;
+	setAds: (ads: AdModel[]) => void;
+	setActiveAd: (ad: AdModel | undefined) => void;
 	setSidebarIsOpen: (isOpen: boolean) => void;
 	getSortedPOIs: () => SortedPoiItemModel[];
 	locateMe: () => void;
@@ -93,6 +101,8 @@ const initialState: State = {
 	currentStep: 0,
 	kiosks: [],
 	activeKiosk: {} as KioskModel,
+	ads: [],
+	activeAd: {} as AdModel,
 	sidebarIsOpen: false,
 };
 
@@ -195,6 +205,12 @@ const useMapStore = create<State & Actions>()(
 		},
 		setActiveKiosk: (kiosk: KioskModel | undefined) => {
 			set(() => ({ activeKiosk: kiosk }));
+		},
+		setAds: (ads) => {
+			set(() => ({ ads }));
+		},
+		setActiveAd: (ad: AdModel | undefined) => {
+			set(() => ({ activeAd: ad }));
 		},
 		setSidebarIsOpen: (isOpen: boolean) => {
 			set(() => ({ sidebarIsOpen: isOpen }));

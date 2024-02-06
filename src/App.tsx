@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import Proximiio from 'proximiio-js-library';
 import useKiosk from '@/hooks/useKiosk';
 import MapView from '@/components/MapView';
 import FloorPicker from '@/components/FloorPicker';
@@ -10,12 +11,14 @@ import LanguageToggle from '@/components/LanguageToggle';
 import ResetViewButton from '@/components/ResetViewButton';
 import { Toaster } from '@/components/ui/toaster';
 import useMapStore from '@/store/mapStore';
+import { cn } from './lib/utils';
 
 function App() {
 	const showLanguageToggle =
 		import.meta.env.VITE_WAYFINDING_SHOW_LANGUAGE_TOGGLE === 'true';
 	const showResetViewButton =
 		import.meta.env.VITE_WAYFINDING_SHOW_RESET_BUTTON === 'true';
+	const showAds = import.meta.env.VITE_WAYFINDING_SHOW_ADS === 'true';
 	const { t, i18n } = useTranslation();
 	const [idleTime] = useKiosk();
 
@@ -29,8 +32,11 @@ function App() {
 	]);
 
 	const map = useMapStore((state) => state.map);
+	const activeAd = useMapStore((state) => state.activeAd);
 
 	const setCurrentLang = useMapStore((state) => state.setCurrentLang);
+	const setAds = useMapStore((state) => state.setAds);
+	const setActiveAd = useMapStore((state) => state.setActiveAd);
 
 	// This effect hook handles URL query parameters related to language and kiosk mode
 	useEffect(() => {
@@ -52,13 +58,7 @@ function App() {
 		}
 
 		setAppInitiated(true);
-	}, [
-		appInitiated,
-		i18n,
-		setKioskMode,
-		setCurrentLang,
-		setAppInitiated,
-	]);
+	}, [appInitiated, i18n, setKioskMode, setCurrentLang, setAppInitiated]);
 
 	// This effect hook handles map and kioskMode changes
 	useEffect(() => {
@@ -67,28 +67,54 @@ function App() {
 		}
 	}, [map, kioskMode, idleTime]);
 
+	// This effect hook handles ads initiation
+	useEffect(() => {
+		if (showAds && Object.keys(map).length > 0) {
+			Proximiio.Ads.getAds().then((res) => {
+				const defaultAd = res.data.find((ad) => ad.isDefault);
+				setAds(res.data);
+				setActiveAd(defaultAd);
+			});
+		}
+	}, [showAds, map, setAds, setActiveAd]);
+
 	return (
 		<>
 			{appInitiated && (
 				<main>
-					{Object.keys(map).length === 0 && (
-						<div className='fixed flex w-screen h-screen'>
-							<div className='mx-auto mt-[20%]'>
-								<div className='w-40 h-40 mx-auto border border-gray-300 rounded-full animate-spin border-t-primary' />
-								<h3 className='mt-8 text-3xl font-semibold'>
-									{t('welcomeMessage')}
-								</h3>
+					<div className='flex'>
+						{showAds && activeAd && (
+							<div className='w-1/4'>
+								<img
+									src={activeAd.url}
+									alt={activeAd.name}
+									className='object-cover h-full'
+								/>
 							</div>
+						)}
+						<div
+							className={cn('w-full relative', showAds && activeAd && 'w-3/4')}
+						>
+							{Object.keys(map).length === 0 && (
+								<div className='absolute flex w-full h-screen'>
+									<div className='mx-auto mt-[20%]'>
+										<div className='w-40 h-40 mx-auto border border-gray-300 rounded-full animate-spin border-t-primary' />
+										<h3 className='mt-8 text-3xl font-semibold'>
+											{t('welcomeMessage')}
+										</h3>
+									</div>
+								</div>
+							)}
+							<PoiSearch />
+							<FloorPicker />
+							<Sidebar />
+							<LocateMeButton />
+							{showLanguageToggle && <LanguageToggle />}
+							{showResetViewButton && <ResetViewButton />}
+							<MapView />
+							<Toaster />
 						</div>
-					)}
-					<PoiSearch />
-					<FloorPicker />
-					<Sidebar />
-					<LocateMeButton />
-					{showLanguageToggle && <LanguageToggle />}
-					{showResetViewButton && <ResetViewButton />}
-					<MapView />
-					<Toaster />
+					</div>
 				</main>
 			)}
 		</>
