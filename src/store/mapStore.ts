@@ -224,7 +224,8 @@ const useMapStore = create<State & Actions>()(
 						feature.properties.type !== 'escalator' &&
 						feature.properties.type !== 'elevator' &&
 						feature.properties.type !== 'staircase' &&
-						feature.properties.place_id === defaultPlaceId
+						feature.properties.place_id === defaultPlaceId &&
+						feature.properties.title.trim() !== ''
 				)
 				.sort((a, b) => (a.properties.title > b.properties.title ? -1 : 1))
 				.sort((a, b) => (a.properties.level > b.properties.level ? 1 : -1))

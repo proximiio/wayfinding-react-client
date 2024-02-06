@@ -142,7 +142,7 @@ function PoiSearch() {
 					return item;
 				}
 			})
-			.filter((i) => i)
+			.filter((i) => i && i.properties.title.trim() !== '')
 			.sort((a, b) => {
 				if (a && b) {
 					return (
@@ -154,6 +154,7 @@ function PoiSearch() {
 			}) as SortedPoiItemModel[];
 
 		if (filtered.length !== filteredPois.length) {
+			console.log(filtered);
 			setFilteredPois(filtered);
 			setFoundInTitle(filtered.filter((item) => !item.foundInDescription));
 			setFoundInDescription(filtered.filter((item) => item.foundInDescription));
@@ -167,7 +168,7 @@ function PoiSearch() {
 				onClick={() => setOpen(true)}
 			>
 				<HiMagnifyingGlass className='lg:mr-2' />
-				<span className="hidden lg:inline">
+				<span className='hidden lg:inline'>
 					{t('click-here-or-press')}
 					<kbd className='pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 mx-2 font-mono text-[10px] font-medium text-muted-foreground opacity-100'>
 						<span className='text-xs'>Ctrl + </span>F
