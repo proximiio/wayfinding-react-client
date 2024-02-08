@@ -74,7 +74,7 @@ function Sidebar() {
 						activeFilter?.type === 'closest' ||
 						activeFilter?.type === 'info' ||
 						showCustomRoutePicker) &&
-						'bg-white shadow-md lg:shadow-none lg:bg-transparent'
+						'bg-white shadow-md lg:shadow-none lg:bg-transparent left-2 top-5 sm:left-5 sm:top-5'
 				)}
 			/>
 			<AnimatePresence>

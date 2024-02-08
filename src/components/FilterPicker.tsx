@@ -87,7 +87,7 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 					animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
 					transition={{ duration: 0.2 }}
 					className={cn(
-						`text-md font-semibold mb-1 sm:text-xl sm:mb-2`,
+						`text-md font-semibold mb-1 sm:text-xl sm:mb-2 text-center sm:text-left`,
 						color === 'primary' && 'text-primary',
 						color === 'secondary' && 'text-secondary'
 					)}
@@ -95,7 +95,7 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 				>
 					{heading}
 				</motion.h1>
-				<ul className='grid grid-cols-5 gap-2 mb-2 sm:mb-6'>
+				<ul className='flex flex-wrap justify-center grid-cols-5 gap-2 mb-2 sm:mb-6 sm:grid sm:justify-normal'>
 					{items
 						.slice(0, moreThanLimit ? itemsLimit - 1 : itemsLimit)
 						.map((item, idx) => (

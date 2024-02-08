@@ -23,7 +23,7 @@ function FilterMenu({
 			className={cn(
 				'absolute z-30 p-1 top-5 lg:top-20 left-2 sm:left-5 hover:border-primary/70 rounded-2xl',
 				isOpen
-					? 'hover:border-rose-500 lg:p-3 rounded-full'
+					? 'hover:border-rose-500 top-0 left-0 sm:left-7 lg:left-5 lg:top-20 sm:top-7 lg:p-3 rounded-full'
 					: 'border-2 rounded-full bg-white/80',
 				className
 			)}
