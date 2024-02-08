@@ -286,11 +286,14 @@ function MapView() {
 							activeKiosk.longitude,
 							activeKiosk.level
 						);
+						setTimeout(() => {
+							setRouteStart('kiosk');
+						}, 1000);
 					}
 				}
 			}
 		}
-	}, [kiosks, activeKiosk, features, kioskMode, map, setActiveKiosk]);
+	}, [kiosks, activeKiosk, features, kioskMode, map, setActiveKiosk, setRouteStart]);
 
 	// This effect handles ads
 	useEffect(() => {
