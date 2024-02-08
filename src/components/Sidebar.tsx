@@ -69,7 +69,7 @@ function Sidebar() {
 				setColor={setColor}
 				onClose={onCloseHandler}
 				className={cn(
-					routeFinish?.id && 'bg-white border-2 lg:border-0 lg:m-3 lg:p-1',
+					routeFinish?.id && 'bg-white border-2 lg:border-0 lg:m-3 lg:p-1 left-2 top-5 sm:left-5 sm:top-5',
 					(activeFilter?.type === 'list' ||
 						activeFilter?.type === 'closest' ||
 						activeFilter?.type === 'info' ||
