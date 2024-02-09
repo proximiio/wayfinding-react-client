@@ -37,6 +37,7 @@ function App() {
 	const setCurrentLang = useMapStore((state) => state.setCurrentLang);
 	const setAds = useMapStore((state) => state.setAds);
 	const setActiveAd = useMapStore((state) => state.setActiveAd);
+	const setAppSession = useMapStore((state) => state.setAppSession);
 
 	// This effect hook handles URL query parameters related to language and kiosk mode
 	useEffect(() => {
@@ -77,6 +78,10 @@ function App() {
 			});
 		}
 	}, [showAds, map, setAds, setActiveAd]);
+
+	useEffect(() => {
+		setAppSession();
+	}, [setAppSession]);
 
 	return (
 		<>

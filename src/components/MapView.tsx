@@ -59,6 +59,7 @@ function MapView() {
 	const kiosks = useMapStore((state) => state.kiosks);
 	const amenities = useMapStore((state) => state.amenities);
 	const ads = useMapStore((state) => state.ads);
+	const appSession = useMapStore((state) => state.appSession);
 
 	// store actions
 	const setMap = useMapStore(useShallow((state) => state.setMap));
@@ -130,6 +131,8 @@ function MapView() {
 				kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
 				metadata: userData,
 				source,
+				language: currentLang,
+				session: appSession,
 			});
 			if (featureAmenity) {
 				new Proximiio.SelectLogger({
@@ -139,6 +142,8 @@ function MapView() {
 					kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
 					metadata: userData,
 					source,
+					language: currentLang,
+					session: appSession,
 				});
 			}
 		} else {
@@ -293,7 +298,15 @@ function MapView() {
 				}
 			}
 		}
-	}, [kiosks, activeKiosk, features, kioskMode, map, setActiveKiosk, setRouteStart]);
+	}, [
+		kiosks,
+		activeKiosk,
+		features,
+		kioskMode,
+		map,
+		setActiveKiosk,
+		setRouteStart,
+	]);
 
 	// This effect handles ads
 	useEffect(() => {

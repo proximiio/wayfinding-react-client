@@ -28,6 +28,8 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 	const gpsMode = useMapStore((state) => state.gpsMode);
 	const map = useMapStore((state) => state.map);
 	const activeKiosk = useMapStore((state) => state.activeKiosk);
+	const currentLang = useMapStore((state) => state.currentLang);
+	const appSession = useMapStore((state) => state.appSession);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
@@ -70,6 +72,8 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 				kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
 				metadata: userData,
 				source: 'manual',
+				language: currentLang,
+				session: appSession,
 			});
 		}
 	};

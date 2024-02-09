@@ -4,6 +4,7 @@ import { AmenityModel } from 'proximiio-js-library/lib/models/amenity';
 import Feature from 'proximiio-js-library/lib/models/feature';
 import { FloorModel } from 'proximiio-js-library/lib/models/floor';
 import { PlaceModel } from 'proximiio-js-library/lib/models/place';
+import { AdModel } from 'proximiio-js-library/lib/models/ad';
 import { create } from 'zustand';
 import { isPointWithinRadius } from 'geolib';
 import { getFloorName } from '@/lib/utils';
@@ -14,11 +15,11 @@ import {
 } from '@/models/filterItem.model';
 import { KioskModel } from '@/models/kiosk.model';
 import { filterCategories } from './data';
-import { AdModel } from 'proximiio-js-library/lib/models/ad';
 
 // import { devtools } from 'zustand/middleware';
 // define types for state values and actions separately
 type State = {
+	appSession?: string;
 	appInitiated: boolean;
 	map: Map;
 	kioskMode: boolean;
@@ -48,6 +49,7 @@ type State = {
 };
 
 type Actions = {
+	setAppSession: () => void;
 	setAppInitiated: (initiated: boolean) => void;
 	setMap: (map: Map) => void;
 	setKioskMode: (isKiosk: boolean) => void;
@@ -79,6 +81,7 @@ type Actions = {
 
 // define the initial state
 const initialState: State = {
+	appSession: undefined,
 	appInitiated: false,
 	map: {} as Map,
 	kioskMode: false,
@@ -107,6 +110,10 @@ const initialState: State = {
 };
 
 const defaultPlaceId = import.meta.env.VITE_WAYFINDING_DEFAULT_PLACE_ID;
+
+const generateSessionId = () => {
+	return `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+};
 
 const assignProperties = (
 	poi: Feature,
@@ -137,6 +144,11 @@ const useMapStore = create<State & Actions>()(
 	//devtools(
 	(set, get) => ({
 		...initialState,
+		setAppSession: () => {
+			const sessionId = generateSessionId();
+			console.log('SETTING APP SESSION', sessionId);
+			set(() => ({ appSession: sessionId }));
+		},
 		setAppInitiated: (initiated) => {
 			set(() => ({ appInitiated: initiated }));
 		},
