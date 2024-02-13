@@ -42,7 +42,7 @@ function PoiSelect({ selectedPoi, placeholder, onSelect }: PoiSelectProps) {
 					variant='outline'
 					role='combobox'
 					aria-expanded={open}
-					className='lg:min-w-[320px] justify-between flex my-4'
+					className='w-full lg:min-w-[320px] justify-between flex lg:my-4 my-1'
 				>
 					{selectedPoi?.id
 						? pois.find((poi) => poi.id === selectedPoi.id)?.properties.title

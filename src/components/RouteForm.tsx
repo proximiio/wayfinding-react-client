@@ -88,7 +88,7 @@ function RouteForm() {
 				<h2 className='text-lg font-semibold lg:mb-4 lg:mt-4 text-primary'>
 					{t(activeFilter.title)}
 				</h2>
-				<div className='flex items-center gap-1 lg:block'>
+				<div className='flex flex-col items-center gap-1 lg:flex-row lg:block'>
 					{startFeature !== 'kiosk' && (
 						<PoiSelect
 							selectedPoi={startFeature}
