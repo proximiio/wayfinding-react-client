@@ -160,6 +160,8 @@ function MapView() {
 		routeFinish,
 		amenities,
 		activeKiosk,
+		appSession,
+		currentLang,
 		setActiveFilter,
 		setShowCustomRoutePicker,
 	]);
