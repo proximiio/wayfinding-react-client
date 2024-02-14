@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Proximiio from 'proximiio-js-library';
 import { useIdle } from 'react-use';
-import useKiosk from '@/hooks/useKiosk';
 import MapView from '@/components/MapView';
 import FloorPicker from '@/components/FloorPicker';
 import PoiSearch from '@/components/PoiSearch';
@@ -21,7 +20,7 @@ function App() {
 		import.meta.env.VITE_WAYFINDING_SHOW_RESET_BUTTON === 'true';
 	const showAds = import.meta.env.VITE_WAYFINDING_SHOW_ADS === 'true';
 	const { t, i18n } = useTranslation();
-	const kioskIsIddle = useKiosk();
+	const kioskIsIdle = useIdle(60e3); // 1 minute
 	const sessionIsIdle = useIdle(
 		import.meta.env.VITE_WAYFINDING_SESSION_TIMEOUT
 	);
@@ -42,6 +41,18 @@ function App() {
 	const setAds = useMapStore((state) => state.setAds);
 	const setActiveAd = useMapStore((state) => state.setActiveAd);
 	const setAppSession = useMapStore((state) => state.setAppSession);
+	const resetViewStore = useMapStore((state) => state.resetView);
+	const locateMe = useMapStore((state) => state.locateMe);
+
+	// handle reset to default view
+	const resetView = useCallback(() => {
+		console.log('RESET VIEW');
+		resetViewStore();
+		locateMe();
+		if (Object.keys(map).length > 0) {
+			map.refetch();
+		}
+	}, [map, resetViewStore, locateMe]);
 
 	// This effect hook handles URL query parameters related to language and kiosk mode
 	useEffect(() => {
@@ -67,10 +78,10 @@ function App() {
 
 	// This effect hook handles kioskMode changes
 	useEffect(() => {
-		if (kioskMode) {
-			kioskIsIddle;
+		if (kioskMode && kioskIsIdle) {
+			resetView();
 		}
-	}, [kioskMode, kioskIsIddle]);
+	}, [kioskMode, kioskIsIdle, resetView]);
 
 	// This effect hook handles ads initiation
 	useEffect(() => {
