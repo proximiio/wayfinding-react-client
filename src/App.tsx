@@ -86,7 +86,7 @@ function App() {
 	return (
 		<>
 			{appInitiated && (
-				<main className='font-quicksand'>
+				<main>
 					<div className='flex'>
 						{showAds && activeAd && (
 							<div className='hidden w-1/4 xl:block'>
