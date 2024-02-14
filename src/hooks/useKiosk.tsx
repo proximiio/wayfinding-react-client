@@ -1,8 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import useMapStore from '@/store/mapStore';
+import { useIdle } from 'react-use';
 
 export default function UseKiosk() {
 	const map = useMapStore((state) => state.map);
+	const kioskIsIdle = useIdle(60e3); // 1 minute
 
 	const resetViewStore = useMapStore((state) => state.resetView);
 	const locateMe = useMapStore((state) => state.locateMe);
@@ -16,25 +18,9 @@ export default function UseKiosk() {
 		}
 	}, [map, resetViewStore, locateMe]);
 
-	// idleTime function handle timeouts to reset to default view
-	const idleTime = useCallback(() => {
-		let t: ReturnType<typeof setTimeout>;
-
-		// set timer and call reset view method on timeout
-		const resetTimer = () => {
-			clearTimeout(t);
-			t = setTimeout(resetView, 1 * 60000); // 1 minute
-		};
-
-		window.onload = resetTimer;
-		window.onmousemove = resetTimer;
-		window.onmousedown = resetTimer; // catches touchscreen presses as well
-		window.ontouchstart = resetTimer; // catches touchscreen swipes as well
-		window.ontouchmove = resetTimer; // required by some devices
-		window.onclick = resetTimer; // catches touchpad clicks as well
-		window.onkeydown = resetTimer;
-		window.addEventListener('scroll', resetTimer, true); // improved; see comments*/
-	}, [resetView]);
-
-	return [idleTime];
+	useEffect(() => {
+		if (kioskIsIdle) {
+			resetView();
+		}
+	}, [kioskIsIdle, resetView])
 }

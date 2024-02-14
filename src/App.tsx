@@ -21,7 +21,7 @@ function App() {
 		import.meta.env.VITE_WAYFINDING_SHOW_RESET_BUTTON === 'true';
 	const showAds = import.meta.env.VITE_WAYFINDING_SHOW_ADS === 'true';
 	const { t, i18n } = useTranslation();
-	const [idleTime] = useKiosk();
+	const kioskIsIddle = useKiosk();
 	const sessionIsIdle = useIdle(
 		import.meta.env.VITE_WAYFINDING_SESSION_TIMEOUT
 	);
@@ -65,12 +65,12 @@ function App() {
 		setAppInitiated(true);
 	}, [appInitiated, i18n, setKioskMode, setCurrentLang, setAppInitiated]);
 
-	// This effect hook handles map and kioskMode changes
+	// This effect hook handles kioskMode changes
 	useEffect(() => {
 		if (kioskMode) {
-			idleTime();
+			kioskIsIddle;
 		}
-	}, [map, kioskMode, idleTime]);
+	}, [kioskMode, kioskIsIddle]);
 
 	// This effect hook handles ads initiation
 	useEffect(() => {

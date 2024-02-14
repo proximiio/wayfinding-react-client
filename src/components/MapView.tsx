@@ -1,5 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import Proximiio from 'proximiio-js-library';
 import { State } from 'proximiio-js-library/lib/components/map/main';
 import maplibregl from 'maplibre-gl';
@@ -17,6 +17,7 @@ import i18n from '@/i18n';
 
 import useMapStore from '@/store/mapStore';
 import { kiosks as predefinedKiosks } from '@/store/data';
+import Feature from 'proximiio-js-library/lib/models/feature';
 
 function MapView() {
 	const mapInitiated = useRef(false);
@@ -83,88 +84,98 @@ function MapView() {
 	);
 	const setActiveAd = useMapStore((state) => state.setActiveAd);
 
-	// This effect hook handles route finish state changes
-	useEffect(() => {
-		console.log('finish effect');
-		if (routeFinish?.id) {
-			console.log('routeFinish', routeFinish);
-			// center the map, set the floor level to poi
-			map.getMapboxInstance().flyTo({
-				center: routeFinish.geometry.coordinates as [number, number],
-				zoom: 19,
-			});
-			map.setFloorByLevel(routeFinish.properties.level);
-			// handle polygon selection, only required when polygons are enabled
-			map.handlePolygonSelection(routeFinish);
-			setActiveFilter({} as FilterItemModel);
-			setShowCustomRoutePicker(false);
+	const prevRouteFinish = useRef<Feature>();
 
-			// save select log for feature & amenity
-			const urlParams = new URLSearchParams(window.location.search);
-			const destinationParam = urlParams.get('destinationFeature');
-			const qrParam = urlParams.get('qrCode');
-			const routedFromParams =
-				destinationParam &&
-				(destinationParam === routeFinish.id ||
-					destinationParam === routeFinish.properties.id ||
-					destinationParam === routeFinish.properties.title);
-			let source: 'manual' | 'qr' | 'urlParam' = 'manual';
+	// found route handler function
+	const routeFoundHandler = useCallback(() => {
+		console.log('routeFinish', routeFinish);
+		// center the map, set the floor level to poi
+		map.getMapboxInstance().flyTo({
+			center: routeFinish.geometry.coordinates as [number, number],
+			zoom: 19,
+		});
+		map.setFloorByLevel(routeFinish.properties.level);
+		// handle polygon selection, only required when polygons are enabled
+		map.handlePolygonSelection(routeFinish);
+		setActiveFilter({} as FilterItemModel);
+		setShowCustomRoutePicker(false);
 
-			if (routedFromParams) {
-				source = qrParam ? 'qr' : 'urlParam';
-			}
+		// save select log for feature & amenity
+		const urlParams = new URLSearchParams(window.location.search);
+		const destinationParam = urlParams.get('destinationFeature');
+		const qrParam = urlParams.get('qrCode');
+		const routedFromParams =
+			destinationParam &&
+			(destinationParam === routeFinish.id ||
+				destinationParam === routeFinish.properties.id ||
+				destinationParam === routeFinish.properties.title);
+		let source: 'manual' | 'qr' | 'urlParam' = 'manual';
 
-			const featureAmenity = amenities.find(
-				(i) => i.id === routeFinish.properties.amenity
-			);
-			const userData = {
-				osName,
-				browserName,
-				mobileModel,
-				mobileVendor,
-				deviceType,
-			};
+		if (routedFromParams) {
+			source = qrParam ? 'qr' : 'urlParam';
+		}
+
+		const featureAmenity = amenities.find(
+			(i) => i.id === routeFinish.properties.amenity
+		);
+		const userData = {
+			osName,
+			browserName,
+			mobileModel,
+			mobileVendor,
+			deviceType,
+		};
+		new Proximiio.SelectLogger({
+			clickedElementId: routeFinish.id,
+			clickedElementType: 'feature',
+			clickedElementTitle: routeFinish.properties.title,
+			kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
+			metadata: userData,
+			source,
+			language: currentLang,
+			session: appSession,
+		});
+		if (featureAmenity) {
 			new Proximiio.SelectLogger({
-				clickedElementId: routeFinish.id,
-				clickedElementType: 'feature',
-				clickedElementTitle: routeFinish.properties.title,
+				clickedElementId: routeFinish.properties.amenity,
+				clickedElementType: 'amenity',
+				clickedElementTitle: featureAmenity.title,
 				kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
 				metadata: userData,
 				source,
 				language: currentLang,
 				session: appSession,
 			});
-			if (featureAmenity) {
-				new Proximiio.SelectLogger({
-					clickedElementId: routeFinish.properties.amenity,
-					clickedElementType: 'amenity',
-					clickedElementTitle: featureAmenity.title,
-					kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
-					metadata: userData,
-					source,
-					language: currentLang,
-					session: appSession,
-				});
-			}
-		} else {
-			console.log('routeFinish cancelled', routeFinish);
-			if (Object.keys(map).length > 0) {
-				// cancel route if it's rendered
-				map.cancelRoute();
-				// remove polygon selection after route finish is cancelled
-				map.handlePolygonSelection();
-			}
 		}
 	}, [
-		map,
-		routeFinish,
-		amenities,
 		activeKiosk,
+		amenities,
 		appSession,
 		currentLang,
+		map,
+		routeFinish,
 		setActiveFilter,
 		setShowCustomRoutePicker,
 	]);
+
+	const routeCancelHandler = useCallback(() => {
+		console.log('routeFinish cancelled');
+		if (Object.keys(map).length > 0) {
+			// cancel route if it's rendered
+			map.cancelRoute();
+			// remove polygon selection after route finish is cancelled
+			map.handlePolygonSelection();
+		}
+	}, [map]);
+
+	// This effect hook handles route finish state changes
+	useEffect(() => {
+		if (routeFinish?.id) {
+			if (prevRouteFinish?.current?.id !== routeFinish?.id) routeFoundHandler();
+		} else {
+			if (prevRouteFinish?.current?.id) routeCancelHandler();
+		}
+	}, [routeFinish, routeFoundHandler, routeCancelHandler]);
 
 	// This effect hook handles route start state changes
 	useEffect(() => {
@@ -358,6 +369,10 @@ function MapView() {
 			}
 		}
 	}, [routeFinish, showAds, ads, activeFilter.id, setActiveAd]);
+
+	useEffect(() => {
+		prevRouteFinish.current = routeFinish;
+	}, [routeFinish]);
 
 	useEffect(() => {
 		// Initialize map only once
