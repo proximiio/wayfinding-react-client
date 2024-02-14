@@ -6,7 +6,6 @@ export default function UseKiosk() {
 
 	const resetViewStore = useMapStore((state) => state.resetView);
 	const locateMe = useMapStore((state) => state.locateMe);
-	const setAppSession = useMapStore((state) => state.setAppSession);
 
 	// handle reset to default view
 	const resetView = useCallback(() => {
@@ -14,9 +13,8 @@ export default function UseKiosk() {
 		locateMe();
 		if (Object.keys(map).length > 0) {
 			map.refetch();
-			setAppSession();
 		}
-	}, [map, resetViewStore, locateMe, setAppSession]);
+	}, [map, resetViewStore, locateMe]);
 
 	// idleTime function handle timeouts to reset to default view
 	const idleTime = useCallback(() => {

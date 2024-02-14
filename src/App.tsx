@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Proximiio from 'proximiio-js-library';
+import { useIdle } from 'react-use';
 import useKiosk from '@/hooks/useKiosk';
 import MapView from '@/components/MapView';
 import FloorPicker from '@/components/FloorPicker';
@@ -21,6 +22,9 @@ function App() {
 	const showAds = import.meta.env.VITE_WAYFINDING_SHOW_ADS === 'true';
 	const { t, i18n } = useTranslation();
 	const [idleTime] = useKiosk();
+	const sessionIsIdle = useIdle(
+		import.meta.env.VITE_WAYFINDING_SESSION_TIMEOUT
+	);
 
 	const [appInitiated, setAppInitiated] = useMapStore((state) => [
 		state.appInitiated,
@@ -79,9 +83,17 @@ function App() {
 		}
 	}, [showAds, map, setAds, setActiveAd]);
 
+	// This effect hook set app session on init
 	useEffect(() => {
 		setAppSession();
 	}, [setAppSession]);
+
+	// This effect hook set reset app session on idle time
+	useEffect(() => {
+		if (sessionIsIdle) {
+			setAppSession();
+		}
+	}, [sessionIsIdle, setAppSession]);
 
 	return (
 		<>
