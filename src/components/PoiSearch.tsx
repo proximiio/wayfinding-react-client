@@ -70,7 +70,7 @@ function PoiSearch() {
 				language: currentLang,
 				session: appSession,
 			};
-			new Proximiio.SearchLogger(log);
+			if (search.length > 0) new Proximiio.SearchLogger(log);
 		},
 		[activeKiosk?.id, activeKiosk?.name, appSession, currentLang, search]
 	);
