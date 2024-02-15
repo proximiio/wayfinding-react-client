@@ -30,6 +30,8 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 	const activeKiosk = useMapStore((state) => state.activeKiosk);
 	const currentLang = useMapStore((state) => state.currentLang);
 	const appSession = useMapStore((state) => state.appSession);
+	const pois = useMapStore((state) => state.getSortedPOIs());
+	const features = useMapStore((state) => state.features);
 	const setActiveFilter = useMapStore((state) => state.setActiveFilter);
 	const setRouteStart = useMapStore((state) => state.setRouteStart);
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
@@ -42,8 +44,21 @@ function FilterPicker({ heading, color, items }: FilterPickerProps) {
 	const moreThanLimit = items.length > itemsLimit;
 
 	const filterClickHandler = (item: FilterItemModel) => {
+		const filteredPois = pois.filter((feature) => {
+			return (
+				(Array.isArray(item.id)
+					? item.id.includes(feature.properties.amenity)
+					: feature.properties.amenity === item.id) &&
+				feature.properties.type === 'poi'
+			);
+		});
+
 		if (Object.keys(map).length > 0) {
 			if ((!gpsMode && !kioskMode) || item.type !== 'closest') {
+				if (filteredPois.length === 1) {
+					const feature = features.find((f) => f.id === filteredPois[0].id)!;
+					setRouteFinish(feature);
+				}
 				setActiveFilter(item);
 			} else {
 				const closestFeature = map.getClosestFeature(

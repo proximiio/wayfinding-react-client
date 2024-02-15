@@ -69,7 +69,6 @@ function PoiSearch() {
 				language: currentLang,
 				session: appSession,
 			};
-			console.log('SHOULD SAVE LOG', log);
 			new Proximiio.SearchLogger(log);
 		},
 		[activeKiosk?.id, activeKiosk?.name, appSession, currentLang, search]
