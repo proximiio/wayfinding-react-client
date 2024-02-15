@@ -6,6 +6,14 @@ import removeAccents from 'remove-accents';
 import Keyboard from 'simple-keyboard';
 import 'simple-keyboard/build/css/index.css';
 import {
+	osName,
+	browserName,
+	mobileModel,
+	mobileVendor,
+	deviceType,
+} from 'react-device-detect';
+import Proximiio from 'proximiio-js-library';
+import {
 	CommandDialog,
 	CommandEmpty,
 	CommandGroup,
@@ -18,6 +26,7 @@ import {
 import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
 
 import useMapStore from '@/store/mapStore';
+import Feature from 'proximiio-js-library/lib/models/feature';
 
 function PoiSearch() {
 	// store state
@@ -25,6 +34,8 @@ function PoiSearch() {
 	const currentLang = useMapStore((state) => state.currentLang);
 	const features = useMapStore((state) => state.features);
 	const kioskMode = useMapStore((state) => state.kioskMode);
+	const appSession = useMapStore((state) => state.appSession);
+	const activeKiosk = useMapStore((state) => state.activeKiosk);
 
 	// store actions
 	const setRouteFinish = useMapStore((state) => state.setRouteFinish);
@@ -39,14 +50,45 @@ function PoiSearch() {
 
 	const keyboard = useRef<Keyboard>();
 
+	const saveLog = useCallback(
+		(feature?: Feature) => {
+			const userData = {
+				osName,
+				browserName,
+				mobileModel,
+				mobileVendor,
+				deviceType,
+			};
+			const log = {
+				searchValue: search,
+				success: !!feature,
+				kioskId: activeKiosk?.id ? activeKiosk?.id : activeKiosk?.name,
+				resultId: feature ? feature.id : undefined,
+				resultTitle: feature ? feature.properties.title : undefined,
+				metadata: userData,
+				language: currentLang,
+				session: appSession,
+			};
+			console.log('SHOULD SAVE LOG', log);
+			new Proximiio.SearchLogger(log);
+		},
+		[activeKiosk?.id, activeKiosk?.name, appSession, currentLang, search]
+	);
+
 	const onSelectHandle = useCallback(
 		(featureId: string) => {
 			const feature = features.find((item) => item.id === featureId)!;
+			saveLog(feature);
 			setOpen(false);
 			setRouteFinish(feature);
 		},
-		[features, setRouteFinish]
+		[features, saveLog, setRouteFinish]
 	);
+
+	const openChangeHandler = (open: boolean) => {
+		saveLog();
+		setOpen(open);
+	};
 
 	// store filtered pois in ref to ensure that filteredPoisRef.current always holds the latest value of filteredPois
 	const filteredPoisRef = useRef<SortedPoiItemModel[]>([]);
@@ -176,7 +218,7 @@ function PoiSearch() {
 				</span>
 			</button>
 			<CommandDialog
-				dialogProps={{ open: open, onOpenChange: setOpen }}
+				dialogProps={{ open: open, onOpenChange: openChangeHandler }}
 				commandProps={{ shouldFilter: false }}
 			>
 				<CommandInput
