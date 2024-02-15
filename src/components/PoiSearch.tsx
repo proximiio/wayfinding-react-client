@@ -27,6 +27,7 @@ import { SortedPoiItemModel } from '@/models/sortedPoiItem.model';
 
 import useMapStore from '@/store/mapStore';
 import Feature from 'proximiio-js-library/lib/models/feature';
+import { cn } from '@/lib/utils';
 
 function PoiSearch() {
 	// store state
@@ -218,6 +219,7 @@ function PoiSearch() {
 			</button>
 			<CommandDialog
 				dialogProps={{ open: open, onOpenChange: openChangeHandler }}
+				dialogClassName={cn('sm:top-[30%]')}
 				commandProps={{ shouldFilter: false }}
 			>
 				<CommandInput
