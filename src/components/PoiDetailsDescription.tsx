@@ -33,6 +33,7 @@ function PoiDetailsDescription({ showMore }: { showMore: boolean }) {
 			);
 			return;
 		}
+		setDetails(defaultDetails);
 	}, [
 		poi?.properties?.description_i18n,
 		poi?.properties?.metadata?.description,

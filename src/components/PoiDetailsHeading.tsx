@@ -39,6 +39,7 @@ function PoiDetailsHeading({ showMore }: { showMore: boolean }) {
 		const url = new URL(window.location.href);
 		const urlParams = url.searchParams;
 		urlParams.set('qrCode', 'true');
+		urlParams.set('language', currentLanguage);
 		if (haveRouteDetails) {
 			if (!routeStart && routeFinish) {
 				urlParams.set('destinationFeature', routeFinish.properties.id);
@@ -51,7 +52,7 @@ function PoiDetailsHeading({ showMore }: { showMore: boolean }) {
 			}
 		}
 		setQrCodeUrl(url.href);
-	}, [haveRouteDetails, routeFinish, routeStart]);
+	}, [haveRouteDetails, routeFinish, routeStart, currentLanguage]);
 
 	return (
 		<>
