@@ -97,5 +97,6 @@
 	"click-here": "Clicca qui",
 	"routeFailedTitle": "Ops! Qualcosa è andato storto.",
 	"routeFailed": "Non abbiamo trovato un percorso dalla tua posizione GPS. Mostrando il percorso dall'entrata principale.",
-	"more": "Di più"
+	"more": "Di più",
+	"identify-location": "Identificare la posizione"
 }
