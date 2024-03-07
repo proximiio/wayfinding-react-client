@@ -22,6 +22,8 @@ interface ImportMetaEnv {
 	readonly VITE_WAYFINDING_CATEGORY_ITEMS_LIMIT: number;
 	readonly VITE_WAYFINDING_SHOW_ADS: 'true' | 'false';
 	readonly VITE_WAYFINDING_SESSION_TIMEOUT: number;
+	readonly VITE_WAYDINDING_ENABLE_GVISION: 'true' | 'false';
+	readonly VITE_WAYFINDING_GVISION_APIKEY: string;
 }
 
 interface ImportMeta {
