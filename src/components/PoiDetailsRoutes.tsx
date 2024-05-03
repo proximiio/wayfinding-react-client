@@ -35,13 +35,17 @@ function PoiDetailsRoutes({
 	);
 
 	useEffect(() => {
-		navigator.mediaDevices.enumerateDevices().then(function (devices) {
-			const videoDevices = devices.filter(
-				(device) => device.kind === 'videoinput'
-			);
-			setEnableGVision(videoDevices.length > 0);
-		});
-	});
+		if (navigator.mediaDevices) {
+			navigator.mediaDevices.enumerateDevices().then(function (devices) {
+				const videoDevices = devices.filter(
+					(device) => device.kind === 'videoinput'
+				);
+				setEnableGVision(videoDevices.length > 0);
+			});
+		} else {
+			setEnableGVision(false);
+		}
+	}, [setEnableGVision]);
 
 	const getRouteHandler = (from: string) => {
 		console.log('get route');
