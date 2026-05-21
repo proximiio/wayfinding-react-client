@@ -80,7 +80,7 @@ function MapView() {
 	const setActiveKiosk = useMapStore((state) => state.setActiveKiosk);
 	const setAccessibleRoute = useMapStore((state) => state.setAccessibleRoute);
 	const setShowCustomRoutePicker = useMapStore(
-		(state) => state.setShowCustomRoutePicker
+		(state) => state.setShowCustomRoutePicker,
 	);
 	const setActiveAd = useMapStore((state) => state.setActiveAd);
 
@@ -116,7 +116,7 @@ function MapView() {
 		}
 
 		const featureAmenity = amenities.find(
-			(i) => i.id === routeFinish.properties.amenity
+			(i) => i.id === routeFinish.properties.amenity,
 		);
 		const userData = {
 			osName,
@@ -199,7 +199,7 @@ function MapView() {
 		console.log('active filter effect');
 		if (activeFilter?.id) {
 			const foundCategory = filterCategories.find((category) =>
-				category.items.find((items) => items.id === activeFilter.id)
+				category.items.find((items) => items.id === activeFilter.id),
 			);
 			console.log('active filter', activeFilter);
 			map.setAmenityFilter(activeFilter.id, foundCategory!.title);
@@ -223,8 +223,8 @@ function MapView() {
 					(f) =>
 						f.id === startParam ||
 						f.properties.id === startParam ||
-						f.properties.title === startParam
-			  )
+						f.properties.title === startParam,
+				)
 			: undefined;
 		if (startFeature) {
 			setRouteStart(startFeature);
@@ -235,8 +235,8 @@ function MapView() {
 					(f) =>
 						f.id === destinationParam ||
 						f.properties.id === destinationParam ||
-						f.properties.title === destinationParam
-			  )
+						f.properties.title === destinationParam,
+				)
 			: undefined;
 		if (destinationFeature) {
 			setRouteFinish(destinationFeature);
@@ -268,7 +268,7 @@ function MapView() {
 				const kiosk = kiosks.find(
 					(kiosk) =>
 						kiosk.name === urlParams.get('kiosk') ||
-						kiosk.id === urlParams.get('kiosk')
+						kiosk.id === urlParams.get('kiosk'),
 				);
 				setActiveKiosk(kiosk);
 
@@ -302,7 +302,7 @@ function MapView() {
 						map.setKiosk(
 							activeKiosk.latitude,
 							activeKiosk.longitude,
-							activeKiosk.level
+							activeKiosk.level,
 						);
 						setTimeout(() => {
 							setRouteStart('kiosk');
@@ -349,7 +349,7 @@ function MapView() {
 
 			if (routeFinish?.id) {
 				const amenityAd = ads.find((ad) =>
-					ad.amenities?.includes(routeFinish.properties.amenity)
+					ad.amenities?.includes(routeFinish.properties.amenity),
 				);
 				const poiAd = ads.find((ad) => ad.features?.includes(routeFinish.id));
 				if (poiAd) {
@@ -426,6 +426,7 @@ function MapView() {
 					defaultFloorLevel: +import.meta.env
 						.VITE_WAYFINDING_DEFAULT_LOCATION_LEVEL,
 					zoomIntoPlace: false,
+					stepsNavigation: 'simple',
 				});
 
 				map.getMapReadyListener().subscribe((ready) => {
@@ -436,7 +437,7 @@ function MapView() {
 					map.getMapboxInstance().addControl(
 						new maplibregl.NavigationControl({
 							showZoom: false,
-						})
+						}),
 					);
 
 					setMap(map);
@@ -461,16 +462,19 @@ function MapView() {
 					for (const category of filterCategories) {
 						map.setAmenitiesCategory(
 							category.title,
-							category.items.map((i) => (i.id ? i.id : 'undefined')).flat(2)
+							category.items.map((i) => (i.id ? i.id : 'undefined')).flat(2),
 						);
 					}
 				});
 
 				// set data refetching interval if enabled in .env file
 				if (refetchData) {
-					setInterval(() => {
-						map.refetch();
-					}, +import.meta.env.VITE_WAYFINDING_REFETCH_INTERVAL);
+					setInterval(
+						() => {
+							map.refetch();
+						},
+						+import.meta.env.VITE_WAYFINDING_REFETCH_INTERVAL,
+					);
 				}
 
 				// set destination point for routing based on click event and cancel previous route if generated
@@ -508,7 +512,7 @@ function MapView() {
 				map.getNavStepSetListener().subscribe((step) => {
 					setCurrentStep(step);
 				});
-			}
+			},
 		);
 	});
 

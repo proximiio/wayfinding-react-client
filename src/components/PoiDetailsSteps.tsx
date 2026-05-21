@@ -4,7 +4,6 @@ import { t } from 'i18next';
 import Feature from 'proximiio-js-library/lib/models/feature';
 import { LuChevronsRight } from 'react-icons/lu';
 import { TbPennant } from 'react-icons/tb';
-import { getFloorName } from '@/lib/utils';
 
 import useMapStore from '@/store/mapStore';
 
@@ -13,7 +12,7 @@ interface StepModel {
 	coordinates: { coordinates: [number, number] };
 	direction: string;
 	distanceFromLastStep: number;
-	instruction?: string[];
+	instruction?: string[] | string;
 	isWaypoint: boolean;
 	level: number;
 	levelChangerId: string;
@@ -22,7 +21,12 @@ interface StepModel {
 	destinationLevel?: number;
 	stepsUntil?: StepModel[];
 	totalDistance?: number;
-	description: string;
+	description?: string;
+	maneuver?: {
+		type: string;
+	};
+	distance?: number;
+	navMode?: string;
 }
 
 function PoiDetailsSteps() {
@@ -40,67 +44,13 @@ function PoiDetailsSteps() {
 	useEffect(() => {
 		if (haveRouteDetails) {
 			const textNavSteps: StepModel[] = routeDetails.TBTNav.steps;
-			let previousIndex = 0;
 			setSteps(
-				textNavSteps
-					.filter((i, index, array) => {
-						// Get the first part of the direction string
-						const direction = i.direction.split('_')[0];
-						// Check if the current step is a level changer and has a valid direction or is finish
-						if (
-							(i.levelChangerId &&
-								(direction === 'UP' || direction === 'DOWN')) ||
-							i.direction === 'FINISH'
-						) {
-							i.stepsUntil = array.slice(previousIndex, index);
-							previousIndex = index + 1;
-							return i;
-						}
-					})
-					.map((step) => {
-						const direction = step.direction.split('_')[0]
-							? step.direction.split('_')[0]
-							: step.direction;
-						const levelChangerType = step.direction.split('_')[1];
-						const destinationFloor = floors.filter(
-							(f) => f.level === step.destinationLevel
-						)
-							? floors.filter((f) => f.level === step.destinationLevel)[0]
-							: currentFloor;
-
-						const stepsUntilDistance = step.stepsUntil!.reduce(
-							(total, item) => total + item.distanceFromLastStep,
-							0
-						);
-						const totalDistance =
-							step.distanceFromLastStep + stepsUntilDistance;
-
-						let description;
-						if (direction === 'FINISH') {
-							description =
-								currentLanguage === 'fi'
-									? `${t('you-will-arrive')} ${totalDistance | 0}m ${t('in')}.`
-									: `${t('in')} ${totalDistance | 0}m ${t('you-will-arrive')}.`;
-						} else {
-							description = `${t('go')} ${totalDistance | 0}m ${t(
-								'and-take-the'
-							)} ${t(levelChangerType)} ${t(direction)} ${t('TO_FLOOR')} ${
-								destinationFloor.name
-									? getFloorName({
-											floor: destinationFloor,
-											language: currentLanguage,
-									  })
-									: step.destinationLevel
-							}.`;
-						}
-
-						return {
-							...step,
-							totalDistance,
-							description,
-							destinationFloor,
-						};
-					})
+				textNavSteps.map((step) => {
+					return {
+						...step,
+						description: step.instruction as string,
+					};
+				}),
 			);
 		}
 	}, [
