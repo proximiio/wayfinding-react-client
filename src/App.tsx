@@ -22,7 +22,7 @@ function App() {
 	const { t, i18n } = useTranslation();
 	const kioskIsIdle = useIdle(60e3); // 1 minute
 	const sessionIsIdle = useIdle(
-		import.meta.env.VITE_WAYFINDING_SESSION_TIMEOUT
+		import.meta.env.VITE_WAYFINDING_SESSION_TIMEOUT,
 	);
 
 	const [appInitiated, setAppInitiated] = useMapStore((state) => [
@@ -62,7 +62,7 @@ function App() {
 		const urlParams = new URLSearchParams(window.location.search);
 
 		// Retrieve 'language' parameter from URL or default to 'en' if not found
-		const urlLanguage = urlParams.get('language') ?? 'en';
+		const urlLanguage = urlParams.get('language')?.slice(0, 2) ?? 'en';
 
 		// Update language state with 'language' parameter from URL
 		setCurrentLang(urlLanguage);
@@ -123,7 +123,7 @@ function App() {
 						<div
 							className={cn(
 								'w-full relative',
-								showAds && activeAd && 'w-full xl:w-3/4'
+								showAds && activeAd && 'w-full xl:w-3/4',
 							)}
 						>
 							{Object.keys(map).length === 0 && (
